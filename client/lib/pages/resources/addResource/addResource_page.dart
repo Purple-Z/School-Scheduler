@@ -3,6 +3,7 @@ import 'package:client/connection.dart';
 import 'package:client/pages/manage/manage_provider.dart';
 import 'package:client/pages/manage/users/addUser/addUser_provider.dart';
 import 'package:client/pages/manage/users/manageUsers_provider.dart';
+import 'package:client/pages/resources/addResource/addResource_provider.dart';
 import 'package:client/router/layout_scaffold.dart';
 import 'package:client/router/routes.dart';
 import 'package:flutter/material.dart';
@@ -13,46 +14,43 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:client/graphics/graphics_methods.dart';
 
 
-class AddUserPage extends StatefulWidget {
-  const AddUserPage({super.key});
+class AddResourcePage extends StatefulWidget {
+  const AddResourcePage({super.key});
 
   @override
-  State<AddUserPage> createState() => _AddUserPageState();
+  State<AddResourcePage> createState() => _AddResourcePageState();
 }
 
-class _AddUserPageState extends State<AddUserPage> {
+class _AddResourcePageState extends State<AddResourcePage> {
   @override
   Widget build(BuildContext context) {
     //var appState = context.watch<DataProvider>();
-    var addUserProvider = context.watch<AddUserProvider>();
+    var addResourceProvider = context.watch<AddResourceProvider>();
     var appProvider = context.watch<AppProvider>();
 
-    return appProvider.create_user ?
-    AddUserAdmin():
+    return appProvider.create_resources ?
+    AddResource():
     Text("access denied!");
   }
 }
 
-class AddUserAdmin extends StatefulWidget {
-  const AddUserAdmin({super.key});
+class AddResource extends StatefulWidget {
+  const AddResource({super.key});
 
   @override
-  State<AddUserAdmin> createState() => _AddUserAdminState();
+  State<AddResource> createState() => _AddResourceState();
 }
 
-class _AddUserAdminState extends State<AddUserAdmin> {
-  List rolesValues = [];
+class _AddResourceState extends State<AddResource> {
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController surnameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController quantityController = TextEditingController();
 
   @override
   void dispose() {
     nameController.dispose();
-    surnameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
+    descriptionController.dispose();
+    quantityController.dispose();
     super.dispose();
   }
 
@@ -61,7 +59,7 @@ class _AddUserAdminState extends State<AddUserAdmin> {
   Widget build(BuildContext context) {
     double fieldsSpacing = 15;
     var appProvider = context.watch<AppProvider>();
-    var addUserProvider = context.watch<AddUserProvider>();
+    var addResourceProvider = context.watch<AddResourceProvider>();
 
     return Padding(
       padding: const EdgeInsets.all(15),
@@ -70,58 +68,58 @@ class _AddUserAdminState extends State<AddUserAdmin> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Add New User",
+              "Add New Resource",
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
 
             buildTextField(nameController, "Name", Icons.person),
             SizedBox(height: fieldsSpacing),
-            buildTextField(surnameController, "Surname", Icons.person_outline),
+            buildTextField(descriptionController, "Description", Icons.person_outline),
             SizedBox(height: fieldsSpacing),
-            buildTextField(emailController, "Email", Icons.email, inputType: TextInputType.emailAddress),
-
+            buildTextField(quantityController, "Quantity", Icons.person_outline, inputType: TextInputType.number),
             const SizedBox(height: 30),
 
-            const Text("Roles:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+            const Text("Type:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
-
-
-            for (int i = 0; i < addUserProvider.roles.length; i++)
-              buildSwitch(context, addUserProvider.roles[i][0], addUserProvider.rolesValues[i], (value) {
+            DropdownMenu<String>(
+              initialSelection: addResourceProvider.types.first[0],
+              onSelected: (String? value) {
+                // This is called when the user selects an item.
                 setState(() {
-                  addUserProvider.rolesValues[i] = value;
+                  addResourceProvider.type = value!;
                 });
-              }),
+              },
+              dropdownMenuEntries: addResourceProvider.types
+                  .map<DropdownMenuEntry<String>>((type) => DropdownMenuEntry(value: type[0], label: type[0]))
+                  .toList(),
+            ),
+
 
             const SizedBox(height: 30),
 
             Center(
               child: ElevatedButton(
                 style: ButtonStyle(
-                  minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
-                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),
-                  textStyle: WidgetStatePropertyAll(
-                    TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary
+                    minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
+                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),
+                    textStyle: WidgetStatePropertyAll(
+                        TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary
+                        )
                     )
-                  )
                 ),
                 onPressed: () async {
-                  List<String> rolesValues = [];
-                  for (int i = 0; i < addUserProvider.rolesValues.length; i++){
-                    if (addUserProvider.rolesValues[i]){
-                      rolesValues.add(addUserProvider.roles[i][0]);
-                    }
-                  }
-                  if (await Connection.addUser(
-                      new_email: emailController.text,
-                      new_name: nameController.text,
-                      new_surname: surnameController.text,
-                      new_roles: rolesValues,
+                  print('qt ' + quantityController.text);
+
+                  if (await Connection.addResource(
+                      name: nameController.text,
+                      description: descriptionController.text,
+                      quantity: int.tryParse(quantityController.text) ?? 0,
+                      type: addResourceProvider.type,
                       appProvider: appProvider
                   )){
-                    showTopMessage(context, "User Created!");
+                    showTopMessage(context, "Resource Created!");
                     context.pop();
                   } else {
                     showTopMessage(context, "Error Occurred!");
@@ -130,10 +128,10 @@ class _AddUserAdminState extends State<AddUserAdmin> {
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    "Add User",
+                    "Add Resource",
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimary,
-                      fontSize: 20
+                        fontSize: 20
                     ),
                   ),
                 ),

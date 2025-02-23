@@ -16,28 +16,139 @@ class setupDB():
             )
 
             mycursor = mydb.cursor()
+            
 
-            try:
-                # CREATE TABLE   - - -   users   - - -
-                mycursor.execute(
-                    '''
-                        CREATE TABLE IF NOT EXISTS users (
-                            id INT PRIMARY KEY AUTO_INCREMENT,
-                            name VARCHAR(50) NOT NULL,
-                            surname VARCHAR(50) NOT NULL,
-                            email VARCHAR(100) UNIQUE,
-                            password_hash VARCHAR(50) NOT NULL,
-                            admin BOOL NOT NULL,
-                            leader BOOL NOT NULL,
-                            professor BOOL NOT NULL,
-                            student BOOL NOT NULL,
-                            token VARCHAR(64) NOT NULL
-                        );
-                    '''
-                )
-                print('Created table users!')
-            except Exception as errore:
-                pass
+            # CREATE TABLE   - - -   roles   - - -
+            mycursor.execute('''
+                    CREATE TABLE IF NOT EXISTS roles (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(255) UNIQUE NOT NULL,
+                        description TEXT,
+                             
+                        view_users BOOLEAN DEFAULT FALSE,
+                        edit_users BOOLEAN DEFAULT FALSE,
+                        create_users BOOLEAN DEFAULT FALSE,
+                        delete_users BOOLEAN DEFAULT FALSE,
+                             
+                        view_own_user BOOLEAN DEFAULT FALSE,
+                        edit_own_user BOOLEAN DEFAULT FALSE,
+                        create_own_user BOOLEAN DEFAULT FALSE,
+                        delete_own_user BOOLEAN DEFAULT FALSE,
+                             
+                        view_roles BOOLEAN DEFAULT FALSE,
+                        edit_roles BOOLEAN DEFAULT FALSE,
+                        create_roles BOOLEAN DEFAULT FALSE,
+                        delete_roles BOOLEAN DEFAULT FALSE,
+                             
+                        view_availability BOOLEAN DEFAULT FALSE,
+                        edit_availability BOOLEAN DEFAULT FALSE,
+                        create_availability BOOLEAN DEFAULT FALSE,
+                        delete_availability BOOLEAN DEFAULT FALSE,
+                             
+                        view_resources BOOLEAN DEFAULT FALSE,
+                        edit_resources BOOLEAN DEFAULT FALSE,
+                        create_resources BOOLEAN DEFAULT FALSE,
+                        delete_resources BOOLEAN DEFAULT FALSE,
+                             
+                        view_booking BOOLEAN DEFAULT FALSE,
+                        edit_booking BOOLEAN DEFAULT FALSE,
+                        create_booking BOOLEAN DEFAULT FALSE,
+                        delete_booking BOOLEAN DEFAULT FALSE,
+                             
+                        view_own_booking BOOLEAN DEFAULT FALSE,
+                        edit_own_booking BOOLEAN DEFAULT FALSE,
+                        create_own_booking BOOLEAN DEFAULT FALSE,
+                        delete_own_booking BOOLEAN DEFAULT FALSE
+                    );
+            ''')
+
+            # CREATE TABLE   - - -   users   - - -
+            mycursor.execute('''
+                    CREATE TABLE IF NOT EXISTS users (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(255) NOT NULL,
+                        surname VARCHAR(255) NOT NULL,
+                        email VARCHAR(255) UNIQUE NOT NULL,
+                        password_hash VARCHAR(255) NOT NULL,
+                        token VARCHAR(255)
+                    );
+            ''')
+
+            # CREATE TABLE   - - -   users_roles   - - -
+            mycursor.execute('''
+                    CREATE TABLE IF NOT EXISTS users_roles (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        user_id INT,
+                        role_id INT,
+                        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                        FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+                    );
+            ''')
+
+            # CREATE TABLE   - - -   types   - - -
+            mycursor.execute('''
+                    CREATE TABLE IF NOT EXISTS types (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(255) NOT NULL,
+                        description TEXT
+                    );
+            ''')
+
+            # CREATE TABLE   - - -   resources   - - -
+            mycursor.execute('''
+                    CREATE TABLE IF NOT EXISTS resources (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(255) NOT NULL,
+                        description TEXT,
+                        quantity INT NOT NULL,
+                        type_id INT,
+                        FOREIGN KEY (type_id) REFERENCES types(id) ON DELETE SET NULL
+                    );
+            ''')
+
+            # CREATE TABLE   - - -   permissions   - - -
+            mycursor.execute('''
+                    CREATE TABLE IF NOT EXISTS permissions (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        view BOOLEAN DEFAULT FALSE,
+                        remove BOOLEAN DEFAULT FALSE,
+                        edit BOOLEAN DEFAULT FALSE,
+                        book BOOLEAN DEFAULT FALSE,
+                        role_id INT,
+                        resource_id INT,
+                        FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
+                        FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE
+                    );
+            ''')
+
+
+            # CREATE TABLE   - - -   availability   - - -
+            mycursor.execute('''
+                    CREATE TABLE IF NOT EXISTS availability (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        start DATETIME NOT NULL,
+                        end DATETIME NOT NULL,
+                        quantity INT NOT NULL,
+                        resource_id INT,
+                        FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE
+                    );
+            ''')
+
+            # CREATE TABLE   - - -   bookings   - - -
+            mycursor.execute('''
+                    CREATE TABLE IF NOT EXISTS bookings (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        start DATETIME NOT NULL,
+                        end DATETIME NOT NULL,
+                        quantity INT NOT NULL,
+                        user_id INT,
+                        availability_id INT,
+                        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                        FOREIGN KEY (availability_id) REFERENCES availability(id) ON DELETE CASCADE
+                    );
+            ''')
+
+
 
 
 

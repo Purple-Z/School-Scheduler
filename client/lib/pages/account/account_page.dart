@@ -77,10 +77,10 @@ class LoggedPage extends StatelessWidget {
             Column(
               children: [
                 Text("Signed as"),
-                appProvider.student? Text("Student"):SizedBox(height: 0,),
-                appProvider.professor? Text("Professor"):SizedBox(height: 0,),
-                appProvider.leader? Text("Leader"):SizedBox(height: 0,),
-                appProvider.admin? Text("Admin"):SizedBox(height: 0,),
+                appProvider.provisoryFlag? Text("Student"):SizedBox(height: 0,),
+                appProvider.provisoryFlag? Text("Professor"):SizedBox(height: 0,),
+                appProvider.provisoryFlag? Text("Leader"):SizedBox(height: 0,),
+                appProvider.provisoryFlag? Text("Admin"):SizedBox(height: 0,),
               ],
             ),
             Expanded(child: SizedBox()),
@@ -137,6 +137,12 @@ class LoggedPage extends StatelessWidget {
             ),
             Expanded(child: SizedBox()),
           ],
+        ),
+        ElevatedButton(
+            onPressed: () {
+              print(appProvider.roles);
+            },
+            child: Text("print")
         ),
       ],
     );

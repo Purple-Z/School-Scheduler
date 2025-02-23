@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 import '../../../connection.dart';
+import '../widgets.dart';
 
 
 class ManageUsersPage extends StatefulWidget {
@@ -26,7 +27,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
     var manageUsersProvider = context.watch<ManageUsersProvider>();
     var appProvider = context.watch<AppProvider>();
 
-    return appProvider.admin ?
+    return appProvider.view_user ?
       ManageUsersAdmin():
       Text("access denied!");
   }
@@ -40,98 +41,86 @@ class ManageUsersAdmin extends StatefulWidget {
 }
 
 class _ManageUsersAdminState extends State<ManageUsersAdmin> {
-  final RefreshController _refreshController = RefreshController(initialRefresh: false);
+  final RefreshController refreshController = RefreshController(initialRefresh: true);
 
-  Future<void> _refreshUsers() async {
+  Future<void> refreshUsers() async {
     var appProvider = context.read<AppProvider>();
     var manageUsersProvider = context.read<ManageUsersProvider>();
 
     try {
       List users = await Connection.getUsers(appProvider);
       manageUsersProvider.setUsers(users);
-      _refreshController.refreshCompleted();
+      refreshController.refreshCompleted();
     } catch (e) {
-      _refreshController.refreshFailed();
+      refreshController.refreshFailed();
     }
+  }
+
+  getItem(List items){
+    print(items.toString());
+    List newItems = [];
+    for (List item in items){
+      List newItem = [];
+      for (var quality in item){
+        newItem.add(quality);
+      }
+
+      if (item[item.length-1].length == 0){
+        newItem[item.length-1] = "";
+        newItems.add(newItem);
+        continue;
+      }
+      List roles = item[item.length-1];
+
+      String result = "";
+      for (int i = 0; i < roles.length-1; i++){
+        result += (roles[i] + ', \n');
+      }
+      result += (roles[roles.length-1]);
+
+
+
+      newItem[item.length-1] = result;
+      newItems.add(newItem);
+    }
+    return newItems;
   }
 
   @override
   Widget build(BuildContext context) {
     var manageUsersProvider = context.watch<ManageUsersProvider>();
+    var appProvider = context.watch<AppProvider>();
     List users = manageUsersProvider.users;
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: appProvider.create_user ?
+      FloatingActionButton.extended(
         onPressed: () {
           context.push(Routes.manage_Users_AddUsers);
         },
         label: Text("New User"),
         icon: Icon(Icons.add),
-      ),
+      ) : null,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
-        child: Column(
-          children: [
-            const Row(
-              children: [
-                Expanded(child: Center(child: Text('Name', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 20, fontWeight: FontWeight.bold)))),
-                Expanded(child: Center(child: Text('Surname', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 20, fontWeight: FontWeight.bold)))),
-                Expanded(child: Center(child: Text('Email', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 20, fontWeight: FontWeight.bold)))),
-                Expanded(child: Center(child: Text('Roles', style: TextStyle(fontStyle: FontStyle.italic, fontSize: 20, fontWeight: FontWeight.bold)))),
-              ],
-            ),
-            Expanded(
-              child: SmartRefresher(
-                controller: _refreshController,
-                onRefresh: _refreshUsers,
-                header: MaterialClassicHeader(),
-                child: ListView.builder(
-                  itemCount: users.length,
-                  itemBuilder: (context, index) {
-                    var user = users[index];
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: Divider(),
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            padding: WidgetStatePropertyAll(EdgeInsets.all(0)),
-                            shadowColor: WidgetStatePropertyAll(Colors.transparent),
-                          ),
-                          onPressed: () {
-                            context.push(Routes.manage_Users_userDetails, extra: {'userId': user[0]});
-                          },
-                          child: Row(
-                            children: [
-                              Expanded(child: Center(child: Text(user[1].toString()))),
-                              Expanded(child: Center(child: Text(user[2].toString()))),
-                              Expanded(child: Center(child: Text(user[3].toString()))),
-                              Expanded(
-                                child: Center(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      if (user[5] == 1) const Text("Admin"),
-                                      if (user[6] == 1) const Text("Leader"),
-                                      if (user[7] == 1) const Text("Professor"),
-                                      if (user[8] == 1) const Text("Student"),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
+        child: DataTableWidget(
+            header: ['Name', 'Surname', 'Email', 'Roles'],
+            onRefresh: refreshUsers,
+            onItemTap: (List item) {
+              context.push(Routes.manage_Users_userDetails, extra: {'userId': item[0]});
+            },
+            items: getItem(manageUsersProvider.users),
+            itemsColumn: [
+              false,  //0
+              true, //1
+              true,  //2
+              true,  //3
+              false,  //4
+              false, //5
+              true, //6
+            ],
+            refreshController: refreshController
+        )
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:client/pages/manage/manage_provider.dart';
 import 'package:client/pages/manage/users/addUser/addUser_provider.dart';
 import 'package:client/pages/manage/users/manageUsers_provider.dart';
 import 'package:client/pages/manage/users/userDetails/userDetails_provider.dart';
+import 'package:client/pages/resources/resourceDetails/resourceDetails_provider.dart';
 import 'package:client/router/layout_scaffold.dart';
 import 'package:client/router/routes.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
@@ -16,53 +17,57 @@ import 'package:client/graphics/graphics_methods.dart';
 
 
 
-class UserDetailsPage extends StatefulWidget {
-  const UserDetailsPage({super.key});
+class ResourceDetailsPage extends StatefulWidget {
+  const ResourceDetailsPage({super.key});
 
   @override
-  State<UserDetailsPage> createState() => _UserDetailsPageState();
+  State<ResourceDetailsPage> createState() => _ResourceDetailsPageState();
 }
 
-class _UserDetailsPageState extends State<UserDetailsPage> {
+class _ResourceDetailsPageState extends State<ResourceDetailsPage> {
   @override
   Widget build(BuildContext context) {
     //var appState = context.watch<DataProvider>();
-    var userDetailsProvider = context.watch<UserDetailsProvider>();
+    var resourceDetailsProvider = context.watch<ResourceDetailsProvider>();
     var appProvider = context.watch<AppProvider>();
 
-    return appProvider.view_user ?
-    UserDetailsAdmin(user: userDetailsProvider.user,):
+    return appProvider.view_resources ?
+    ResourceDetails(resource: resourceDetailsProvider.resource,):
     Text("access denied!");
   }
 }
 
-class UserDetailsAdmin extends StatefulWidget {
-  final List user;
-  const UserDetailsAdmin({
+class ResourceDetails extends StatefulWidget {
+  final List resource;
+  const ResourceDetails({
     super.key,
-    required this.user
+    required this.resource
   });
 
   @override
-  State<UserDetailsAdmin> createState() => _UserDetailsAdminState(user: user);
+  State<ResourceDetails> createState() => _ResourceDetailsState(resource: resource);
 }
 
-class _UserDetailsAdminState extends State<UserDetailsAdmin> {
-  List user = [];
-  List roles = [];
+class _ResourceDetailsState extends State<ResourceDetails> {
+  List resource = [];
+  List types = [];
+  var type;
 
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController surnameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController quantityController = TextEditingController();
 
-  _UserDetailsAdminState({required this.user}){
-    nameController.text = user[1];
-    surnameController.text = user[2];
+  _ResourceDetailsState({required this.resource}){
+    nameController.text = resource[1];
+    descriptionController.text = resource[2];
+    quantityController.text = resource[3].toString();
+    type = resource[4].toString();
   }
 
 
   @override
   Widget build(BuildContext context) {
-    var userDetailsProvider = context.watch<UserDetailsProvider>();
+    var resourceDetailsProvider = context.watch<ResourceDetailsProvider>();
     var appProvider = context.watch<AppProvider>();
     double fieldsSpacing = 15;
 
@@ -77,32 +82,76 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
             Text(
-              userDetailsProvider.user[3],
+              resourceDetailsProvider.resource[1],
               style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 30),
 
-            buildTextField(nameController, "Name", Icons.person, editable: appProvider.edit_user),
+            buildTextField(nameController, "Name", Icons.person, editable: appProvider.edit_resources),
             SizedBox(height: fieldsSpacing),
-            buildTextField(surnameController, "Surname", Icons.person, editable: appProvider.edit_user),
+            buildTextField(descriptionController, "Description", Icons.person, editable: appProvider.edit_resources),
+            SizedBox(height: fieldsSpacing),
+            buildTextField(quantityController, "Quantity", Icons.person, editable: appProvider.edit_resources, inputType: TextInputType.number),
             SizedBox(height: fieldsSpacing),
 
             const SizedBox(height: 30),
 
-            const Text("Update Roles", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+            const Text("Type:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
 
-            for (int i = 0; i < userDetailsProvider.roles.length; i++)
-              buildSwitch(context, userDetailsProvider.roles[i][0], userDetailsProvider.rolesValues[i], (value) {
+            DropdownMenu<String>(
+              enabled: appProvider.edit_resources,
+              initialSelection: type,
+              onSelected: (String? value) {
+                // This is called when the user selects an item.
                 setState(() {
-                  userDetailsProvider.rolesValues[i] = value;
+                  type = value!;
                 });
-              }, isEditable: appProvider.edit_user),
+              },
+              dropdownMenuEntries: resourceDetailsProvider.types
+                  .map<DropdownMenuEntry<String>>((type) => DropdownMenuEntry(value: type[0], label: type[0]))
+                  .toList(),
+            ),
 
             const SizedBox(height: 30),
 
-            if (appProvider.edit_user)
+            if (appProvider.view_availability)
+              Column(
+                children: [
+                  Center(
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
+                          backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.tertiary),
+                          textStyle: WidgetStatePropertyAll(
+                              TextStyle(
+                                  color: Theme.of(context).colorScheme.onPrimary
+                              )
+                          )
+                      ),
+                      onPressed: () {
+                        context.push(Routes.manage_ManageResources_ManageAvailabilities);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(
+                          "View Availability",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontSize: 20
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+                ],
+              ),
+
+
+            if (appProvider.edit_resources)
               Column(
                 children: [
                   Center(
@@ -117,22 +166,16 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                           )
                       ),
                       onPressed: () async {
-                        List<String> rolesValues = [];
-                        for (int i = 0; i < userDetailsProvider.rolesValues.length; i++){
-                          if (userDetailsProvider.rolesValues[i]){
-                            rolesValues.add(userDetailsProvider.roles[i][0]);
-                          }
-                        }
                         if (
-                        await Connection.updateUser(
-                          appProvider,
-                          user_id: userDetailsProvider.user[0],
-                          new_name: nameController.text,
-                          new_surname: surnameController.text,
-                          roles: rolesValues,
-                        )
-                        ){
-                          showTopMessage(context, "User Updated!");
+                        await Connection.updateResource(
+                            appProvider,
+                            resource_id: resourceDetailsProvider.resource[0],
+                            name: nameController.text,
+                            description: descriptionController.text,
+                            quantity: int.tryParse(quantityController.text) ?? 0,
+                            type: type
+                        )){
+                          showTopMessage(context, "Resource Updated!");
                         } else {
                           showTopMessage(context, "Error Occurred!");
                         }
@@ -140,7 +183,7 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Text(
-                          "Update User",
+                          "Update Resource",
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary,
                               fontSize: 20
@@ -151,45 +194,11 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                   ),
 
                   const SizedBox(height: 10),
-
-                  Center(
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
-                          backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),
-                          textStyle: WidgetStatePropertyAll(
-                              TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimary
-                              )
-                          )
-                      ),
-                      onPressed: () async {
-                        if(await confirm(context, content: Text("Reset Password?"))){
-                          if (await Connection.resetPassword(userDetailsProvider.user[0], appProvider)){
-                            showTopMessage(context, "password reset");
-                          } else {
-                            showTopMessage(context, "Error Occurred");
-                          }
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text(
-                          "Restore Password",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              fontSize: 20
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
 
-            const SizedBox(height: 10,),
 
-            if (appProvider.delete_user)
+            if (appProvider.delete_resources)
               Center(
                 child: ElevatedButton(
                   style: ButtonStyle(
@@ -202,9 +211,9 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                       )
                   ),
                   onPressed: () async {
-                    if(await confirm(context, content: Text("Delete " + userDetailsProvider.user[3] + "?"))){
-                      if (await Connection.deleteUser(userDetailsProvider.user[0], appProvider)){
-                        showTopMessage(context, "Account deleted");
+                    if(await confirm(context, content: Text("Delete " + resourceDetailsProvider.resource[1] + "?"))){
+                      if (await Connection.deleteResource(resourceDetailsProvider.resource[0], appProvider)){
+                        showTopMessage(context, "Resource deleted");
                         context.pop();
                       } else {
                         showTopMessage(context, "Error Occurred");
@@ -214,7 +223,7 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      "Delete User",
+                      "Delete Resource",
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary,
                           fontSize: 20

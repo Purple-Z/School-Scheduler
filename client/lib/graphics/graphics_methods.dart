@@ -23,11 +23,12 @@ Widget buildSwitch(BuildContext context, String label, bool value, Function(bool
 
 Widget buildTextField(
     TextEditingController controller, String label, IconData icon,
-    {bool obscureText = false, TextInputType inputType = TextInputType.text}) {
+    {bool obscureText = false, TextInputType inputType = TextInputType.text, bool editable = true,}) {
   return TextField(
     controller: controller,
     obscureText: obscureText,
     keyboardType: inputType,
+    enabled: editable,
     decoration: InputDecoration(
       border: OutlineInputBorder(),
       labelText: label,

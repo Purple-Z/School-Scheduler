@@ -1,0 +1,95 @@
+import 'package:client/app_provider.dart';
+import 'package:client/pages/manage/manage_provider.dart';
+import 'package:client/pages/manage/types/manageTypes_provider.dart';
+import 'package:client/pages/manage/users/manageUsers_provider.dart';
+import 'package:client/router/layout_scaffold.dart';
+import 'package:client/router/routes.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+
+import '../../../connection.dart';
+import '../widgets.dart';
+
+
+class ManageTypesPage extends StatefulWidget {
+  const ManageTypesPage({super.key});
+
+  @override
+  State<ManageTypesPage> createState() => _ManageTypesPageState();
+}
+
+class _ManageTypesPageState extends State<ManageTypesPage> {
+  @override
+  Widget build(BuildContext context) {
+    //var appState = context.watch<DataProvider>();
+    var manageTypesProvider = context.watch<ManageTypesProvider>();
+    var appProvider = context.watch<AppProvider>();
+
+    return appProvider.view_resources ?
+    ManageTypesAdmin():
+    Text("access denied!");
+  }
+}
+
+class ManageTypesAdmin extends StatefulWidget {
+  const ManageTypesAdmin({super.key});
+
+  @override
+  _ManageTypesAdminState createState() => _ManageTypesAdminState();
+}
+
+class _ManageTypesAdminState extends State<ManageTypesAdmin> {
+  final RefreshController refreshController = RefreshController(initialRefresh: true);
+
+  Future<void> refreshTypes() async {
+    var appProvider = context.read<AppProvider>();
+    var manageTypesProvider = context.read<ManageTypesProvider>();
+
+    try {
+      List types = await Connection.getTypes(appProvider);
+      manageTypesProvider.setTypes(types);
+      refreshController.refreshCompleted();
+    } catch (e) {
+      refreshController.refreshFailed();
+    }
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    var manageTypesProvider = context.watch<ManageTypesProvider>();
+    var appProvider = context.watch<AppProvider>();
+    List types = manageTypesProvider.types;
+
+    return Scaffold(
+      floatingActionButton: appProvider.create_resources ?
+        FloatingActionButton.extended(
+        onPressed: () {
+          context.push(Routes.manage_Types_AddType);
+        },
+        label: Text("New Type"),
+        icon: Icon(Icons.add),
+      ) : null,
+      body: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
+          child: DataTableWidget(
+              header: ['Name', 'Description'],
+              onRefresh: refreshTypes,
+              onItemTap: (List item) {
+                context.push(Routes.manage_Types_TypeDetails, extra: {'typeId': item[0]});
+              },
+              items: manageTypesProvider.types,
+              itemsColumn: [
+                false,  //0
+                true, //1
+                true,  //2
+              ],
+              refreshController: refreshController
+          )
+      ),
+    );
+  }
+}
