@@ -1426,6 +1426,9 @@ def get_availabilities():
         result = db.fetchSQL(sql)
         resource_name = result[0][0]
 
+        availability[1] = availability[1].isoformat()
+        availability[2] = availability[2].isoformat()
+
         availability[len(availability)-1] = resource_name
         availabilities.append(availability)
 
@@ -1473,7 +1476,15 @@ def add_availability():
             }
             ), 402
 
-    maxAvailability = getMaxAvailability(resource_id, start, end)
+    if quantity <= 0:
+        return jsonify(
+            {
+                'message': 'Invalid quantity',
+                "token": token_for(user_id)
+            }
+            ), 403
+
+    maxAvailability = getMaxAvailability(resource_id, start, end, -1)
 
     if not maxAvailability:
         return jsonify(
@@ -1562,7 +1573,9 @@ def get_availability():
             availability.append(quality)
 
         availability[len(availability)-1] = resource_name
-
+        availability[1] = availability[1].isoformat()
+        availability[2] = availability[2].isoformat()
+    
         return jsonify(
         {
             "availability": availability,
@@ -1581,11 +1594,10 @@ def update_availability():
     data = request.get_json()
     email = data.get('email')
     token = data.get('token')
-    resource_id = data.get('resource_id')
-    name = data.get('name')
-    description = data.get('description')
+    start = data.get('start')
+    end = data.get('end')
     quantity = data.get('quantity')
-    type = data.get('type')
+    availability_id = data.get('availability_id')
 
     
     if not checkUserToken(email, token):
@@ -1602,9 +1614,7 @@ def update_availability():
             }
             ), 401
 
-    user_id = getIdFromEmail(email)
-
-    sql = "SELECT id FROM types WHERE name = '" + type + "'"
+    sql = "SELECT resource_id FROM availability WHERE id = " + str(availability_id)
     result = db.fetchSQL(sql)
     if len(result) == 0:
         return jsonify(
@@ -1612,18 +1622,55 @@ def update_availability():
                 "token": token_for(user_id)
             }
         ), 501
+
+    resource_id = result[0][0]
     
-    type_id = result[0][0]
+
+    user_id = getIdFromEmail(email)
+
+    start = datetime.fromisoformat(start)
+    end = datetime.fromisoformat(end)
+
+    if end < start:
+        return jsonify(
+            {
+                'message': 'Shift not correct',
+                "token": token_for(user_id)
+            }
+            ), 402
+
+    if quantity <= 0:
+        return jsonify(
+            {
+                'message': 'Invalid quantity',
+                "token": token_for(user_id)
+            }
+            ), 403
+
+    maxAvailability = getMaxAvailability(resource_id, start, end, availability_id)
+
+    if not maxAvailability:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 501
+
+    if int(quantity) > int(maxAvailability):
+        return jsonify(
+            {
+                'message': 'Too much quantity',
+                "token": token_for(user_id)
+            }
+            ), 403
 
     sql_update = f'''
-    UPDATE resources SET
-        name = '{name}',
-        description = '{description}',
-        quantity = {quantity},
-        type_id = {type_id}
-    WHERE id = {resource_id}
+    UPDATE availability SET
+        start = '{start}',
+        end = '{end}',
+        quantity = {quantity}
+    WHERE id = {availability_id}
     '''
-
 
     try:
         db.executeSQL(sql_update)
@@ -1637,14 +1684,14 @@ def update_availability():
             {
                 "token": token_for(user_id)
             }
-        ), 401
+        ), 500
     
 @app.route('/delete-availability', methods=['POST']) ## to be restored
 def delete_availability():
     data = request.get_json()
     email = data.get('email')
     token = data.get('token')
-    resource_id = data.get('resource_id')
+    availability_id = data.get('availability_id')
     
     if not checkUserToken(email, token):
         return jsonify(
@@ -1653,7 +1700,7 @@ def delete_availability():
             }
             ), 400
     
-    if not checkUserPermission(email, 'delete_resources'):
+    if not checkUserPermission(email, 'delete_availability'):
         return jsonify(
             {
                 'message': 'Access denied'
@@ -1666,8 +1713,8 @@ def delete_availability():
 
     try:
         sql_delete = f'''
-        DELETE FROM resources
-        WHERE id = {resource_id}
+        DELETE FROM availability
+        WHERE id = {availability_id}
         '''
 
         db.executeSQL(sql_delete)
@@ -1691,6 +1738,7 @@ def check_availabilities_quantity():
     resource_id = data.get('resource_id')
     start = data.get('start')
     end = data.get('end')
+    remove_availability_id = data.get('remove_availability_id')
     
     if not checkUserToken(email, token):
         return jsonify(
@@ -1727,7 +1775,7 @@ def check_availabilities_quantity():
             ), 402
     
 
-    maxAvailability = getMaxAvailability(resource_id, start, end)
+    maxAvailability = getMaxAvailability(resource_id, start, end, remove_availability_id)
 
     if not getMaxAvailability:
         return jsonify(
@@ -1841,7 +1889,7 @@ def getIdFromEmail(email):
 
     return user_id
 
-def getMaxAvailability(resource_id, start, end):
+def getMaxAvailability(resource_id, start, end, remove_availability_id):
     if end < start:
         return False
 
@@ -1867,11 +1915,12 @@ def getMaxAvailability(resource_id, start, end):
 
     shifts_content = []
     for record in result:
-        shift = []
-        shift.append(record[1])
-        shift.append(record[2])
-        shift.append(record[3])
-        shifts_content.append(shift)
+        if record[0] != remove_availability_id:
+            shift = []
+            shift.append(record[1])
+            shift.append(record[2])
+            shift.append(record[3])
+            shifts_content.append(shift)
 
     shifts = []
     if len(shifts_content) > 0:

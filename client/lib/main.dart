@@ -10,11 +10,12 @@ import 'package:client/pages/manage/types/typeDetails/typeDetails_provider.dart'
 import 'package:client/pages/manage/users/addUser/addUser_provider.dart';
 import 'package:client/pages/manage/users/manageUsers_provider.dart';
 import 'package:client/pages/manage/users/userDetails/userDetails_provider.dart';
-import 'package:client/pages/resources/addResource/addResource_provider.dart';
-import 'package:client/pages/resources/manageResources_provider.dart';
-import 'package:client/pages/resources/resourceDetails/addAvailability/addAvailability_provider.dart';
-import 'package:client/pages/resources/resourceDetails/manageAvailability/manageAvailabilitiesDetails_provider.dart';
-import 'package:client/pages/resources/resourceDetails/resourceDetails_provider.dart';
+import 'package:client/pages/manage/resources/addResource/addResource_provider.dart';
+import 'package:client/pages/manage/resources/manageResources_provider.dart';
+import 'package:client/pages/manage/resources/resourceDetails/addAvailability/addAvailability_provider.dart';
+import 'package:client/pages/manage/resources/resourceDetails/availabilityDetails/availabilityDetails_provider.dart';
+import 'package:client/pages/manage/resources/resourceDetails/manageAvailability/manageAvailabilitiesDetails_provider.dart';
+import 'package:client/pages/manage/resources/resourceDetails/resourceDetails_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:client/router/router.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ResourceDetailsProvider()),
         ChangeNotifierProvider(create: (_) => ManageAvailabilityProvider()),
         ChangeNotifierProvider(create: (_) => AddAvailabilityProvider()),
+        ChangeNotifierProvider(create: (_) => AvailabilityDetailsProvider()),
       ],
       child: Consumer<AppProvider>(
         builder: (context, dataProvider, child) {

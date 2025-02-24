@@ -19,16 +19,18 @@ import 'package:client/pages/manage/users/manageUsers_page.dart';
 import 'package:client/pages/manage/users/manageUsers_provider.dart';
 import 'package:client/pages/manage/users/userDetails/userDetails_page.dart';
 import 'package:client/pages/manage/users/userDetails/userDetails_provider.dart';
-import 'package:client/pages/resources/addResource/addResource_page.dart';
-import 'package:client/pages/resources/addResource/addResource_provider.dart';
-import 'package:client/pages/resources/manageResources_page.dart';
-import 'package:client/pages/resources/manageResources_provider.dart';
-import 'package:client/pages/resources/resourceDetails/addAvailability/addAvailability_page.dart';
-import 'package:client/pages/resources/resourceDetails/addAvailability/addAvailability_provider.dart';
-import 'package:client/pages/resources/resourceDetails/manageAvailability/manageAvailabilityDetails_page.dart';
-import 'package:client/pages/resources/resourceDetails/manageAvailability/manageAvailabilitiesDetails_provider.dart';
-import 'package:client/pages/resources/resourceDetails/resourceDetails_page.dart';
-import 'package:client/pages/resources/resourceDetails/resourceDetails_provider.dart';
+import 'package:client/pages/manage/resources/addResource/addResource_page.dart';
+import 'package:client/pages/manage/resources/addResource/addResource_provider.dart';
+import 'package:client/pages/manage/resources/manageResources_page.dart';
+import 'package:client/pages/manage/resources/manageResources_provider.dart';
+import 'package:client/pages/manage/resources/resourceDetails/addAvailability/addAvailability_page.dart';
+import 'package:client/pages/manage/resources/resourceDetails/addAvailability/addAvailability_provider.dart';
+import 'package:client/pages/manage/resources/resourceDetails/availabilityDetails/availabilityDetails_page.dart';
+import 'package:client/pages/manage/resources/resourceDetails/availabilityDetails/availabilityDetails_provider.dart';
+import 'package:client/pages/manage/resources/resourceDetails/manageAvailability/manageAvailabilityDetails_page.dart';
+import 'package:client/pages/manage/resources/resourceDetails/manageAvailability/manageAvailabilitiesDetails_provider.dart';
+import 'package:client/pages/manage/resources/resourceDetails/resourceDetails_page.dart';
+import 'package:client/pages/manage/resources/resourceDetails/resourceDetails_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -245,6 +247,29 @@ final router = GoRouter(
                         return null;
                       },
                       builder: (context, state) => AddAvailabilityPage(),
+                      onExit: (context) {
+                        var availabilityDetailsProvider = Provider.of<ManageAvailabilityProvider>(context, listen: false);
+                        availabilityDetailsProvider.loadManageAvailabilitiesPage(context);
+                        return true;
+                      },
+                    ),
+                    GoRoute(
+                      path: Routes.availabilityDetails,
+                      redirect: (context, state) async {
+                        final extraData = state.extra as Map<String, dynamic>?;
+                        final availabilityID = extraData?['availabilityId'];
+
+                        var appProvider = Provider.of<AppProvider>(context, listen: false);
+                        var availabilityDetailsProvider = Provider.of<AvailabilityDetailsProvider>(context, listen: false);
+
+                        List availability = await Connection.getAvailability(availabilityID, appProvider);
+                        availabilityDetailsProvider.setAvailability(availability);
+
+                        var resourceDetailsProvider = Provider.of<ResourceDetailsProvider>(context, listen: false);
+                        availabilityDetailsProvider.setResource(resourceDetailsProvider.resource);
+                        return null;
+                      },
+                      builder: (context, state) => AvailabilityDetailsPage(),
                       onExit: (context) {
                         var availabilityDetailsProvider = Provider.of<ManageAvailabilityProvider>(context, listen: false);
                         availabilityDetailsProvider.loadManageAvailabilitiesPage(context);

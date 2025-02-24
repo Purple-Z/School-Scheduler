@@ -50,6 +50,9 @@ class Routes {
   static const String addAvailability = 'addAvailability';
   static const String manage_ManageResources_AddAvailability = '/manage/manageResources/addAvailability';
 
+  static const String availabilityDetails = 'availabilityDetails';
+  static const String manage_ManageResources_AvailabilityDetails = '/manage/manageResources/availabilityDetails';
+
 
 
 
