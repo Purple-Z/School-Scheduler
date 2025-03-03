@@ -11,6 +11,7 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:client/pages/functions.dart';
 
 import '../../../../../connection.dart';
 import '../../../../manage/widgets.dart';
@@ -46,6 +47,7 @@ class ManageAvailability extends StatefulWidget {
 
 class _ManageAvailabilityState extends State<ManageAvailability> {
   final RefreshController refreshController = RefreshController(initialRefresh: true);
+  DateTime dateFor = DateTime.now();
 
   Future<void> refreshAvailabilities() async {
     var appProvider = context.read<AppProvider>();
@@ -70,6 +72,11 @@ class _ManageAvailabilityState extends State<ManageAvailability> {
         newItem.add(quality);
       }
 
+      DateTime startDateTime = DateTime.tryParse(newItem[1]) ?? DateTime.now();
+      if (startDateTime.year != dateFor.year || startDateTime.month != dateFor.month || startDateTime.day != dateFor.day){
+        continue;
+      }
+
 
       for (int i in [1, 2]){
         DateTime dateTime = DateTime.tryParse(newItem[i]) ?? DateTime.now();
@@ -80,18 +87,6 @@ class _ManageAvailabilityState extends State<ManageAvailability> {
       newItems.add(newItem);
     }
     return newItems;
-  }
-
-  String getTimePrintable(DateTime currTime){
-    String out = '';
-    out += currTime.hour.toString();
-    out += ':';
-    if (currTime.minute < 10) {
-      out += '0';
-    }
-    out += currTime.minute.toString();
-
-    return out;
   }
 
 
@@ -114,7 +109,28 @@ class _ManageAvailabilityState extends State<ManageAvailability> {
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
           child: Column(
             children: [
-
+              Row(
+                children: [
+                  SizedBox(width: 10,),
+                  ElevatedButton(
+                    style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0))),
+                    onPressed: () async {
+                      DateTime? pickedDate = await selectDate(context, dateFor, firstDate: DateTime(2025));
+                  
+                      if (pickedDate != null) {
+                        setState(() {
+                          dateFor = pickedDate;
+                        });
+                      }
+                    },
+                    child: Text(
+                      '${dateFor.day}/${dateFor.month}/${dateFor.year}',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                  Expanded(child: SizedBox())
+                ],
+              ),
               Expanded(
                 child: DataTableWidget(
                     header: ['Start', 'End', 'Quantity'],

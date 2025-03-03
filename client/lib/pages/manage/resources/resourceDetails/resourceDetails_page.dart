@@ -101,7 +101,8 @@ class _ResourceDetailsState extends State<ResourceDetails> {
             const SizedBox(height: 10),
 
             DropdownMenu<String>(
-              enabled: appProvider.edit_resources,
+              //enabled: appProvider.edit_resources
+              enabled: false,
               initialSelection: type,
               onSelected: (String? value) {
                 // This is called when the user selects an item.
@@ -113,6 +114,44 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                   .map<DropdownMenuEntry<String>>((type) => DropdownMenuEntry(value: type[0], label: type[0]))
                   .toList(),
             ),
+
+            const SizedBox(height: 30),
+
+            const Text("Permissions:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            Column(
+              children: resourceDetailsProvider.resource_permission.entries.map((entry){
+                return ExpansionTile(
+                  title: Text(entry.key),
+                  controlAffinity: ListTileControlAffinity.leading,
+                  children: <Widget>[
+                    buildSwitch(context, "View", entry.value[0], (value) {
+                      setState(() {
+                        entry.value[0] = value;
+                      });
+                    }, isEditable: appProvider.edit_resources),
+                    buildSwitch(context, "Remove", entry.value[1], (value) {
+                      setState(() {
+                        entry.value[1] = value;
+                      });
+                    }, isEditable: appProvider.edit_resources),
+                    buildSwitch(context, "Edit", entry.value[2], (value) {
+                      setState(() {
+                        entry.value[2] = value;
+                      });
+                    }, isEditable: appProvider.edit_resources),
+                    buildSwitch(context, "Book", entry.value[3], (value) {
+                      setState(() {
+                        entry.value[3] = value;
+                      });
+                    }, isEditable: appProvider.edit_resources),
+                  ],
+                );
+              }
+              ).toList(),
+            ),
+
+
 
             const SizedBox(height: 30),
 
@@ -173,7 +212,8 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                             name: nameController.text,
                             description: descriptionController.text,
                             quantity: int.tryParse(quantityController.text) ?? 0,
-                            type: type
+                            type: type,
+                            resource_permissions: resourceDetailsProvider.resource_permission
                         )){
                           showTopMessage(context, "Resource Updated!");
                         } else {

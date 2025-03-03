@@ -1167,6 +1167,7 @@ def add_resource():
     description = data.get('description')
     quantity = data.get('quantity')
     type = data.get('type')
+    resource_permissions = data.get('resource_permissions')
     
     if not checkUserToken(email, token):
         return jsonify(
@@ -1209,6 +1210,30 @@ def add_resource():
         )
         '''
         db.executeSQL(sql_insert)
+
+        resource_id = db.fetchSQL(
+                f'''SELECT id FROM resources WHERE name = '{name}\''''
+            )[0][0]
+        
+
+        for role in resource_permissions.keys():
+            role_id = db.fetchSQL(
+                f'''SELECT id FROM roles WHERE name = '{role}\''''
+            )[0][0]
+
+            sql_insert = f'''
+            INSERT INTO permissions
+            VALUES (
+                0,
+                {resource_permissions[role][0]}, 
+                {resource_permissions[role][1]},
+                {resource_permissions[role][2]}, 
+                {resource_permissions[role][3]},
+                {role_id},
+                {resource_id}
+            )
+            '''
+            db.executeSQL(sql_insert)
 
         return jsonify(
             {
@@ -1290,6 +1315,7 @@ def update_resource():
     description = data.get('description')
     quantity = data.get('quantity')
     type = data.get('type')
+    resource_permissions = data.get('resource_permissions')
 
     
     if not checkUserToken(email, token):
@@ -1331,6 +1357,25 @@ def update_resource():
 
     try:
         db.executeSQL(sql_update)
+
+        for role in resource_permissions.keys():
+            role_id = db.fetchSQL(
+                f'''SELECT id FROM roles WHERE name = '{role}\''''
+            )[0][0]
+
+            sql_insert = f'''
+            INSERT INTO permissions
+            VALUES (
+                0,
+                {resource_permissions[role][0]}, 
+                {resource_permissions[role][1]},
+                {resource_permissions[role][2]}, 
+                {resource_permissions[role][3]},
+                {role_id},
+                {resource_id}
+            )
+            '''
+            db.executeSQL(sql_insert)
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -1386,6 +1431,75 @@ def delete_resource():
                 "token": token_for(user_id)
             }
         ), 401
+
+@app.route('/get-resource-permission', methods=['POST'])
+def get_resource_permission():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    roles = data.get('roles')
+    resource_id = data.get('resource_id')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'view_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+
+    if not checkUserPermission(email, 'view_roles'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+
+    user_id = getIdFromEmail(email)
+
+    roles_permission = {}
+
+    for role in roles:
+        role_id = db.fetchSQL(
+            f'''SELECT id FROM roles WHERE name = '{role}\''''
+        )[0][0]
+
+        permission = db.fetchSQL(
+            f'''SELECT * FROM permissions WHERE role_id = {role_id} and resource_id = {resource_id}'''
+        )
+
+        view = False
+        remove = False
+        edit = False
+        book = False
+
+        if len(permission) != 0:
+            permission = permission[0]
+
+            view = permission[1]==1
+            remove = permission[2]==1
+            edit = permission[3]==1
+            book = permission[4]==1
+
+        
+
+        roles_permission[role] = [view, remove, edit, book]
+
+
+    
+
+    return jsonify(
+        {
+            "roles_permission": roles_permission,
+            "token": token_for(user_id)
+        }
+    ), 200
 
 # - - -   availabilities   - - -
 

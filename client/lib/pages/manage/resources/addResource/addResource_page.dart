@@ -95,8 +95,47 @@ class _AddResourceState extends State<AddResource> {
                   .toList(),
             ),
 
+            const SizedBox(height: 30),
+
+            const Text("Permissions:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            Column(
+              children: addResourceProvider.resource_permission.entries.map((entry){
+                return ExpansionTile(
+                  title: Text(entry.key),
+                  controlAffinity: ListTileControlAffinity.leading,
+                  children: <Widget>[
+                    buildSwitch(context, "View", entry.value[0], (value) {
+                      setState(() {
+                        entry.value[0] = value;
+                      });
+                    }, isEditable: appProvider.edit_resources),
+                    buildSwitch(context, "Remove", entry.value[1], (value) {
+                      setState(() {
+                        entry.value[1] = value;
+                      });
+                    }, isEditable: appProvider.edit_resources),
+                    buildSwitch(context, "Edit", entry.value[2], (value) {
+                      setState(() {
+                        entry.value[2] = value;
+                      });
+                    }, isEditable: appProvider.edit_resources),
+                    buildSwitch(context, "Book", entry.value[3], (value) {
+                      setState(() {
+                        entry.value[3] = value;
+                      });
+                    }, isEditable: appProvider.edit_resources),
+                  ],
+                );
+              }
+              ).toList(),
+            ),
+
+
 
             const SizedBox(height: 30),
+
+
 
             Center(
               child: ElevatedButton(
@@ -117,7 +156,8 @@ class _AddResourceState extends State<AddResource> {
                       description: descriptionController.text,
                       quantity: int.tryParse(quantityController.text) ?? 0,
                       type: addResourceProvider.type,
-                      appProvider: appProvider
+                      appProvider: appProvider,
+                      resource_permissions: addResourceProvider.resource_permission
                   )){
                     showTopMessage(context, "Resource Created!");
                     context.pop();

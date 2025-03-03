@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class ResourceDetailsProvider extends ChangeNotifier {
   List resource = [];
   List types = [];
+  Map resource_permission = {};
   var type;
 
 
@@ -24,6 +25,11 @@ class ResourceDetailsProvider extends ChangeNotifier {
 
   setResource (List c_resource) {
     resource = c_resource;
+    notifyListeners();
+  }
+
+  setResourcePermission (Map c_resource_permission){
+    resource_permission = c_resource_permission;
     notifyListeners();
   }
 }

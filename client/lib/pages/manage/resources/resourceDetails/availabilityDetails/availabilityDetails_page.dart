@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:client/graphics/graphics_methods.dart';
+import 'package:client/pages/functions.dart';
 
 
 
@@ -68,60 +69,6 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
   }
 
 
-  Future<DateTime?> _selectDate(DateTime initialDate) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-
-
-    if (pickedDate != null) {
-      return DateTime(
-        pickedDate.year,
-        pickedDate.month,
-        pickedDate.day,
-        initialDate.hour,
-        initialDate.minute,
-      );
-    }
-
-    return null;
-  }
-
-  Future<DateTime?> _selectTime(DateTime initialDate) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(initialDate),
-    );
-
-    if (pickedTime != null) {
-      return DateTime(
-        initialDate.year,
-        initialDate.month,
-        initialDate.day,
-        pickedTime.hour,
-        pickedTime.minute,
-      );
-    }
-
-    return null;
-  }
-
-  String getTimePrintable(DateTime currTime){
-    String out = '';
-    out += currTime.hour.toString();
-    out += ':';
-    if (currTime.minute < 10) {
-      out += '0';
-    }
-    out += currTime.minute.toString();
-
-    return out;
-  }
-
-
   @override
   Widget build(BuildContext context) {
     var availabilityDetailsProvider = context.watch<AvailabilityDetailsProvider>();
@@ -162,7 +109,7 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                     ElevatedButton(
                       style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0))),
                       onPressed: () async {
-                        DateTime? pickedDate = await _selectDate(startDate);
+                        DateTime? pickedDate = await selectDate(context, startDate);
 
                         if (pickedDate != null) {
                           setState(() {
@@ -179,7 +126,7 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                     ElevatedButton(
                       style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0))),
                       onPressed: () async {
-                        DateTime? pickedDate = await _selectTime(startDate);
+                        DateTime? pickedDate = await selectTime(context, startDate);
 
                         if (pickedDate != null) {
                           setState(() {
@@ -217,7 +164,7 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                     ElevatedButton(
                       style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0))),
                       onPressed: () async {
-                        DateTime? pickedDate = await _selectDate(endDate);
+                        DateTime? pickedDate = await selectDate(context, endDate);
 
                         if (pickedDate != null) {
                           setState(() {
@@ -234,7 +181,7 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                     ElevatedButton(
                       style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0))),
                       onPressed: () async {
-                        DateTime? pickedDate = await _selectTime(endDate);
+                        DateTime? pickedDate = await selectTime(context, endDate);
 
                         if (pickedDate != null) {
                           setState(() {

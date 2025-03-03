@@ -5,6 +5,13 @@ class setupDB():
     user = "root"
     password = "admin"
     database = "school_scheduler"
+    db = mysql.connector.connect(
+        host = host,
+        user = user,
+        password = password,
+        database = database
+    )
+    mycursor = db.cursor()
 
     def __init__(self, isFirstTime = True):
         try:
@@ -173,55 +180,22 @@ class setupDB():
             print('database creato')
 
     def remove(self):
-        mydb = mysql.connector.connect(
-        host = self.host,
-        user = self.user,
-        password = self.password,
-        database = self.database
-        )
-
-        mycursor = mydb.cursor()
-
         # Elimina il database mydatabase
-        mycursor.execute("DROP DATABASE school_scheduler")
-        mydb.commit()
+        self.mycursor.execute("DROP DATABASE school_scheduler")
+        self.db.commit()
 
     def clear(self):
-        db = mysql.connector.connect(
-        host = self.host,
-        user = self.user,
-        password = self.password,
-        database = self.database
-        )
-
-        mycursor = db.cursor()
         sql = "DELETE FROM users"
-        mycursor.execute(sql)
-        db.commit()
+        self.mycursor.execute(sql)
+        self.db.commit()
 
     def fetchSQL(self, sql):
-        db = mysql.connector.connect(
-        host = self.host,
-        user = self.user,
-        password = self.password,
-        database = self.database
-        )
-
-        mycursor = db.cursor()
-        mycursor.execute(sql)
-        result = mycursor.fetchall()
-        db.commit()
+        self.mycursor.execute(sql)
+        result = self.mycursor.fetchall()
+        self.db.commit()
 
         return result
 
     def executeSQL(self, sql):
-        db = mysql.connector.connect(
-        host = self.host,
-        user = self.user,
-        password = self.password,
-        database = self.database
-        )
-
-        mycursor = db.cursor()
-        mycursor.execute(sql)
-        db.commit()
+        self.mycursor.execute(sql)
+        self.db.commit()

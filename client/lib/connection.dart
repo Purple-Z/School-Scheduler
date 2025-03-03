@@ -513,7 +513,7 @@ class Connection {
     }
   }
 
-  static Future<bool> addResource({required String name, required String description, required int quantity, required String type, required AppProvider appProvider}) async {
+  static Future<bool> addResource({required String name, required String description, required int quantity, required String type, required AppProvider appProvider, required Map resource_permissions}) async {
     final url = Uri.parse('http://' + serverAddr + '/add-resource');
     final response = await http.post(
       url,
@@ -525,6 +525,7 @@ class Connection {
         'description': description,
         'quantity': quantity,
         'type': type,
+        'resource_permissions': resource_permissions
       }),
     );
 
@@ -560,7 +561,7 @@ class Connection {
     }
   }
 
-  static Future<bool> updateResource(AppProvider appProvider, {required int resource_id, required String name, required String description, required int quantity, required String type}) async {
+  static Future<bool> updateResource(AppProvider appProvider, {required int resource_id, required String name, required String description, required int quantity, required String type, required Map resource_permissions}) async {
     final url = Uri.parse('http://' + serverAddr + '/update-resource');
     final response = await http.post(
       url,
@@ -572,7 +573,8 @@ class Connection {
             'name': name,
             'description': description,
             'quantity': quantity,
-            'type': type
+            'type': type,
+            'resource_permissions': resource_permissions
           }
       ),
     );
@@ -604,6 +606,32 @@ class Connection {
       return true;
     } else {
       return false;
+    }
+  }
+
+  static Future<Map> getResourcePermission(AppProvider appProvider, {required List<String> roles, int resource_id=-1}) async {
+    final url = Uri.parse('http://' + serverAddr + '/get-resource-permission');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': appProvider.email,
+        'token': appProvider.token,
+        'roles': roles,
+        'resource_id': resource_id
+      }),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      Map roles_permission = data['roles_permission'];
+      print(roles_permission);
+      return roles_permission;
+    } else {
+      return {};
     }
   }
 

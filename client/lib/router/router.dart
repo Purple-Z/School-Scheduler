@@ -190,10 +190,22 @@ final router = GoRouter(
                     GoRoute(
                       path: Routes.addResource,
                       redirect: (context, state) async {
+
                         var appProvider = Provider.of<AppProvider>(context, listen: false);
                         List types = await Connection.getTypeList(appProvider);
+
                         var addResourceProvider = Provider.of<AddResourceProvider>(context, listen: false);
                         addResourceProvider.setTypes(types);
+
+                        List roles_with_description = await Connection.getRoleList(appProvider);
+                        List<String> roles = [];
+                        for (List element in roles_with_description){
+                          roles.add(element[0]);
+                        }
+
+                        Map roles_permission = await Connection.getResourcePermission(appProvider, roles: roles);
+                        addResourceProvider.setResourcePermission(roles_permission);
+
                         return null;
                       },
                       builder: (context, state) => AddResourcePage(),
@@ -217,6 +229,16 @@ final router = GoRouter(
 
                         List types = await Connection.getTypeList(appProvider);
                         resourceDetailsProvider.setTypes(types);
+
+                        List roles_with_description = await Connection.getRoleList(appProvider);
+                        List<String> roles = [];
+                        for (List element in roles_with_description){
+                          roles.add(element[0]);
+                        }
+
+                        Map roles_permission = await Connection.getResourcePermission(appProvider, roles: roles, resource_id: resource[0]);
+                        resourceDetailsProvider.setResourcePermission(roles_permission);
+
                         return null;
                       },
                       builder: (context, state) => ResourceDetailsPage(),
