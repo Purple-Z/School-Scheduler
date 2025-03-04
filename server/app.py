@@ -1358,6 +1358,11 @@ def update_resource():
     try:
         db.executeSQL(sql_update)
 
+        sql_delete = f'''
+        DELETE FROM permissions WHERE resource_id = {resource_id}
+        '''
+        db.executeSQL(sql_delete)
+
         for role in resource_permissions.keys():
             role_id = db.fetchSQL(
                 f'''SELECT id FROM roles WHERE name = '{role}\''''
@@ -1907,6 +1912,77 @@ def check_availabilities_quantity():
         }
     ), 200
 
+# - - -   bookings   - - -
+
+@app.route('/get-resources-feed', methods=['POST'])
+def get_resources_feed():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'view_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    user_id = getIdFromEmail(email)
+
+    roles_id = db.fetchSQL(
+        f'''
+            SELECT role_id FROM users_roles WHERE user_id = {user_id}
+        '''
+    )
+
+    permission = getResourcesPermissions(roles_id)
+    
+    print(permission)
+
+    resources_id = []
+    
+    for key in permission.keys():
+        if permission[key][0] == 1:
+            #I can see the resource
+            if key not in resources_id:
+                resources_id.append(key)
+
+    resources = []
+    for resource_id in resources_id:
+        resource = db.fetchSQL(
+            f'''
+                SELECT * FROM resources WHERE id = {resource_id}
+            '''
+        )[0]
+
+        type_name = db.fetchSQL(
+            f'''
+                SELECT name FROM types WHERE id = {resource[len(resource)-1]}
+            '''
+        )[0][0]
+        
+        resource = list(resource)
+
+        resource[len(resource)-1] = type_name
+
+        resources.append(resource)
+
+    print(resources)
+    
+
+    return jsonify(
+        {
+            "resources": resources,
+            "token": token_for(user_id)
+        }
+    ), 200
 
 def checkUserToken(email, token):
     #collecting data...
@@ -2002,6 +2078,44 @@ def getIdFromEmail(email):
 
 
     return user_id
+
+def getResourcesPermissions(roles_id):
+    permission = {}
+
+    for role_id in roles_id:
+        role_id = role_id[0]
+
+        result = db.fetchSQL(
+            f'''
+                SELECT * FROM permissions WHERE role_id = {role_id}
+            '''
+        )
+
+        if len(result) == 0:
+            continue
+
+        for record in result:
+            resource_id = record[6]
+            
+            if resource_id in permission:
+                permission[resource_id][1] = permission[resource_id][1] or record[1]
+                permission[resource_id][2] = permission[resource_id][2] or record[2]
+                permission[resource_id][3] = permission[resource_id][3] or record[3]
+                permission[resource_id][4] = permission[resource_id][4] or record[4]
+            else:
+                new_list_record = []
+                for element in record:
+                    new_list_record.append(element)
+
+
+
+                permission[resource_id] = new_list_record
+
+    for key in permission.keys():
+        c = permission[key]
+        permission[key] = [c[1], c[2], c[3], c[4]]
+
+    return permission
 
 def getMaxAvailability(resource_id, start, end, remove_availability_id):
     if end < start:

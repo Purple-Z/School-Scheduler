@@ -5,10 +5,10 @@ import '../../../app_provider.dart';
 import '../../../connection.dart';
 
 
-class ResourcesProvider extends ChangeNotifier {
+class ResourceProvider extends ChangeNotifier {
   Map resources = {};
 
-  loadResourcesPage(BuildContext context) async {
+  loadResourcePage(BuildContext context) async {
     notifyListeners();
   }
 

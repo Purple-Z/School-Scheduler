@@ -31,12 +31,14 @@ import 'package:client/pages/manage/resources/resourceDetails/manageAvailability
 import 'package:client/pages/manage/resources/resourceDetails/manageAvailability/manageAvailabilitiesDetails_provider.dart';
 import 'package:client/pages/manage/resources/resourceDetails/resourceDetails_page.dart';
 import 'package:client/pages/manage/resources/resourceDetails/resourceDetails_provider.dart';
+import 'package:client/pages/resources/resources_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:client/router/routes.dart';
 
+import '../pages/resources/resource/resource_page.dart';
 import 'layout_scaffold.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -54,7 +56,19 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: Routes.resources,
-              builder: (context, state) => Center(child: const Text("resources")),
+              builder: (context, state) => ResourcesPage(),
+              routes: [
+                GoRoute(
+                    path: Routes.resource,
+                    builder: (context, state) => ResourcePage(),
+                    redirect: (context, state) async {
+                      final extraData = state.extra as Map<String, dynamic>?;
+                      final roleId = extraData?['resourceId'];
+                      print("resource id: " + roleId.toString());
+                      return null;
+                    },
+                ),
+              ]
             ),
           ],
         ),

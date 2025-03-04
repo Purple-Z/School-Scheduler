@@ -21,6 +21,8 @@ dependencies:
   pull_to_refresh_flutter3: ^2.0.2
   confirm_dialog: ^1.0.4
   simple_loading_dialog: ^1.0.0
+  fl_chart: ^0.63.0
+  syncfusion_flutter_charts: ^27.1.56
 
 dev_dependencies:
   flutter_test:

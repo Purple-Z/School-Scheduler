@@ -779,4 +779,27 @@ class Connection {
     }
   }
 
+  // - - -   BOOKINGS   - - -
+
+  static Future<List> getResourcesFeed(AppProvider appProvider) async {
+    final url = Uri.parse('http://' + serverAddr + '/get-resources-feed');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token}),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      List resources = data['resources'];
+      print(resources);
+      return resources;
+    } else {
+      return [];
+    }
+  }
+
 }

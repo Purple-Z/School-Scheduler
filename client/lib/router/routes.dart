@@ -1,6 +1,8 @@
 class Routes {
   Routes._();
   static const String resources = '/resources';
+  static const String resource = 'resource';
+  static const String resources_Resource = '/resources/resource';
 
 
 
