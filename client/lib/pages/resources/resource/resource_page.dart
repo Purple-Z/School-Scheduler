@@ -13,8 +13,11 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../connection.dart';
+import '../../../graphics/graphics_methods.dart';
+import '../../functions.dart';
 import '../../manage/widgets.dart';
 
 class ResourcePage extends StatefulWidget {
@@ -31,9 +34,9 @@ class _ResourcePageState extends State<ResourcePage> {
     var resourceProvider = context.watch<ResourceProvider>();
     var appProvider = context.watch<AppProvider>();
 
-    return appProvider.view_resources ?
-    ResourceDetails():
-    Text("access denied!");
+    return appProvider.view_resources
+        ? ResourceDetails()
+        : Text("access denied!");
   }
 }
 
@@ -45,196 +48,525 @@ class ResourceDetails extends StatefulWidget {
 }
 
 class _ResourceDetailsState extends State<ResourceDetails> {
-  get chartData => null;
+  final RefreshController refreshController = RefreshController(initialRefresh: false);
+  final TextEditingController quantityController = TextEditingController();
+  int maxAvailabilityValue = 0;
+  bool maxAvailabilityShow = false;
 
+  Future<void> refreshShifts() async {
+    var appProvider = context.read<AppProvider>();
+    var resourceProvider = context.read<ResourceProvider>();
 
+    try {
+      await resourceProvider.loadResourcePage(context);
+      refreshController.refreshCompleted();
+    } catch (e) {
+      refreshController.refreshFailed();
+    }
+  }
 
+  getItem(List items) {
+    print(items.toString());
+    List newItems = [];
+    for (AvailabilitySlot item in items) {
+      if (item.availability == 0) {
+        continue;
+      }
+
+      List newItem = [item.startTime, item.endTime, item.availability];
+
+      for (int i in [0, 1]) {
+        DateTime dateTime = newItem[i];
+        newItem[i] = '${dateTime.year}/${dateTime.month}/${dateTime.day}\n';
+        newItem[i] += getTimePrintable(dateTime);
+      }
+
+      newItems.add(newItem);
+    }
+    return newItems;
+  }
 
   @override
   Widget build(BuildContext context) {
     var resourceProvider = context.watch<ResourceProvider>();
     var appProvider = context.watch<AppProvider>();
-    Map resources = resourceProvider.resources;
+    List resource = resourceProvider.resource;
+    List listItems = getItem(resourceProvider.shifts);
+    const double fontSize1 = 15;
+    const double rowSpacing1 = 5;
 
-    final List<FlSpot> data = [
-      FlSpot(0, 10),
-      FlSpot(1, 10),
-      FlSpot(1, 15),
-      FlSpot(2, 15),
-      FlSpot(2, 8),
-      FlSpot(3, 8),
-      FlSpot(3, 12),
-      FlSpot(4, 12),
-    ];
-
-    List<AvailabilitySlot> availabilityData = [
-      AvailabilitySlot(startTime: Duration(hours: 8), endTime: Duration(hours: 10), availability: 10),
-      AvailabilitySlot(startTime: Duration(hours: 10), endTime: Duration(hours: 12), availability: 15),
-      AvailabilitySlot(startTime: Duration(hours: 12), endTime: Duration(hours: 14), availability: 8),
-      AvailabilitySlot(startTime: Duration(hours: 14), endTime: Duration(hours: 17), availability: 20),
-      AvailabilitySlot(startTime: Duration(hours: 17), endTime: Duration(hours: 19), availability: 5),
-    ];
+    const double fontSize2 = 20;
+    const double rowSpacing2 = 10;
 
     return Scaffold(
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 1, 10, 0),
-          child: Column(
-            children: [
-              SizedBox(height: 30,),
-              SizedBox(
-                height: MediaQuery.of(context).size.height*0.2,
-                width: MediaQuery.of(context).size.width,
-                child: LineChart(
-                  LineChartData(
-                    lineTouchData: LineTouchData(
-                      getTouchedSpotIndicator:
-                          (LineChartBarData barData, List<int> spotIndexes) {
-                        return spotIndexes.map((spotIndex) {
-                          final spot = barData.spots[spotIndex];
-                          if (spot.x == 0 || spot.x == 6) {
-                            return null;
-                          }
-                          return TouchedSpotIndicatorData(
-                            FlLine(
-                              color: Theme.of(context).colorScheme.primary,
-                              strokeWidth: 4,
-                            ),
-                            FlDotData(
-                              getDotPainter: (spot, percent, barData, index) {
-                                if (index.isEven) {
-                                  return FlDotCirclePainter(
-                                    radius: 8,
-                                    color: Colors.white,
-                                    strokeWidth: 5,
-                                    strokeColor:
-                                    Theme.of(context).colorScheme.primary,
-                                  );
-                                } else {
-                                  return FlDotSquarePainter(
-                                    size: 16,
-                                    color: Colors.white,
-                                    strokeWidth: 5,
-                                    strokeColor:
-                                    Theme.of(context).colorScheme.primary,
-                                  );
-                                }
-                              },
-                            ),
-                          );
-                        }).toList();
+          child: Column(children: [
+            SizedBox(
+              height: 15,
+            ),
+            Row(
+              children: [
+                Text('From'),
+                SizedBox(
+                  width: rowSpacing1,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shadowColor: Colors.transparent),
+                  onPressed: () async {
+                    DateTime? pickedDate =
+                        await selectDate(context, resourceProvider.start);
+
+                    if (pickedDate != null) {
+                      setState(() {
+                        resourceProvider.start = pickedDate;
+                      });
+                    }
+                  },
+                  child: Text(
+                    '${resourceProvider.start.year}/${resourceProvider.start.month}/${resourceProvider.start.day}',
+                    style: TextStyle(fontSize: fontSize1),
+                  ),
+                ),
+                SizedBox(
+                  width: rowSpacing1,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shadowColor: Colors.transparent),
+                  onPressed: () async {
+                    DateTime? pickedDate =
+                        await selectTime(context, resourceProvider.start);
+
+                    if (pickedDate != null) {
+                      setState(() {
+                        resourceProvider.start = pickedDate;
+                      });
+                    }
+                  },
+                  child: Text(
+                    getTimePrintable(resourceProvider.start),
+                    style: TextStyle(fontSize: fontSize1),
+                  ),
+                ),
+                SizedBox(
+                  width: rowSpacing1,
+                ),
+                Text('to'),
+                SizedBox(
+                  width: rowSpacing1,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shadowColor: Colors.transparent),
+                  onPressed: () async {
+                    DateTime? pickedDate =
+                        await selectDate(context, resourceProvider.end);
+
+                    if (pickedDate != null) {
+                      setState(() {
+                        resourceProvider.end = pickedDate;
+                      });
+                    }
+                  },
+                  child: Text(
+                    '${resourceProvider.end.year}/${resourceProvider.end.month}/${resourceProvider.end.day}',
+                    style: TextStyle(fontSize: fontSize1),
+                  ),
+                ),
+                SizedBox(
+                  width: rowSpacing1,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shadowColor: Colors.transparent),
+                  onPressed: () async {
+                    DateTime? pickedDate =
+                        await selectTime(context, resourceProvider.end);
+
+                    if (pickedDate != null) {
+                      setState(() {
+                        resourceProvider.end = pickedDate;
+                      });
+                    }
+                  },
+                  child: Text(
+                    getTimePrintable(resourceProvider.end),
+                    style: TextStyle(fontSize: fontSize1),
+                  ),
+                ),
+                Expanded(child: SizedBox()),
+                SizedBox(
+                  height: 37,
+                  width: 37,
+                  child: IconButton(
+                      onPressed: () async {
+                        await showSimpleLoadingDialog(
+                          context: context,
+                          future: () async {
+                            await resourceProvider.loadResourcePage(context);
+                            return;
+                          },
+                        );
                       },
-                      touchTooltipData: LineTouchTooltipData(
-                        getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
-                          return touchedBarSpots.map((barSpot) {
-                            final flSpot = barSpot;
-                            if (flSpot.x == 0 || flSpot.x == 6) {
-                              return null;
-                            }
-
-                            TextAlign textAlign;
-                            switch (flSpot.x.toInt()) {
-                              case 1:
-                                textAlign = TextAlign.left;
-                                break;
-                              case 5:
-                                textAlign = TextAlign.right;
-                                break;
-                              default:
-                                textAlign = TextAlign.center;
-                            }
-
-                            return LineTooltipItem(
-                              'info \n',
-                              TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: flSpot.y.toString(),
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.primary,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                                const TextSpan(
-                                  text: ' k ',
-                                  style: TextStyle(
-                                    fontStyle: FontStyle.italic,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                                const TextSpan(
-                                  text: 'calories',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ],
-                              textAlign: textAlign,
-                            );
-                          }).toList();
-                        },
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(
+                            Theme.of(context).colorScheme.primary),
                       ),
-                      touchCallback:
-                          (FlTouchEvent event, LineTouchResponse? lineTouch) {
-                        if (!event.isInterestedForInteractions ||
-                            lineTouch == null ||
-                            lineTouch.lineBarSpots == null) {
-                          setState(() {
-                          });
-                          return;
-                        }
-                        final value = lineTouch.lineBarSpots![0].x;
-
-                        if (value == 0 || value == 6) {
-                          setState(() {
-                          });
-                          return;
-                        }
-
-                        setState(() {
-                        });
-                      },
+                      iconSize: 17,
+                      icon: Icon(
+                        Icons.search,
+                      )),
+                ),
+                SizedBox(
+                  width: 5,
+                )
+              ],
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            if ((listItems.length != 0))
+              SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  child: AvailabilityChart(
+                      availabilityData: resourceProvider.shifts)),
+            SizedBox(
+              height: 15,
+            ),
+            Expanded(
+              child: (listItems.length == 0)
+                  ? Center(
+                      child:
+                          Text('No quantity available for the selected period'))
+                  : DataTableWidget(
+                      header: ['Start', 'End', 'Quantity'],
+                      onRefresh: refreshShifts,
+                      onItemTap: (List item) {},
+                      clickableTies: false,
+                      items: listItems,
+                      itemsColumn: [
+                        true, //0
+                        true, //1
+                        true, //2
+                      ],
+                      refreshController: refreshController),
+            ),
+            if ((true))
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    color: Theme.of(context).colorScheme.primary),
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    expansionTileTheme: ExpansionTileThemeData(
+                      iconColor: Theme.of(context).colorScheme.surface,
+                      collapsedIconColor: Theme.of(context).colorScheme.onPrimary
                     ),
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: data,
-                        isCurved: false,
-                        barWidth: 3,
-                        dotData: FlDotData(show: false),
-                        belowBarData: BarAreaData(
-                          show: true,
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.blue.withOpacity(0.3),
-                              Colors.blue.withOpacity(0.0),
+                    dividerColor: Colors.transparent,
+                  ),
+                  child: ExpansionTile(
+                    title: Text('Book'),
+                    //subtitle: Text('Leading expansion arrow icon'),
+                    controlAffinity: ListTileControlAffinity.leading,
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15)),
+                            color: Theme.of(context).colorScheme.primary),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 8),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: rowSpacing2,
+                                  ),
+                                  Text(
+                                    'From',
+                                    style: TextStyle(fontSize: fontSize2),
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                        minimumSize: Size(0, 0),
+                                        tapTargetSize: MaterialTapTargetSize
+                                            .shrinkWrap,
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        shadowColor: Colors.transparent),
+                                    onPressed: () async {
+                                      DateTime? pickedDate =
+                                          await selectDate(context,
+                                              resourceProvider.start_booking);
+
+                                      if (pickedDate != null) {
+                                        setState(() {
+                                          resourceProvider.start_booking =
+                                              pickedDate;
+                                        });
+                                      }
+                                    },
+                                    child: Text(
+                                      '${resourceProvider.start_booking.year}/${resourceProvider.start_booking.month}/${resourceProvider.start_booking.day}',
+                                      style: TextStyle(
+                                          fontSize: fontSize2,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surface),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: rowSpacing2,
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                        minimumSize: Size(0, 0),
+                                        tapTargetSize: MaterialTapTargetSize
+                                            .shrinkWrap,
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        shadowColor: Colors.transparent),
+                                    onPressed: () async {
+                                      DateTime? pickedDate =
+                                          await selectTime(context,
+                                              resourceProvider.start_booking);
+
+                                      if (pickedDate != null) {
+                                        setState(() {
+                                          resourceProvider.start_booking =
+                                              pickedDate;
+                                        });
+                                      }
+                                    },
+                                    child: Text(
+                                      getTimePrintable(
+                                          resourceProvider.start_booking),
+                                      style: TextStyle(
+                                          fontSize: fontSize2,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surface),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: rowSpacing2,
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 10,),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: rowSpacing2,
+                                  ),
+                                  Text(
+                                    'To',
+                                    style: TextStyle(fontSize: fontSize2),
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                        minimumSize: Size(0, 0),
+                                        tapTargetSize: MaterialTapTargetSize
+                                            .shrinkWrap,
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        shadowColor: Colors.transparent),
+                                    onPressed: () async {
+                                      DateTime? pickedDate =
+                                          await selectDate(context,
+                                              resourceProvider.end_booking);
+
+                                      if (pickedDate != null) {
+                                        setState(() {
+                                          resourceProvider.end_booking = pickedDate;
+                                        });
+                                      }
+                                    },
+                                    child: Text(
+                                      '${resourceProvider.end_booking.year}/${resourceProvider.end_booking.month}/${resourceProvider.end_booking.day}',
+                                      style: TextStyle(
+                                          fontSize: fontSize2,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surface),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: rowSpacing2,
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                        minimumSize: Size(0, 0),
+                                        tapTargetSize: MaterialTapTargetSize
+                                            .shrinkWrap,
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        shadowColor: Colors.transparent),
+                                    onPressed: () async {
+                                      DateTime? pickedDate =
+                                          await selectTime(context,
+                                              resourceProvider.end_booking);
+
+                                      if (pickedDate != null) {
+                                        setState(() {
+                                          resourceProvider.end_booking = pickedDate;
+                                        });
+                                      }
+                                    },
+                                    child: Text(
+                                      getTimePrintable(
+                                          resourceProvider.end_booking),
+                                      style: TextStyle(
+                                          fontSize: fontSize2,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surface),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: rowSpacing2,
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 10,),
+                              if (maxAvailabilityShow) Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 7),
+                                child: Row(
+                                  children: [
+                                    SizedBox(width: rowSpacing2,),
+                                    Text(
+                                      'Max availability, ' + maxAvailabilityValue.toString(),
+                                      style: TextStyle(color: Theme.of(context).colorScheme.surface),
+                                    ),
+                                    Expanded(child: SizedBox())
+                                  ],
+                                ),
+                              ),
+                              TextField(
+                                controller: quantityController,
+                                obscureText: false,
+                                keyboardType: TextInputType.number,
+                                cursorColor:
+                                    Theme.of(context).colorScheme.surface,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.surface,
+                                  fontSize: fontSize1
+                                ),
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Theme.of(context).colorScheme.onPrimary,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Theme.of(context).colorScheme.onPrimary,
+                                      ),
+                                    ),
+                                    label: Text('Quantity'),
+                                    labelStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                    )
+                                ),
+                              ),
+                              SizedBox(height: 5,),
+                              Row(
+                                children: [
+                                  Expanded(child: SizedBox()),
+                                  ElevatedButton(
+                                      onPressed: ()  async {
+                                        int quantity = await showSimpleLoadingDialog<int>(
+                                          context: context,
+                                          future: () async {
+                                            int quantity = await Connection.checkBookingQuantity(appProvider,
+                                                resource_id: resourceProvider.resource[0],
+                                                start: resourceProvider.start_booking,
+                                                end: resourceProvider.end_booking
+                                            );
+
+                                            return quantity;
+                                          },
+                                        );
+
+                                        setState(() {
+                                          maxAvailabilityValue = quantity;
+                                          maxAvailabilityShow = true;
+                                        });
+                                        print(quantity);
+                                      },
+                                      child: Text(
+                                          'Check availability'
+                                      )
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  ElevatedButton(
+                                      onPressed: () async {
+                                        await showSimpleLoadingDialog(
+                                          context: context,
+                                          future: () async {
+                                            if (await Connection.addBooking(
+                                                start: resourceProvider.start_booking,
+                                                end: resourceProvider.end_booking,
+                                                quantity: int.tryParse(quantityController.text) ?? 0,
+                                                resource_id: resourceProvider.resource[0],
+                                                appProvider: appProvider
+                                            )){
+                                              showTopMessage(context, "Booked!");
+                                            } else {
+                                              showTopMessage(context, "Error Occurred!");
+                                            }
+
+                                            refreshShifts();
+                                          },
+                                        );
+                                      },
+                                      child: Text(
+                                          'Book'
+                                      )
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                ],
+                              ),
                             ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
                           ),
                         ),
-                      ),
+                      )
                     ],
-                    gridData: FlGridData(show: false),
-                    titlesData: FlTitlesData(
-                      show: true, // Rimuovi tutti i titoli
-                      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)), // Rimuovi solo i titoli a sinistra
-                      leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)), // Rimuovi solo i titoli a sinistra
-                      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)), // Rimuovi solo i titoli in alto
-                    ),
-                    // ... altre configurazioni
                   ),
-                )
+                ),
               ),
-              SizedBox(height: 30,),
-              SizedBox(height: 150, child: AvailabilityChart(availabilityData: availabilityData)),
-              SizedBox(height: 30,),
-              LineChartSample3(),
-            ],
-          )
-      ),
+          ])),
     );
   }
 }
-

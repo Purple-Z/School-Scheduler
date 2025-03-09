@@ -31,6 +31,7 @@ import 'package:client/pages/manage/resources/resourceDetails/manageAvailability
 import 'package:client/pages/manage/resources/resourceDetails/manageAvailability/manageAvailabilitiesDetails_provider.dart';
 import 'package:client/pages/manage/resources/resourceDetails/resourceDetails_page.dart';
 import 'package:client/pages/manage/resources/resourceDetails/resourceDetails_provider.dart';
+import 'package:client/pages/resources/resource/resource_provider.dart';
 import 'package:client/pages/resources/resources_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -63,8 +64,18 @@ final router = GoRouter(
                     builder: (context, state) => ResourcePage(),
                     redirect: (context, state) async {
                       final extraData = state.extra as Map<String, dynamic>?;
-                      final roleId = extraData?['resourceId'];
-                      print("resource id: " + roleId.toString());
+                      final resource_Id = extraData?['resourceId'];
+                      final start = extraData?['start'];
+                      final end = extraData?['end'];
+                      print("resource id: " + resource_Id.toString());
+
+                      var resourceProvider = Provider.of<ResourceProvider>(context, listen: false);
+
+                      resourceProvider.setResourceId(resource_Id);
+                      resourceProvider.setStart(start);
+                      resourceProvider.setEnd(end);
+
+                      await resourceProvider.loadResourcePage(context);
                       return null;
                     },
                 ),

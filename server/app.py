@@ -1896,7 +1896,7 @@ def check_availabilities_quantity():
 
     maxAvailability = getMaxAvailability(resource_id, start, end, remove_availability_id)
 
-    if not getMaxAvailability:
+    if maxAvailability == -1:
         return jsonify(
             {
                 "quantity": 0,
@@ -1944,7 +1944,7 @@ def get_resources_feed():
 
     permission = getResourcesPermissions(roles_id)
     
-    print(permission)
+    #print(permission)
 
     resources_id = []
     
@@ -1974,7 +1974,7 @@ def get_resources_feed():
 
         resources.append(resource)
 
-    print(resources)
+    #print(resources)
     
 
     return jsonify(
@@ -1983,6 +1983,286 @@ def get_resources_feed():
             "token": token_for(user_id)
         }
     ), 200
+
+@app.route('/get-resource-for-booking', methods=['POST'])
+def get_resource_for_booking():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    resource_id = data.get('resource_id')
+    start = data.get('start')
+    end = data.get('end')
+    #print(resource_id, start, end)
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    
+    user_id = getIdFromEmail(email)
+
+    roles_id = db.fetchSQL(
+        f'''
+            SELECT role_id FROM users_roles WHERE user_id = {user_id}
+        '''
+    )
+
+    permission = getResourcesPermissions(roles_id)
+
+
+
+    if resource_id not in permission:
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    resource_permission = permission[resource_id]
+    if resource_permission[0] != 1:
+        #I cannot see
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+
+
+    try:
+        sql = f'''
+            SELECT * FROM resources WHERE id = '{resource_id}'
+        '''    
+        result = db.fetchSQL(sql)
+        resource_content = result[0]
+
+        sql = f'''
+            SELECT name FROM types WHERE id = '{resource_content[len(resource_content)-1]}'
+        '''    
+        result = db.fetchSQL(sql)
+        type_name = result[0][0]
+
+        resource = []
+        for quality in resource_content:
+            resource.append(quality)
+
+        resource[len(resource)-1] = type_name
+
+
+        user_id = getIdFromEmail(email)
+
+        start = datetime.fromisoformat(start)
+        end = datetime.fromisoformat(end)
+
+        if end < start:
+            return jsonify(
+                {
+                    'message': 'Shift not correct'
+                }
+                ), 402
+        
+        
+        shifts_content = selectAllRecordsFromShift(start, end, resource_id)
+
+
+        shifts = []
+
+        if len(shifts_content) == 0:
+            shifts = [[start, end, 0]]
+        else:
+            shifts = getShiftValue(shifts_content, start, end)
+
+
+        for shift in shifts:
+            shift[0] = shift[0].isoformat()
+            shift[1] = shift[1].isoformat()
+
+        content = {
+            'start': start.isoformat(),
+            'end': end.isoformat(),
+            'shifts': shifts,
+            'resource': resource
+        }
+
+
+        return jsonify(
+            {
+                "content": content,
+                "token": token_for(user_id)
+            }
+        ), 200
+    except Exception as e:
+        return jsonify(
+        {
+            #"token": token_for(user_id)
+        }
+    ), 401
+    
+@app.route('/check-bookings-quantity', methods=['POST'])
+def check_bookings_quantity():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    resource_id = data.get('resource_id')
+    start = data.get('start')
+    end = data.get('end')
+    remove_booking_id = data.get('remove_booking_id')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'view_availability'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+
+    if not checkUserPermission(email, 'view_booking'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+
+    if not checkUserPermission(email, 'view_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+
+    
+    user_id = getIdFromEmail(email)
+
+    start = datetime.fromisoformat(start)
+    end = datetime.fromisoformat(end)
+
+    if end < start:
+        return jsonify(
+            {
+                'message': 'Shift not correct'
+            }
+            ), 402
+    
+
+    maxBookability = getMaxBookability(resource_id, start, end, remove_booking_id)
+
+    if maxBookability == -1:
+        return jsonify(
+            {
+                "quantity": 0,
+                "token": token_for(user_id)
+            }
+        ), 500
+
+
+    return jsonify(
+        {
+            "quantity": maxBookability,
+            "token": token_for(user_id)
+        }
+    ), 200
+
+@app.route('/add-booking', methods=['POST'])
+def add_booking():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    start = data.get('start')
+    end = data.get('end')
+    quantity = data.get('quantity')
+    resource_id = data.get('resource_id')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'create_booking'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    user_id = getIdFromEmail(email)
+
+    start = datetime.fromisoformat(start)
+    end = datetime.fromisoformat(end)
+
+    if end < start:
+        return jsonify(
+            {
+                'message': 'Shift not correct',
+                "token": token_for(user_id)
+            }
+            ), 402
+
+    if quantity <= 0:
+        return jsonify(
+            {
+                'message': 'Invalid quantity',
+                "token": token_for(user_id)
+            }
+            ), 403
+
+    maxBookability = getMaxBookability(resource_id, start, end, -1)
+
+    if not maxBookability:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 500
+
+    if int(quantity) > int(maxBookability):
+        return jsonify(
+            {
+                'message': 'Too much quantity',
+                "token": token_for(user_id)
+            }
+            ), 403
+    
+
+
+    try:
+        sql_insert = f'''
+        INSERT INTO bookings
+        (id, start, end, quantity, resource_id, user_id)
+        VALUES (
+            0,
+            '{start}', 
+            '{end}',
+            {quantity}, 
+            {resource_id},
+            {user_id}
+        )
+        '''
+        db.executeSQL(sql_insert)
+
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 200
+    except Exception as e:
+        print(e)
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 500
+    
 
 def checkUserToken(email, token):
     #collecting data...
@@ -2117,17 +2397,7 @@ def getResourcesPermissions(roles_id):
 
     return permission
 
-def getMaxAvailability(resource_id, start, end, remove_availability_id):
-    if end < start:
-        return False
-
-    sql = f'SELECT quantity FROM resources WHERE id = {resource_id}'
-    result = db.fetchSQL(sql)
-    if len(result) == 0:
-        return False
-
-    maxAvailability = result[0][0]
-
+def selectAvailabilityRecordsFromShift(start, end, resource_id, remove_availability_id=-1):
     sql = f'''
     SELECT * FROM availability WHERE
 
@@ -2150,6 +2420,67 @@ def getMaxAvailability(resource_id, start, end, remove_availability_id):
             shift.append(record[3])
             shifts_content.append(shift)
 
+    return shifts_content
+
+def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1):
+    sql = f'''
+    SELECT * FROM availability WHERE
+
+    (
+        (NOT(start > '{end}' AND end > '{end}'))
+        AND
+        (NOT(start < '{start}' AND end < '{start}'))
+    )
+    AND
+    resource_id = {resource_id}
+    '''
+    result = db.fetchSQL(sql)
+
+    shifts_content = []
+    for record in result:
+        if record[0] != remove_booking_id:
+            shift = []
+            shift.append(record[1])
+            shift.append(record[2])
+            shift.append(record[3])
+            shifts_content.append(shift)
+
+    sql = f'''
+    SELECT * FROM bookings WHERE
+
+    (
+        (NOT(start > '{end}' AND end > '{end}'))
+        AND
+        (NOT(start < '{start}' AND end < '{start}'))
+    )
+    AND
+    resource_id = {resource_id}
+    '''
+    result = db.fetchSQL(sql)
+
+    for record in result:
+        if record[0] != remove_booking_id:
+            shift = []
+            shift.append(record[1])
+            shift.append(record[2])
+            shift.append(record[3]*-1)
+            shifts_content.append(shift)
+
+    return shifts_content
+
+def getMaxAvailability(resource_id, start, end, remove_availability_id):
+    if end < start:
+        return -1
+    
+    sql = f'SELECT quantity FROM resources WHERE id = {resource_id}'
+    result = db.fetchSQL(sql)
+    if len(result) == 0:
+        return -1
+
+    maxAvailability = result[0][0]
+
+    shifts_content = selectAvailabilityRecordsFromShift(start, end, resource_id, remove_availability_id)
+
     shifts = []
     if len(shifts_content) > 0:
         shifts = getShiftValue(shifts_content, start=start, end=end)
@@ -2166,6 +2497,33 @@ def getMaxAvailability(resource_id, start, end, remove_availability_id):
     maxAvailability -= maxVal
 
     return maxAvailability
+
+def getMaxBookability(resource_id, start, end, remove_booking_id):
+    if end < start:
+        return -1
+    
+    sql = f'SELECT quantity FROM resources WHERE id = {resource_id}'
+    result = db.fetchSQL(sql)
+    if len(result) == 0:
+        return -1
+
+
+    shifts_content = selectAllRecordsFromShift(start, end, resource_id, remove_booking_id)
+
+    shifts = []
+    if len(shifts_content) > 0:
+        shifts = getShiftValue(shifts_content, start=start, end=end)
+    
+    minVal = 0
+    if len(shifts) > 0:
+        minVal = shifts[0][2]
+
+        for shift in shifts:
+            if shift[2] < minVal:
+                minVal = shift[2]
+
+
+    return minVal
 
 def getShiftValue(shifts, start=False, end=False):
     #finding mix and max for function

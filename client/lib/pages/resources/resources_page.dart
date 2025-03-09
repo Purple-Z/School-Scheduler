@@ -77,6 +77,7 @@ class _ResourceFeedState extends State<ResourceFeed> {
     var resourcesProvider = context.watch<ResourcesProvider>();
     var appProvider = context.watch<AppProvider>();
     Map resources = resourcesProvider.resources;
+    DateTime now = DateTime.now();
 
     return Scaffold(
       body: Padding(
@@ -117,7 +118,11 @@ class _ResourceFeedState extends State<ResourceFeed> {
                                       Card(
                                         child: InkWell(
                                           onTap: () {
-                                            context.push(Routes.resources_Resource, extra: {'resourceId': resource[0]});
+                                            context.push(Routes.resources_Resource, extra: {
+                                              'resourceId': resource[0],
+                                              'start': DateTime(now.year, now.month, now.day, 0, 0),
+                                              'end': DateTime(now.year, now.month, now.day, 23, 59)
+                                            });
                                           },
                                           child: Center(
                                             child: Column(

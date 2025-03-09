@@ -802,4 +802,85 @@ class Connection {
     }
   }
 
+  static Future<Map> getResourceForBooking(AppProvider appProvider, {required int resource_id, required DateTime start, required DateTime end}) async {
+    final url = Uri.parse('http://' + serverAddr + '/get-resource-for-booking');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': appProvider.email,
+        'token': appProvider.token,
+        'resource_id': resource_id,
+        'start': start.toIso8601String(),
+        'end': end.toIso8601String()
+      }),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      Map content = data['content'];
+      print(content);
+      return content;
+    } else {
+      return {};
+    }
+  }
+
+  static Future<int> checkBookingQuantity(AppProvider appProvider, {required int resource_id, required DateTime start, required DateTime end, int remove_booking_id = -1}) async {
+    final url = Uri.parse('http://' + serverAddr + '/check-bookings-quantity');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': appProvider.email,
+        'token': appProvider.token,
+        'resource_id': resource_id,
+        'start': start.toIso8601String(),
+        'end': end.toIso8601String(),
+        'remove_booking_id': remove_booking_id
+      }),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      int quantity = data['quantity'];
+      print(quantity);
+      return quantity;
+    } else {
+      return 0;
+    }
+  }
+
+  static Future<bool> addBooking({required DateTime start, required DateTime end, required int quantity, required int resource_id, required AppProvider appProvider}) async {
+    final url = Uri.parse('http://' + serverAddr + '/add-booking');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': appProvider.email,
+        'token': appProvider.token,
+        'start': start.toIso8601String(),
+        'end': end.toIso8601String(),
+        'quantity': quantity,
+        'resource_id': resource_id,
+      }),
+    );
+
+    final data = jsonDecode(response.body);
+    appProvider.setLogged(true);
+    appProvider.setToken(data['token']);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
 }
