@@ -2,6 +2,7 @@ import 'package:client/app_provider.dart';
 import 'package:client/connection.dart';
 import 'package:client/pages/account/account_page.dart';
 import 'package:client/pages/account/login/login_page.dart';
+import 'package:client/pages/account/settings/settings_page.dart';
 import 'package:client/pages/manage/manage_page.dart';
 import 'package:client/pages/manage/roles/addRole/addRole_page.dart';
 import 'package:client/pages/manage/roles/manageRoles_page.dart';
@@ -88,10 +89,6 @@ final router = GoRouter(
             GoRoute(
               path: Routes.manage,
               builder: (context, state) => ManagePage(),
-              redirect: (context, state) async {
-
-                return null;
-              },
               routes: [
                 GoRoute(
                   path: Routes.roles,
@@ -333,17 +330,15 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: Routes.account,
-              redirect: (context, state) async {
-                return null;
-              },
               builder: (context, state) => const AccountPage(),
               routes: [
                 GoRoute(
                   path: Routes.login,
-                  redirect: (context, state) async {
-                    return null;
-                  },
                   builder: (context, state) => const LoginPage(),
+                ),
+                GoRoute(
+                  path: Routes.settings,
+                  builder: (context, state) => const SettingsPage(),
                 ),
               ]
             ),

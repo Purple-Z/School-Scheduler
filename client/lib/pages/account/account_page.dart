@@ -68,21 +68,13 @@ class LoggedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appProvider = context.watch<AppProvider>();
+    String x = '';
 
     return Column(
       children: [
         SizedBox(height: 10,),
         Row(
           children: [
-            Column(
-              children: [
-                Text("Signed as"),
-                appProvider.provisoryFlag? Text("Student"):SizedBox(height: 0,),
-                appProvider.provisoryFlag? Text("Professor"):SizedBox(height: 0,),
-                appProvider.provisoryFlag? Text("Leader"):SizedBox(height: 0,),
-                appProvider.provisoryFlag? Text("Admin"):SizedBox(height: 0,),
-              ],
-            ),
             Expanded(child: SizedBox()),
             ElevatedButton(
                 onPressed: () {
@@ -98,53 +90,84 @@ class LoggedPage extends StatelessWidget {
             ),
           ],
         ),
+
         SizedBox(height: 30,),
+
         Row(
           children: [
-            Expanded(child: SizedBox()),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Text("Name", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                    SizedBox(width: 10,),
-                    Text(appProvider.name),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text("Surname", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                    SizedBox(width: 10,),
-                    Text(appProvider.surname),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text("Email", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                    SizedBox(width: 10,),
-                    Text(appProvider.email),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text("Token", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                    SizedBox(width: 10,),
-                    SizedBox(width: 150, child: Text(appProvider.token)),
-                  ],
-                ),
-              ],
-            ),
-            Expanded(child: SizedBox()),
+            SizedBox(width: 15,),
+            Text("Hello, ", style: TextStyle(fontSize: 25),),
+            SizedBox(width: 5,),
+            Text(appProvider.name, style: TextStyle(fontSize: 25),),
           ],
         ),
-        ElevatedButton(
-            onPressed: () {
-              print(appProvider.roles);
-            },
-            child: Text("print")
+
+        SizedBox(height: 30,),
+
+        Container(
+          width: MediaQuery.of(context).size.width*0.8,
+          child: GridView.count(
+            physics: NeverScrollableScrollPhysics(),
+            childAspectRatio: 2,
+            shrinkWrap: true,
+            crossAxisCount: 2,
+            children: [
+              AccountOptionButton(
+                label: 'Your Profile',
+                onTap: () {},
+              ),
+              AccountOptionButton(
+                label: 'Settings',
+                onTap: () {
+                  context.push(Routes.account_Settings);
+                },
+              ),
+              AccountOptionButton(
+                label: 'Your Bookings',
+                onTap: () {},
+              ),
+              AccountOptionButton(
+                label: 'Your Activity',
+                onTap: () {},
+              ),
+            ],
+          ),
         ),
+        Expanded(child: SizedBox()),
       ],
+    );
+  }
+}
+
+class AccountOptionButton extends StatelessWidget {
+  const AccountOptionButton({
+    super.key,
+    required this.label,
+    required this.onTap,
+  });
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 3.5,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        color: Theme.of(context).colorScheme.primary,
+        child: InkWell(
+          onTap: onTap,
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

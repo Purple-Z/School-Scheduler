@@ -1,5 +1,6 @@
 import 'package:client/pages/account/account_provider.dart';
 import 'package:client/pages/account/login/login_provider.dart';
+import 'package:client/pages/account/settings/settings_provider.dart';
 import 'package:client/pages/manage/manage_provider.dart';
 import 'package:client/pages/manage/roles/addRole/addRole_provider.dart';
 import 'package:client/pages/manage/roles/manageRoles_provider.dart';
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AvailabilityDetailsProvider()),
         ChangeNotifierProvider(create: (_) => ResourcesProvider()),
         ChangeNotifierProvider(create: (_) => ResourceProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
       child: Consumer<AppProvider>(
         builder: (context, dataProvider, child) {
