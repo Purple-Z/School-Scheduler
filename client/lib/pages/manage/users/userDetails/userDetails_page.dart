@@ -13,6 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:client/graphics/graphics_methods.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 
@@ -32,7 +34,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
 
     return appProvider.view_user ?
     UserDetailsAdmin(user: userDetailsProvider.user,):
-    Text("access denied!");
+    Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -72,8 +74,8 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Details for",
+            Text(
+              AppLocalizations.of(context)!.user_details,
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
             Text(
@@ -83,14 +85,14 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
 
             const SizedBox(height: 30),
 
-            buildTextField(nameController, "Name", Icons.person, editable: appProvider.edit_user),
+            buildTextField(nameController, AppLocalizations.of(context)!.user_name, Icons.person, editable: appProvider.edit_user),
             SizedBox(height: fieldsSpacing),
-            buildTextField(surnameController, "Surname", Icons.person, editable: appProvider.edit_user),
+            buildTextField(surnameController, AppLocalizations.of(context)!.user_surname, Icons.person, editable: appProvider.edit_user),
             SizedBox(height: fieldsSpacing),
 
             const SizedBox(height: 30),
 
-            const Text("Update Roles", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.user_update_roles, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
 
             for (int i = 0; i < userDetailsProvider.roles.length; i++)
@@ -132,15 +134,15 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                           roles: rolesValues,
                         )
                         ){
-                          showTopMessage(context, "User Updated!");
+                          showTopMessage(context, AppLocalizations.of(context)!.user_updated_success);
                         } else {
-                          showTopMessage(context, "Error Occurred!");
+                          showTopMessage(context, AppLocalizations.of(context)!.user_error_occurred);
                         }
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Text(
-                          "Update User",
+                          AppLocalizations.of(context)!.user_update_user,
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary,
                               fontSize: 20
@@ -164,18 +166,18 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                           )
                       ),
                       onPressed: () async {
-                        if(await confirm(context, content: Text("Reset Password?"))){
+                        if(await confirm(context, content: Text(AppLocalizations.of(context)!.user_password_reset_confirmation))){
                           if (await Connection.resetPassword(userDetailsProvider.user[0], appProvider)){
-                            showTopMessage(context, "password reset");
+                            showTopMessage(context, AppLocalizations.of(context)!.user_password_reset);
                           } else {
-                            showTopMessage(context, "Error Occurred");
+                            showTopMessage(context, AppLocalizations.of(context)!.user_error_occurred);
                           }
                         }
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Text(
-                          "Restore Password",
+                          AppLocalizations.of(context)!.user_restore_password,
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary,
                               fontSize: 20
@@ -202,19 +204,19 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                       )
                   ),
                   onPressed: () async {
-                    if(await confirm(context, content: Text("Delete " + userDetailsProvider.user[3] + "?"))){
+                    if(await confirm(context, content: Text(AppLocalizations.of(context)!.user_delete + " " + userDetailsProvider.user[3] + "?"))){
                       if (await Connection.deleteUser(userDetailsProvider.user[0], appProvider)){
-                        showTopMessage(context, "Account deleted");
+                        showTopMessage(context, AppLocalizations.of(context)!.user_delete_success);
                         context.pop();
                       } else {
-                        showTopMessage(context, "Error Occurred");
+                        showTopMessage(context, AppLocalizations.of(context)!.user_error_occurred);
                       }
                     }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      "Delete User",
+                      AppLocalizations.of(context)!.user_delete_user,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary,
                           fontSize: 20

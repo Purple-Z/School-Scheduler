@@ -10,6 +10,8 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import '../../../connection.dart';
 import '../../manage/widgets.dart';
@@ -31,7 +33,7 @@ class _ManageResourcesPageState extends State<ManageResourcesPage> {
 
     return appProvider.view_resources ?
     ManageResources():
-    Text("access denied!");
+    Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -71,13 +73,18 @@ class _ManageResourcesState extends State<ManageResources> {
         onPressed: () {
           context.push(Routes.manage_ManageResources_AddResource);
         },
-        label: Text("New Resource"),
+        label: Text(AppLocalizations.of(context)!.resource_new_resource),
         icon: Icon(Icons.add),
       ) : null,
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
           child: DataTableWidget(
-              header: ['Name', 'Description', 'Quantity', 'TypeI ID'],
+              header: [
+                AppLocalizations.of(context)!.resource_name,
+                AppLocalizations.of(context)!.resource_description,
+                AppLocalizations.of(context)!.resource_quantity,
+                AppLocalizations.of(context)!.resource_type
+              ],
               onRefresh: refreshResources,
               onItemTap: (List item) {
                 context.push(Routes.manage_ManageResources_ResourceDetails, extra: {'resourceId': item[0]});

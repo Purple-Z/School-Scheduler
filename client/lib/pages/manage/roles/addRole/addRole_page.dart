@@ -11,6 +11,8 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:client/graphics/graphics_methods.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 class AddRolePage extends StatefulWidget {
@@ -29,7 +31,7 @@ class _AddRolePageState extends State<AddRolePage> {
 
     return appProvider.create_roles ?
     AddUserAdmin():
-    Text("access denied!");
+    Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -91,43 +93,43 @@ class _AddUserAdminState extends State<AddUserAdmin> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Add New Role",
+            Text(
+              AppLocalizations.of(context)!.role_add_new_role,
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
 
-            buildTextField(nameController, "Name", Icons.security),
+            buildTextField(nameController, AppLocalizations.of(context)!.role_name, Icons.security),
             SizedBox(height: fieldsSpacing),
-            buildTextField(descriptionController, "Description", Icons.person_outline),
+            buildTextField(descriptionController, AppLocalizations.of(context)!.role_description, Icons.person_outline),
 
             const SizedBox(height: 30),
 
-            const Text("Permission:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.role_permissions, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
 
 
             ExpansionTile(
-              title: Text('Users Permission'),
+              title: Text(AppLocalizations.of(context)!.role_usersPermissions),
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                buildSwitch(context, "View Users", view_users, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_viewUsers, view_users, (value) {
                   setState(() {
                     view_users = value;
                   });
                 }),
-                buildSwitch(context, "Edit Users", edit_users, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_editUsers, edit_users, (value) {
                   setState(() {
                     edit_users = value;
                   });
                 }),
-                buildSwitch(context, "Create Users", create_users, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_createUsers, create_users, (value) {
                   setState(() {
                     create_users = value;
                   });
                 }),
-                buildSwitch(context, "Delete Users", delete_users, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_deleteUsers, delete_users, (value) {
                   setState(() {
                     delete_users = value;
                   });
@@ -136,26 +138,26 @@ class _AddUserAdminState extends State<AddUserAdmin> {
             ),
 
             ExpansionTile(
-              title: Text('User Own Permission'),
+              title: Text(AppLocalizations.of(context)!.role_userOwnPermissions),
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                buildSwitch(context, "View Own User", view_own_user, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_viewOwnUser, view_own_user, (value) {
                   setState(() {
                     view_own_user = value;
                   });
                 }),
-                buildSwitch(context, "Edit Own User", edit_own_user, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_editOwnUser, edit_own_user, (value) {
                   setState(() {
                     edit_own_user = value;
                   });
                 }),
-                buildSwitch(context, "Create Own User", create_own_user, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_createOwnUser, create_own_user, (value) {
                   setState(() {
                     create_own_user = value;
                   });
                 }),
-                buildSwitch(context, "Delete Own User", delete_own_user, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_deleteOwnUser, delete_own_user, (value) {
                   setState(() {
                     delete_own_user = value;
                   });
@@ -164,26 +166,26 @@ class _AddUserAdminState extends State<AddUserAdmin> {
             ),
 
             ExpansionTile(
-              title: Text('Roles Permission'),
+              title: Text(AppLocalizations.of(context)!.role_rolesPermissions),
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                buildSwitch(context, "View Roles", view_roles, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_viewRoles, view_roles, (value) {
                   setState(() {
                     view_roles = value;
                   });
                 }),
-                buildSwitch(context, "Edit Roles", edit_roles, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_editRoles, edit_roles, (value) {
                   setState(() {
                     edit_roles = value;
                   });
                 }),
-                buildSwitch(context, "Create Roles", create_roles, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_createRoles, create_roles, (value) {
                   setState(() {
                     create_roles = value;
                   });
                 }),
-                buildSwitch(context, "Delete Roles", delete_roles, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_deleteRoles, delete_roles, (value) {
                   setState(() {
                     delete_roles = value;
                   });
@@ -192,26 +194,26 @@ class _AddUserAdminState extends State<AddUserAdmin> {
             ),
 
             ExpansionTile(
-              title: Text('Availability Permission'),
+              title: Text(AppLocalizations.of(context)!.role_availabilityPermissions),
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                buildSwitch(context, "View Availability", view_availability, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_viewAvailability, view_availability, (value) {
                   setState(() {
                     view_availability = value;
                   });
                 }),
-                buildSwitch(context, "Edit Availability", edit_availability, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_editAvailability, edit_availability, (value) {
                   setState(() {
                     edit_availability = value;
                   });
                 }),
-                buildSwitch(context, "Create Availability", create_availability, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_createAvailability, create_availability, (value) {
                   setState(() {
                     create_availability = value;
                   });
                 }),
-                buildSwitch(context, "Delete Availability", delete_availability, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_deleteAvailability, delete_availability, (value) {
                   setState(() {
                     delete_availability = value;
                   });
@@ -220,26 +222,26 @@ class _AddUserAdminState extends State<AddUserAdmin> {
             ),
 
             ExpansionTile(
-              title: Text('Users Resources'),
+              title: Text(AppLocalizations.of(context)!.role_resourcesPermissions),
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                buildSwitch(context, "View Resources", view_resources, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_viewResources, view_resources, (value) {
                   setState(() {
                     view_resources = value;
                   });
                 }),
-                buildSwitch(context, "Edit Resources", edit_resources, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_editResources, edit_resources, (value) {
                   setState(() {
                     edit_resources = value;
                   });
                 }),
-                buildSwitch(context, "Create Resources", create_resources, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_createResources, create_resources, (value) {
                   setState(() {
                     create_resources = value;
                   });
                 }),
-                buildSwitch(context, "Delete Resources", delete_resources, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_deleteResources, delete_resources, (value) {
                   setState(() {
                     delete_resources = value;
                   });
@@ -248,26 +250,26 @@ class _AddUserAdminState extends State<AddUserAdmin> {
             ),
 
             ExpansionTile(
-              title: Text('Booking Permission'),
+              title: Text(AppLocalizations.of(context)!.role_bookingPermissions),
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                buildSwitch(context, "View Booking", view_booking, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_viewBooking, view_booking, (value) {
                   setState(() {
                     view_booking = value;
                   });
                 }),
-                buildSwitch(context, "Edit Booking", edit_booking, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_editBooking, edit_booking, (value) {
                   setState(() {
                     edit_booking = value;
                   });
                 }),
-                buildSwitch(context, "Create Booking", create_booking, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_createBooking, create_booking, (value) {
                   setState(() {
                     create_booking = value;
                   });
                 }),
-                buildSwitch(context, "Delete Booking", delete_booking, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_deleteBooking, delete_booking, (value) {
                   setState(() {
                     delete_booking = value;
                   });
@@ -276,26 +278,26 @@ class _AddUserAdminState extends State<AddUserAdmin> {
             ),
 
             ExpansionTile(
-              title: Text('User Own Booking Permission'),
+              title: Text(AppLocalizations.of(context)!.role_userOwnBookingPermissions),
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                buildSwitch(context, "View Own Booking", view_own_booking, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_viewOwnBooking, view_own_booking, (value) {
                   setState(() {
                     view_own_booking = value;
                   });
                 }),
-                buildSwitch(context, "Edit Own Booking", edit_own_booking, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_editOwnBooking, edit_own_booking, (value) {
                   setState(() {
                     edit_own_booking = value;
                   });
                 }),
-                buildSwitch(context, "Create Own Booking", create_own_booking, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_createOwnBooking, create_own_booking, (value) {
                   setState(() {
                     create_own_booking = value;
                   });
                 }),
-                buildSwitch(context, "Delete Own Booking", delete_own_booking, (value) {
+                buildSwitch(context, AppLocalizations.of(context)!.role_deleteOwnBooking, delete_own_booking, (value) {
                   setState(() {
                     delete_own_booking = value;
                   });
@@ -353,16 +355,16 @@ class _AddUserAdminState extends State<AddUserAdmin> {
                       description: descriptionController.text, 
                       appProvider: appProvider
                   )){
-                    showTopMessage(context, "Role Created");
+                    showTopMessage(context, AppLocalizations.of(context)!.role_create_success);
                     context.pop();
                   } else {
-                    showTopMessage(context, "Error Occurred!");
+                    showTopMessage(context, AppLocalizations.of(context)!.role_error_occurred);
                   }
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    "Add Role",
+                    AppLocalizations.of(context)!.role_add_role,
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimary,
                         fontSize: 20

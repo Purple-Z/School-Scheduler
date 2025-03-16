@@ -63,6 +63,9 @@ class Routes {
   static const String login = 'login';
   static const String account_Login = '/account/login';
 
+  static const String profile = 'profile';
+  static const String account_Profile = '/account/profile';
+
   static const String settings = 'settings';
   static const String account_Settings = '/account/settings';
 }

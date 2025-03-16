@@ -1,0 +1,199 @@
+{
+  "@@locale": "it",
+
+  "access_denied": "Accesso Negato!",
+
+
+
+  "account_hello": "Ciao, ",
+  "account_your_profile": "Profilo",
+  "account_settings": "Impostazioni",
+  "account_your_bookings": "Prenotazioni",
+  "account_your_activity": "Attività",
+  "account_logout": "Logout",
+  "account_not_logged": "Non Connesso",
+  "account_login": "Login",
+
+
+
+  "settings_theme" : "Tema",
+  "settings_language" : "Lingua",
+  "settings_not_logged" : "Non Connesso",
+
+
+
+  "profile_not_logged" : "Non Connesso",
+
+
+
+  "login_already_logged" : "Già Connesso",
+  "login_login" : "Login",
+  "login_success" : "Login Effettuato",
+  "login_failed" : "Login Fallito",
+
+
+
+  "manage_users" : "Gestisci Utenti",
+  "manage_roles" : "Gestisci Ruoli",
+  "manage_types" : "Gestisci Tipi",
+  "manage_resources" : "Gestisci Risorse",
+  "manage_go_to_page" : "Vai alla pagina",
+
+
+
+  "user_name" : "Nome",
+  "user_surname" : "Cognome",
+  "user_email" : "Email",
+  "user_roles" : "Ruoli",
+  "user_new_user" : "Nuovo Utente",
+  "user_add_new_user" : "Aggiungi Un Utente",
+  "user_add_user" : "Aggiungi Utente",
+  "user_create_success" : "Utente Creato",
+  "user_updated_success" : "Utente Aggiornato",
+  "user_password_reset" : "Password Reimpostata",
+  "user_delete_success" : "Utente Eliminato",
+  "user_password_reset_confirmation" : "Reimpostare Password?",
+  "user_error_occurred" : "Si è verificato un errore",
+  "user_details" : "Dettagli di",
+  "user_update_roles" : "Aggiorna Ruoli",
+  "user_update_user" : "Aggiorna Utente",
+  "user_restore_password" : "Reimposta Password",
+  "user_delete_user" : "Elimina Utente",
+  "user_delete" : "Eliminare",
+
+
+
+  "role_name" : "Nome",
+  "role_description" : "Descrizione",
+  "role_new_role" : "Nuovo Ruolo",
+  "role_add_role": "Aggiungi Ruolo",
+  "role_add_new_role": "Aggiungi Nuovo Ruolo",
+  "role_permissions": "Permessi",
+  "role_create_success" : "Ruolo Creato",
+  "role_update_success" : "Ruolo Aggiornato",
+  "role_delete_success" : "Ruolo Eliminato",
+  "role_error_occurred" : "Si è verificato un errore",
+  "role_details" : "Dettagli per",
+  "role_update_roles" : "Aggiorna Ruoli",
+  "role_update_role" : "Aggiorna Ruolo",
+  "role_delete_role" : "Elimina Ruolo",
+  "role_delete": "Elimina",
+
+  "role_usersPermissions": "Permessi Utenti",
+  "role_viewUsers": "Visualizza Utenti",
+  "role_editUsers": "Modifica Utenti",
+  "role_createUsers": "Crea Utenti",
+  "role_deleteUsers": "Elimina Utenti",
+
+  "role_userOwnPermissions": "Permessi Proprio Utente",
+  "role_viewOwnUser": "Visualizza Proprio Utente",
+  "role_editOwnUser": "Modifica Proprio Utente",
+  "role_createOwnUser": "Crea Proprio Utente",
+  "role_deleteOwnUser": "Elimina Proprio Utente",
+
+  "role_rolesPermissions": "Permessi Ruoli",
+  "role_viewRoles": "Visualizza Ruoli",
+  "role_editRoles": "Modifica Ruoli",
+  "role_createRoles": "Crea Ruoli",
+  "role_deleteRoles": "Elimina Ruoli",
+
+  "role_availabilityPermissions": "Permessi Disponibilità",
+  "role_viewAvailability": "Visualizza Disponibilità",
+  "role_editAvailability": "Modifica Disponibilità",
+  "role_createAvailability": "Crea Disponibilità",
+  "role_deleteAvailability": "Elimina Disponibilità",
+
+  "role_resourcesPermissions": "Permessi Risorse",
+  "role_viewResources": "Visualizza Risorse",
+  "role_editResources": "Modifica Risorse",
+  "role_createResources": "Crea Risorse",
+  "role_deleteResources": "Elimina Risorse",
+
+  "role_bookingPermissions": "Permessi Prenotazioni",
+  "role_viewBooking": "Visualizza Prenotazioni",
+  "role_editBooking": "Modifica Prenotazioni",
+  "role_createBooking": "Crea Prenotazioni",
+  "role_deleteBooking": "Elimina Prenotazioni",
+
+  "role_userOwnBookingPermissions": "Permessi Proprie Prenotazioni",
+  "role_viewOwnBooking": "Visualizza Proprie Prenotazioni",
+  "role_editOwnBooking": "Modifica Proprie Prenotazioni",
+  "role_createOwnBooking": "Crea Proprie Prenotazioni",
+  "role_deleteOwnBooking": "Elimina Proprie Prenotazioni",
+
+
+
+  "type_name" : "Nome",
+  "type_description" : "Descrizione",
+  "type_new_type" : "Nuovo Tipo",
+  "type_details_for" : "Dettagli Per",
+  "type_update_type" : "Aggiorna Tipo",
+  "type_delete_type" : "Elimina Tipo",
+  "type_update_success" : "Tipo Aggiornato",
+  "type_delete_confirmation" : "Elimina",
+  "type_delete_success" : "Tipo Eliminato",
+  "type_error_occurred" : "Si è verificato un errore",
+  "type_add_new_type" : "Aggiungi Nuovo Tipo",
+  "type_add_type" : "Nuovo Tipo",
+  "type_create_success" : "Tipo Creato",
+
+
+
+  "resource_name" : "Nome",
+  "resource_description" : "Descrizione",
+  "resource_quantity" : "Quantità",
+  "resource_type" : "Tipo",
+  "resource_new_resource" : "Nuova Risorsa",
+  "resource_add_new_resource" : "Aggiungi Nuova Risorsa",
+  "resource_permissions" : "Permessi",
+  "resource_add_resource" : "Aggiungi Risorsa",
+  "resource_create_success" : "Risorsa Creata",
+  "resource_view" : "Visualizza",
+  "resource_remove" : "Elimina",
+  "resource_edit" : "Modifica",
+  "resource_book" : "Prenota",
+  "resource_details_for" : "Dettagli per",
+  "resource_view_availability" : "Gestisci Disponibilità",
+  "resource_update_resource" : "Aggiorna Risorsa",
+  "resource_delete_resource" : "Elimina Risorsa",
+  "resource_update_success" : "Risorsa Aggiornata",
+  "resource_delete_confirmation" : "Elimina",
+  "resource_delete_success" : "Risorsa Eliminata",
+  "resource_error_occurred" : "Si è verificato un errore",
+
+
+
+  "availability_start" : "Inizio",
+  "availability_end" : "Fine",
+  "availability_quantity" : "Quantità",
+  "availability_new_availability" : "Nuova Disponibilità",
+  "availability_add_new_availability_for" : "Aggiungi Nuova Disponibilità Per",
+  "availability_start_availability" : "Inizio Disponibilità",
+  "availability_end_availability" : "Fine Disponibilità",
+  "availability_check_quantity" : "Controllo Quantità",
+  "availability_add_availability" : "Aggiungi Disponibilità",
+  "availability_availability_for" : "Disponibilità Per",
+  "availability_update_availability" : "Aggiorna Disponibilità",
+  "availability_delete_availability" : "Elimina Disponibilità",
+  "availability_max_availability" : "Disponibilità Massima",
+  "availability_create_success" : "Disponibilità Creata",
+  "availability_update_success" : "Disponibilità Aggiornata",
+  "availability_delete_success" : "Disponibilità Eliminata",
+  "availability_delete_confirmation" : "Eliminare Disponibilità?",
+  "availability_error_occurred" : "Si è verificato un errore",
+
+
+
+  "book_from" : "Da",
+  "book_to" : "a",
+  "book_To" : "Al",
+  "book_check_availability" : "Controlla Disponibilità",
+  "book_book" : "Prenota",
+  "book_start" : "Inizio",
+  "book_end" : "Fine",
+  "book_quantity" : "Quantità",
+  "book_no_quantity" : "Nessuna quantità disponibile per il periodo selezionato",
+  "book_max_availability" : "Disponibilità Massima",
+  "book_book_success" : "Prenotato",
+  "book_error_occurred" : "Si è verificato un errore"
+}

@@ -19,6 +19,8 @@ import '../../../connection.dart';
 import '../../../graphics/graphics_methods.dart';
 import '../../functions.dart';
 import '../../manage/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class ResourcePage extends StatefulWidget {
   const ResourcePage({super.key});
@@ -36,7 +38,7 @@ class _ResourcePageState extends State<ResourcePage> {
 
     return appProvider.view_resources
         ? ResourceDetails()
-        : Text("access denied!");
+        : Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -107,7 +109,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
             ),
             Row(
               children: [
-                Text('From'),
+                Text(AppLocalizations.of(context)!.book_from),
                 SizedBox(
                   width: rowSpacing1,
                 ),
@@ -159,7 +161,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                 SizedBox(
                   width: rowSpacing1,
                 ),
-                Text('to'),
+                Text(AppLocalizations.of(context)!.book_to),
                 SizedBox(
                   width: rowSpacing1,
                 ),
@@ -251,9 +253,13 @@ class _ResourceDetailsState extends State<ResourceDetails> {
               child: (listItems.length == 0)
                   ? Center(
                       child:
-                          Text('No quantity available for the selected period'))
+                          Text(AppLocalizations.of(context)!.book_no_quantity))
                   : DataTableWidget(
-                      header: ['Start', 'End', 'Quantity'],
+                      header: [
+                        AppLocalizations.of(context)!.book_start,
+                        AppLocalizations.of(context)!.book_end,
+                        AppLocalizations.of(context)!.book_quantity
+                      ],
                       onRefresh: refreshShifts,
                       onItemTap: (List item) {},
                       clickableTies: false,
@@ -279,7 +285,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                     dividerColor: Colors.transparent,
                   ),
                   child: ExpansionTile(
-                    title: Text('Book'),
+                    title: Text(AppLocalizations.of(context)!.book_book),
                     //subtitle: Text('Leading expansion arrow icon'),
                     controlAffinity: ListTileControlAffinity.leading,
                     children: <Widget>[
@@ -298,7 +304,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                                     width: rowSpacing2,
                                   ),
                                   Text(
-                                    'From',
+                                    AppLocalizations.of(context)!.book_from,
                                     style: TextStyle(fontSize: fontSize2),
                                   ),
                                   Expanded(
@@ -382,7 +388,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                                     width: rowSpacing2,
                                   ),
                                   Text(
-                                    'To',
+                                    AppLocalizations.of(context)!.book_To,
                                     style: TextStyle(fontSize: fontSize2),
                                   ),
                                   Expanded(
@@ -464,7 +470,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                                   children: [
                                     SizedBox(width: rowSpacing2,),
                                     Text(
-                                      'Max availability, ' + maxAvailabilityValue.toString(),
+                                      AppLocalizations.of(context)!.book_max_availability + ', ' + maxAvailabilityValue.toString(),
                                       style: TextStyle(color: Theme.of(context).colorScheme.surface),
                                     ),
                                     Expanded(child: SizedBox())
@@ -492,7 +498,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                                         color: Theme.of(context).colorScheme.onPrimary,
                                       ),
                                     ),
-                                    label: Text('Quantity'),
+                                    label: Text(AppLocalizations.of(context)!.book_quantity),
                                     labelStyle: TextStyle(
                                       color: Theme.of(context)
                                           .colorScheme
@@ -526,7 +532,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                                         print(quantity);
                                       },
                                       child: Text(
-                                          'Check availability'
+                                          AppLocalizations.of(context)!.book_check_availability
                                       )
                                   ),
                                   Expanded(child: SizedBox()),
@@ -542,9 +548,9 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                                                 resource_id: resourceProvider.resource[0],
                                                 appProvider: appProvider
                                             )){
-                                              showTopMessage(context, "Booked!");
+                                              showTopMessage(context, AppLocalizations.of(context)!.book_book_success);
                                             } else {
-                                              showTopMessage(context, "Error Occurred!");
+                                              showTopMessage(context, AppLocalizations.of(context)!.book_error_occurred);
                                             }
 
                                             refreshShifts();
@@ -552,7 +558,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                                         );
                                       },
                                       child: Text(
-                                          'Book'
+                                          AppLocalizations.of(context)!.book_book
                                       )
                                   ),
                                   Expanded(child: SizedBox()),

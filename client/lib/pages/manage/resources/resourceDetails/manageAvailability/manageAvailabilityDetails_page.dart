@@ -12,6 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:client/pages/functions.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import '../../../../../connection.dart';
 import '../../../../manage/widgets.dart';
@@ -34,7 +36,7 @@ class _ManageAvailabilityPageState extends State<ManageAvailabilityPage> {
 
     return appProvider.view_availability ?
     ManageAvailability():
-    Text("access denied!");
+    Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -102,7 +104,7 @@ class _ManageAvailabilityState extends State<ManageAvailability> {
         onPressed: () {
           context.push(Routes.manage_ManageResources_AddAvailability);
         },
-        label: Text("New Availability"),
+        label: Text(AppLocalizations.of(context)!.availability_new_availability),
         icon: Icon(Icons.add),
       ) : null,
       body: Padding(
@@ -133,7 +135,11 @@ class _ManageAvailabilityState extends State<ManageAvailability> {
               ),
               Expanded(
                 child: DataTableWidget(
-                    header: ['Start', 'End', 'Quantity'],
+                    header: [
+                      AppLocalizations.of(context)!.availability_start,
+                      AppLocalizations.of(context)!.availability_end,
+                      AppLocalizations.of(context)!.availability_quantity
+                    ],
                     onRefresh: refreshAvailabilities,
                     onItemTap: (List item) {
                       context.push(Routes.manage_ManageResources_AvailabilityDetails, extra: {'availabilityId': item[0]});

@@ -11,6 +11,8 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import '../../../connection.dart';
 
@@ -30,7 +32,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
 
     return appProvider.view_resources ?
     ResourceFeed():
-    Text("access denied!");
+    Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 

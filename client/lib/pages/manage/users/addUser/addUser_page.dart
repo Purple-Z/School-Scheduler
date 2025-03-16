@@ -11,6 +11,8 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:client/graphics/graphics_methods.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 class AddUserPage extends StatefulWidget {
@@ -29,7 +31,7 @@ class _AddUserPageState extends State<AddUserPage> {
 
     return appProvider.create_user ?
     AddUserAdmin():
-    Text("access denied!");
+    Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -69,21 +71,21 @@ class _AddUserAdminState extends State<AddUserAdmin> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Add New User",
+            Text(
+              AppLocalizations.of(context)!.user_add_new_user,
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
 
-            buildTextField(nameController, "Name", Icons.person),
+            buildTextField(nameController, AppLocalizations.of(context)!.user_name, Icons.person),
             SizedBox(height: fieldsSpacing),
-            buildTextField(surnameController, "Surname", Icons.person_outline),
+            buildTextField(surnameController, AppLocalizations.of(context)!.user_surname, Icons.person_outline),
             SizedBox(height: fieldsSpacing),
-            buildTextField(emailController, "Email", Icons.email, inputType: TextInputType.emailAddress),
+            buildTextField(emailController, AppLocalizations.of(context)!.user_email, Icons.email, inputType: TextInputType.emailAddress),
 
             const SizedBox(height: 30),
 
-            const Text("Roles:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.user_roles, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
 
 
@@ -121,16 +123,16 @@ class _AddUserAdminState extends State<AddUserAdmin> {
                       new_roles: rolesValues,
                       appProvider: appProvider
                   )){
-                    showTopMessage(context, "User Created!");
+                    showTopMessage(context, AppLocalizations.of(context)!.user_create_success);
                     context.pop();
                   } else {
-                    showTopMessage(context, "Error Occurred!");
+                    showTopMessage(context, AppLocalizations.of(context)!.user_error_occurred, isOK: false);
                   }
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    "Add User",
+                    AppLocalizations.of(context)!.user_add_user,
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimary,
                       fontSize: 20

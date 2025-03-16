@@ -37,7 +37,7 @@ Widget buildTextField(
   );
 }
 
-showTopMessage(BuildContext context, String text){
+showTopMessage(BuildContext context, String text, {bool isOK = true}){
   return showTopSnackBar(
     Overlay.of(context),
     Material(
@@ -52,7 +52,7 @@ showTopMessage(BuildContext context, String text){
         child: Row(
           children: [
             Icon(
-                Icons.check_circle,
+                isOK ? Icons.check_circle : Icons.cancel,
                 color: Theme.of(context).colorScheme.surface,
                 size: 32
             ),

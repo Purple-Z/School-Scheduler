@@ -8,6 +8,8 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import '../../../connection.dart';
 import '../widgets.dart';
@@ -29,7 +31,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
 
     return appProvider.view_user ?
       ManageUsersAdmin():
-      Text("access denied!");
+      Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -98,13 +100,17 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
         onPressed: () {
           context.push(Routes.manage_Users_AddUsers);
         },
-        label: Text("New User"),
+        label: Text(AppLocalizations.of(context)!.user_new_user),
         icon: Icon(Icons.add),
       ) : null,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
         child: DataTableWidget(
-            header: ['Name', 'Surname', 'Email', 'Roles'],
+            header: [AppLocalizations.of(context)!.user_name,
+              AppLocalizations.of(context)!.user_surname,
+              AppLocalizations.of(context)!.user_email,
+              AppLocalizations.of(context)!.user_roles
+            ],
             onRefresh: refreshUsers,
             onItemTap: (List item) {
               context.push(Routes.manage_Users_userDetails, extra: {'userId': item[0]});

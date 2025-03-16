@@ -9,12 +9,13 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
-  final String serverAddr = "192.168.178.32:5000";
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class LoginPage extends StatelessWidget {
 
     return Center(
       child: appProvider.logged ?
-      Text("Already Logged"):
+      Text(AppLocalizations.of(context)!.login_already_logged):
       Padding(
         padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
         child: Column(
@@ -35,7 +36,7 @@ class LoginPage extends StatelessWidget {
             SizedBox(height: 20,),
             Row(
               children: [
-                Text("Login", style: TextStyle(fontSize: 40),),
+                Text(AppLocalizations.of(context)!.login_login, style: TextStyle(fontSize: 40),),
                 Expanded(child: SizedBox()),
               ],
             ),
@@ -85,7 +86,7 @@ class LoginPage extends StatelessWidget {
                     if (await Connection.login(mailText, passText, appProvider)){
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Login success'),
+                          content: Text(AppLocalizations.of(context)!.login_success),
                           duration: Duration(seconds: 2),
                           action: SnackBarAction(
                             label: 'OK',
@@ -97,7 +98,7 @@ class LoginPage extends StatelessWidget {
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Login failed'),
+                          content: Text(AppLocalizations.of(context)!.login_failed),
                           duration: Duration(seconds: 2),
                           action: SnackBarAction(
                             label: 'OK',
@@ -109,7 +110,7 @@ class LoginPage extends StatelessWidget {
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
-                    child: Text("Log In", style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontSize: 20),),
+                    child: Text(AppLocalizations.of(context)!.login_login, style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontSize: 20),),
                   ),
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.primary),

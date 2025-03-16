@@ -12,6 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:client/graphics/graphics_methods.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 class AddTypePage extends StatefulWidget {
@@ -30,7 +32,7 @@ class _AddTypePageState extends State<AddTypePage> {
 
     return appProvider.create_resources ?
     AddType():
-    Text("access denied!");
+    Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -67,15 +69,15 @@ class _AddTypeState extends State<AddType> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Add New Type",
+                Text(
+                  AppLocalizations.of(context)!.type_add_new_type,
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 30),
 
-                buildTextField(nameController, "Name", Icons.abc),
+                buildTextField(nameController, AppLocalizations.of(context)!.type_name, Icons.abc),
                 SizedBox(height: fieldsSpacing),
-                buildTextField(descriptionController, "Description", Icons.type_specimen),
+                buildTextField(descriptionController, AppLocalizations.of(context)!.type_description, Icons.type_specimen),
                 SizedBox(height: fieldsSpacing),
               ],
             ),
@@ -104,16 +106,16 @@ class _AddTypeState extends State<AddType> {
                     description: descriptionController.text,
                     appProvider: appProvider
                 )){
-                  showTopMessage(context, "User Created!");
+                  showTopMessage(context, AppLocalizations.of(context)!.type_create_success);
                   context.pop();
                 } else {
-                  showTopMessage(context, "Error Occurred!");
+                  showTopMessage(context, AppLocalizations.of(context)!.type_error_occurred);
                 }
               },
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  "Add Type",
+                  AppLocalizations.of(context)!.type_add_type,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.onPrimary,
                       fontSize: 20

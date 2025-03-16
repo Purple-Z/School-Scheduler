@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../router/routes.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 class ManagePage extends StatefulWidget {
@@ -47,7 +49,7 @@ class ManageUserWidget extends StatelessWidget {
           Row(
             children: [
               Text(
-                "Manage Users",
+                AppLocalizations.of(context)!.manage_users,
                 style: TextStyle(fontSize: 20),
               ),
               Expanded(child: SizedBox())
@@ -60,7 +62,7 @@ class ManageUserWidget extends StatelessWidget {
               },
               child: Row(
                 children: [
-                  Text("Go to page"),
+                  Text(AppLocalizations.of(context)!.manage_go_to_page),
                   SizedBox(width: 10,),
                   Icon(Icons.manage_accounts_rounded)
                 ],
@@ -86,7 +88,7 @@ class ManageRolesWidget extends StatelessWidget {
           Row(
             children: [
               Text(
-                "Manage Roles",
+                AppLocalizations.of(context)!.manage_roles,
                 style: TextStyle(fontSize: 20),
               ),
               Expanded(child: SizedBox())
@@ -99,7 +101,7 @@ class ManageRolesWidget extends StatelessWidget {
               },
               child: Row(
                 children: [
-                  Text("Go to page"),
+                  Text(AppLocalizations.of(context)!.manage_go_to_page),
                   SizedBox(width: 10,),
                   Icon(Icons.security)
                 ],
@@ -125,7 +127,7 @@ class ManageTypesWidget extends StatelessWidget {
           Row(
             children: [
               Text(
-                "Manage Types",
+                AppLocalizations.of(context)!.manage_types,
                 style: TextStyle(fontSize: 20),
               ),
               Expanded(child: SizedBox())
@@ -138,7 +140,7 @@ class ManageTypesWidget extends StatelessWidget {
               },
               child: Row(
                 children: [
-                  Text("Go to page"),
+                  Text(AppLocalizations.of(context)!.manage_go_to_page),
                   SizedBox(width: 10,),
                   Icon(Icons.type_specimen)
                 ],
@@ -164,7 +166,7 @@ class ManageResourcesWidget extends StatelessWidget {
           Row(
             children: [
               Text(
-                "Manage Resources",
+                AppLocalizations.of(context)!.manage_resources,
                 style: TextStyle(fontSize: 20),
               ),
               Expanded(child: SizedBox())
@@ -177,7 +179,7 @@ class ManageResourcesWidget extends StatelessWidget {
               },
               child: Row(
                 children: [
-                  Text("Go to page"),
+                  Text(AppLocalizations.of(context)!.manage_go_to_page),
                   SizedBox(width: 10,),
                   Icon(Icons.account_balance_rounded)
                 ],

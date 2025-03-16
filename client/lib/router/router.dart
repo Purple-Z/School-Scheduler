@@ -2,6 +2,7 @@ import 'package:client/app_provider.dart';
 import 'package:client/connection.dart';
 import 'package:client/pages/account/account_page.dart';
 import 'package:client/pages/account/login/login_page.dart';
+import 'package:client/pages/account/profile/profile_page.dart';
 import 'package:client/pages/account/settings/settings_page.dart';
 import 'package:client/pages/manage/manage_page.dart';
 import 'package:client/pages/manage/roles/addRole/addRole_page.dart';
@@ -339,6 +340,10 @@ final router = GoRouter(
                 GoRoute(
                   path: Routes.settings,
                   builder: (context, state) => const SettingsPage(),
+                ),
+                GoRoute(
+                  path: Routes.profile,
+                  builder: (context, state) => const ProfilePage(),
                 ),
               ]
             ),

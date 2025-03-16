@@ -14,6 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:client/graphics/graphics_methods.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 
@@ -33,7 +35,7 @@ class _TypeDetailsPageState extends State<TypeDetailsPage> {
 
     return appProvider.view_resources ?
     TypeDetails(type: typeDetailsProvider.type,):
-    Text("access denied!");
+    Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -74,8 +76,8 @@ class _TypeDetailsState extends State<TypeDetails> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Details for",
+                Text(
+                  AppLocalizations.of(context)!.type_details_for,
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
                 Text(
@@ -85,9 +87,9 @@ class _TypeDetailsState extends State<TypeDetails> {
 
                 const SizedBox(height: 30),
 
-                buildTextField(nameController, "Name", Icons.person, editable: appProvider.edit_resources),
+                buildTextField(nameController, AppLocalizations.of(context)!.type_name, Icons.person, editable: appProvider.edit_resources),
                 SizedBox(height: fieldsSpacing),
-                buildTextField(descriptionController, "Description", Icons.person, editable: appProvider.edit_resources),
+                buildTextField(descriptionController, AppLocalizations.of(context)!.type_description, Icons.person, editable: appProvider.edit_resources),
                 SizedBox(height: fieldsSpacing),
 
 
@@ -120,15 +122,15 @@ class _TypeDetailsState extends State<TypeDetails> {
                           description: descriptionController.text,
                         )
                         ){
-                          showTopMessage(context, "Type Updated!");
+                          showTopMessage(context, AppLocalizations.of(context)!.type_update_success);
                         } else {
-                          showTopMessage(context, "Error Occurred!");
+                          showTopMessage(context, AppLocalizations.of(context)!.type_error_occurred);
                         }
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Text(
-                          "Update Type",
+                          AppLocalizations.of(context)!.type_update_type,
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary,
                               fontSize: 20
@@ -154,19 +156,19 @@ class _TypeDetailsState extends State<TypeDetails> {
                       )
                   ),
                   onPressed: () async {
-                    if(await confirm(context, content: Text("Delete " + typeDetailsProvider.type[1] + "?"))){
+                    if(await confirm(context, content: Text(AppLocalizations.of(context)!.type_delete_confirmation + " " + typeDetailsProvider.type[1] + "?"))){
                       if (await Connection.deleteType(typeDetailsProvider.type[0], appProvider)){
-                        showTopMessage(context, "Type deleted");
+                        showTopMessage(context, AppLocalizations.of(context)!.type_delete_success);
                         context.pop();
                       } else {
-                        showTopMessage(context, "Error Occurred");
+                        showTopMessage(context, AppLocalizations.of(context)!.type_error_occurred);
                       }
                     }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      "Delete Type",
+                      AppLocalizations.of(context)!.type_delete_type,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary,
                           fontSize: 20

@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import '../../../connection.dart';
 import '../widgets.dart';
@@ -23,7 +25,7 @@ class _ManageRolesPageState extends State<ManageRolesPage> {
   @override
   Widget build(BuildContext context) {
     var appProvider = context.watch<AppProvider>();
-    return appProvider.view_roles ? ManageUsersAdmin() : Text("Access Denied!");
+    return appProvider.view_roles ? ManageUsersAdmin() : Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -105,13 +107,13 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
         onPressed: () {
           context.push(Routes.manage_Roles_AddRole);
         },
-        label: Text("New Role"),
+        label: Text(AppLocalizations.of(context)!.role_new_role),
         icon: Icon(Icons.add),
       ) : null,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
         child: DataTableWidget(
-          header: ["Name", "Description"],
+          header: [AppLocalizations.of(context)!.role_name, AppLocalizations.of(context)!.role_description],
           onRefresh: refreshRoles,
           refreshController: refreshController,
           itemsColumn: [false, true, true],

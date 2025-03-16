@@ -15,6 +15,8 @@ import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:client/graphics/graphics_methods.dart';
 import 'package:client/pages/functions.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 class AddAvailabilityPage extends StatefulWidget {
@@ -33,7 +35,7 @@ class _AddAvailabilityPageState extends State<AddAvailabilityPage> {
 
     return appProvider.create_availability ?
     AddAvailability():
-    Text("access denied!");
+    Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -71,8 +73,8 @@ class _AddAvailabilityState extends State<AddAvailability> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Add New Availability for",
+            Text(
+              AppLocalizations.of(context)!.availability_add_new_availability_for,
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
             Text(
@@ -86,7 +88,7 @@ class _AddAvailabilityState extends State<AddAvailability> {
                 Row(
                   children: [
                     Text(
-                      "Start availability",
+                      AppLocalizations.of(context)!.availability_start_availability,
                       style: TextStyle(fontSize: 20),
                     ),
                     Expanded(child: SizedBox())
@@ -141,7 +143,7 @@ class _AddAvailabilityState extends State<AddAvailability> {
                 Row(
                   children: [
                     Text(
-                      "End availability",
+                      AppLocalizations.of(context)!.availability_end_availability,
                       style: TextStyle(fontSize: 20),
                     ),
                     Expanded(child: SizedBox())
@@ -191,11 +193,11 @@ class _AddAvailabilityState extends State<AddAvailability> {
 
             SizedBox(height: fieldsSpacing),
             if (maxAvailabilityShow) Text(
-              'Max availability, ' + maxAvailabilityValue.toString(),
+              AppLocalizations.of(context)!.availability_max_availability + ', ' + maxAvailabilityValue.toString(),
               style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
             ),
             SizedBox(height: 5),
-            buildTextField(quantityController, "Quantity", Icons.person_outline, inputType: TextInputType.number),
+            buildTextField(quantityController, AppLocalizations.of(context)!.availability_quantity, Icons.person_outline, inputType: TextInputType.number),
             const SizedBox(height: 30),
             Center(
               child: ElevatedButton(
@@ -231,7 +233,7 @@ class _AddAvailabilityState extends State<AddAvailability> {
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    "Check Quantity",
+                    AppLocalizations.of(context)!.availability_check_quantity,
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimary,
                         fontSize: 20
@@ -262,16 +264,16 @@ class _AddAvailabilityState extends State<AddAvailability> {
                       resource_id: addAvailabilityProvider.resource[0],
                       appProvider: appProvider
                   )){
-                    showTopMessage(context, "Availability Created!");
+                    showTopMessage(context, AppLocalizations.of(context)!.availability_create_success);
                     context.pop();
                   } else {
-                    showTopMessage(context, "Error Occurred!");
+                    showTopMessage(context, AppLocalizations.of(context)!.availability_error_occurred);
                   }
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    "Add Availability",
+                    AppLocalizations.of(context)!.availability_add_availability,
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimary,
                         fontSize: 20

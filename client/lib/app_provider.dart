@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'style/themes.dart';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class AppProvider extends ChangeNotifier {
   bool logged = false;
@@ -44,6 +46,9 @@ class AppProvider extends ChangeNotifier {
 
   bool provisoryFlag = false;
 
+  Locale _locale = Locale('it');
+  Locale get locale => _locale;
+
   late SharedPreferences prefs;
 
   AppProvider() {
@@ -54,6 +59,7 @@ class AppProvider extends ChangeNotifier {
     prefs = await SharedPreferences.getInstance();
 
     await loadPreferences();
+    await loadLocale();
 
     notifyListeners();
   }
@@ -82,6 +88,19 @@ class AppProvider extends ChangeNotifier {
       themeData = dayTheme;
       iconTheme = Icons.mode_night;
     }
+    notifyListeners();
+  }
+
+  Future<void> loadLocale() async {
+    String? languageCode = prefs.getString('language');
+    if (languageCode != null) {
+      _locale = Locale(languageCode);
+    }
+  }
+
+  Future<void> setLocale(Locale newLocale) async {
+    _locale = newLocale;
+    await prefs.setString('language', newLocale.languageCode);
     notifyListeners();
   }
 

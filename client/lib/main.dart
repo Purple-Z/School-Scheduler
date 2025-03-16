@@ -1,5 +1,6 @@
 import 'package:client/pages/account/account_provider.dart';
 import 'package:client/pages/account/login/login_provider.dart';
+import 'package:client/pages/account/profile/profile_provider.dart';
 import 'package:client/pages/account/settings/settings_provider.dart';
 import 'package:client/pages/manage/manage_provider.dart';
 import 'package:client/pages/manage/roles/addRole/addRole_provider.dart';
@@ -20,8 +21,11 @@ import 'package:client/pages/manage/resources/resourceDetails/resourceDetails_pr
 import 'package:client/pages/resources/resource/resource_provider.dart';
 import 'package:client/pages/resources/resources_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:client/router/router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import 'app_provider.dart';
 
@@ -58,6 +62,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ResourcesProvider()),
         ChangeNotifierProvider(create: (_) => ResourceProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],
       child: Consumer<AppProvider>(
         builder: (context, dataProvider, child) {
@@ -66,6 +71,9 @@ class MyApp extends StatelessWidget {
             title: "Raises",
             theme: dataProvider.themeData,
             routerConfig: router,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: dataProvider.locale,
           );
         },
       ),

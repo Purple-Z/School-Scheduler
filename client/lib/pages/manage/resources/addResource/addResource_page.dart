@@ -12,6 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:client/graphics/graphics_methods.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 class AddResourcePage extends StatefulWidget {
@@ -30,7 +32,7 @@ class _AddResourcePageState extends State<AddResourcePage> {
 
     return appProvider.create_resources ?
     AddResource():
-    Text("access denied!");
+    Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -67,20 +69,20 @@ class _AddResourceState extends State<AddResource> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Add New Resource",
+            Text(
+              AppLocalizations.of(context)!.resource_add_new_resource,
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
 
-            buildTextField(nameController, "Name", Icons.person),
+            buildTextField(nameController, AppLocalizations.of(context)!.resource_name, Icons.person),
             SizedBox(height: fieldsSpacing),
-            buildTextField(descriptionController, "Description", Icons.person_outline),
+            buildTextField(descriptionController, AppLocalizations.of(context)!.resource_description, Icons.person_outline),
             SizedBox(height: fieldsSpacing),
-            buildTextField(quantityController, "Quantity", Icons.person_outline, inputType: TextInputType.number),
+            buildTextField(quantityController, AppLocalizations.of(context)!.resource_quantity, Icons.person_outline, inputType: TextInputType.number),
             const SizedBox(height: 30),
 
-            const Text("Type:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.resource_type, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             DropdownMenu<String>(
               initialSelection: addResourceProvider.types.first[0],
@@ -97,7 +99,7 @@ class _AddResourceState extends State<AddResource> {
 
             const SizedBox(height: 30),
 
-            const Text("Permissions:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.resource_permissions, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             Column(
               children: addResourceProvider.resource_permission.entries.map((entry){
@@ -105,22 +107,22 @@ class _AddResourceState extends State<AddResource> {
                   title: Text(entry.key),
                   controlAffinity: ListTileControlAffinity.leading,
                   children: <Widget>[
-                    buildSwitch(context, "View", entry.value[0], (value) {
+                    buildSwitch(context, AppLocalizations.of(context)!.resource_view, entry.value[0], (value) {
                       setState(() {
                         entry.value[0] = value;
                       });
                     }, isEditable: appProvider.edit_resources),
-                    buildSwitch(context, "Remove", entry.value[1], (value) {
+                    buildSwitch(context, AppLocalizations.of(context)!.resource_remove, entry.value[1], (value) {
                       setState(() {
                         entry.value[1] = value;
                       });
                     }, isEditable: appProvider.edit_resources),
-                    buildSwitch(context, "Edit", entry.value[2], (value) {
+                    buildSwitch(context, AppLocalizations.of(context)!.resource_edit, entry.value[2], (value) {
                       setState(() {
                         entry.value[2] = value;
                       });
                     }, isEditable: appProvider.edit_resources),
-                    buildSwitch(context, "Book", entry.value[3], (value) {
+                    buildSwitch(context, AppLocalizations.of(context)!.resource_book, entry.value[3], (value) {
                       setState(() {
                         entry.value[3] = value;
                       });
@@ -159,16 +161,16 @@ class _AddResourceState extends State<AddResource> {
                       appProvider: appProvider,
                       resource_permissions: addResourceProvider.resource_permission
                   )){
-                    showTopMessage(context, "Resource Created!");
+                    showTopMessage(context, AppLocalizations.of(context)!.resource_create_success);
                     context.pop();
                   } else {
-                    showTopMessage(context, "Error Occurred!");
+                    showTopMessage(context, AppLocalizations.of(context)!.resource_error_occurred);
                   }
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    "Add Resource",
+                    AppLocalizations.of(context)!.resource_add_resource,
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimary,
                         fontSize: 20

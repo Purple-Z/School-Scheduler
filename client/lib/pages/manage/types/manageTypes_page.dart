@@ -9,6 +9,8 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import '../../../connection.dart';
 import '../widgets.dart';
@@ -30,7 +32,7 @@ class _ManageTypesPageState extends State<ManageTypesPage> {
 
     return appProvider.view_resources ?
     ManageTypesAdmin():
-    Text("access denied!");
+    Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -70,13 +72,13 @@ class _ManageTypesAdminState extends State<ManageTypesAdmin> {
         onPressed: () {
           context.push(Routes.manage_Types_AddType);
         },
-        label: Text("New Type"),
+        label: Text(AppLocalizations.of(context)!.type_new_type),
         icon: Icon(Icons.add),
       ) : null,
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
           child: DataTableWidget(
-              header: ['Name', 'Description'],
+              header: [AppLocalizations.of(context)!.type_name, AppLocalizations.of(context)!.type_description],
               onRefresh: refreshTypes,
               onItemTap: (List item) {
                 context.push(Routes.manage_Types_TypeDetails, extra: {'typeId': item[0]});

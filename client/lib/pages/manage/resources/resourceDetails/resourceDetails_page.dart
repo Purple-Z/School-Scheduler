@@ -14,6 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:client/graphics/graphics_methods.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 
@@ -33,7 +35,7 @@ class _ResourceDetailsPageState extends State<ResourceDetailsPage> {
 
     return appProvider.view_resources ?
     ResourceDetails(resource: resourceDetailsProvider.resource,):
-    Text("access denied!");
+    Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -77,8 +79,8 @@ class _ResourceDetailsState extends State<ResourceDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Details for",
+            Text(
+              AppLocalizations.of(context)!.resource_details_for,
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
             Text(
@@ -88,16 +90,16 @@ class _ResourceDetailsState extends State<ResourceDetails> {
 
             const SizedBox(height: 30),
 
-            buildTextField(nameController, "Name", Icons.person, editable: appProvider.edit_resources),
+            buildTextField(nameController, AppLocalizations.of(context)!.resource_name, Icons.person, editable: appProvider.edit_resources),
             SizedBox(height: fieldsSpacing),
-            buildTextField(descriptionController, "Description", Icons.person, editable: appProvider.edit_resources),
+            buildTextField(descriptionController, AppLocalizations.of(context)!.resource_description, Icons.person, editable: appProvider.edit_resources),
             SizedBox(height: fieldsSpacing),
-            buildTextField(quantityController, "Quantity", Icons.person, editable: appProvider.edit_resources, inputType: TextInputType.number),
+            buildTextField(quantityController, AppLocalizations.of(context)!.resource_quantity, Icons.person, editable: appProvider.edit_resources, inputType: TextInputType.number),
             SizedBox(height: fieldsSpacing),
 
             const SizedBox(height: 30),
 
-            const Text("Type:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.resource_type, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
 
             DropdownMenu<String>(
@@ -117,7 +119,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
 
             const SizedBox(height: 30),
 
-            const Text("Permissions:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.resource_permissions, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             Column(
               children: resourceDetailsProvider.resource_permission.entries.map((entry){
@@ -125,22 +127,22 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                   title: Text(entry.key),
                   controlAffinity: ListTileControlAffinity.leading,
                   children: <Widget>[
-                    buildSwitch(context, "View", entry.value[0], (value) {
+                    buildSwitch(context, AppLocalizations.of(context)!.resource_view, entry.value[0], (value) {
                       setState(() {
                         entry.value[0] = value;
                       });
                     }, isEditable: appProvider.edit_resources),
-                    buildSwitch(context, "Remove", entry.value[1], (value) {
+                    buildSwitch(context, AppLocalizations.of(context)!.resource_remove, entry.value[1], (value) {
                       setState(() {
                         entry.value[1] = value;
                       });
                     }, isEditable: appProvider.edit_resources),
-                    buildSwitch(context, "Edit", entry.value[2], (value) {
+                    buildSwitch(context, AppLocalizations.of(context)!.resource_edit, entry.value[2], (value) {
                       setState(() {
                         entry.value[2] = value;
                       });
                     }, isEditable: appProvider.edit_resources),
-                    buildSwitch(context, "Book", entry.value[3], (value) {
+                    buildSwitch(context, AppLocalizations.of(context)!.resource_book, entry.value[3], (value) {
                       setState(() {
                         entry.value[3] = value;
                       });
@@ -175,7 +177,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Text(
-                          "View Availability",
+                          AppLocalizations.of(context)!.resource_view_availability,
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary,
                               fontSize: 20
@@ -215,15 +217,15 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                             type: type,
                             resource_permissions: resourceDetailsProvider.resource_permission
                         )){
-                          showTopMessage(context, "Resource Updated!");
+                          showTopMessage(context, AppLocalizations.of(context)!.resource_update_success);
                         } else {
-                          showTopMessage(context, "Error Occurred!");
+                          showTopMessage(context, AppLocalizations.of(context)!.resource_error_occurred);
                         }
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Text(
-                          "Update Resource",
+                          AppLocalizations.of(context)!.resource_update_resource,
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary,
                               fontSize: 20
@@ -251,19 +253,19 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                       )
                   ),
                   onPressed: () async {
-                    if(await confirm(context, content: Text("Delete " + resourceDetailsProvider.resource[1] + "?"))){
+                    if(await confirm(context, content: Text(AppLocalizations.of(context)!.resource_delete_confirmation + " " + resourceDetailsProvider.resource[1] + "?"))){
                       if (await Connection.deleteResource(resourceDetailsProvider.resource[0], appProvider)){
-                        showTopMessage(context, "Resource deleted");
+                        showTopMessage(context, AppLocalizations.of(context)!.resource_delete_success);
                         context.pop();
                       } else {
-                        showTopMessage(context, "Error Occurred");
+                        showTopMessage(context, AppLocalizations.of(context)!.resource_error_occurred);
                       }
                     }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      "Delete Resource",
+                      AppLocalizations.of(context)!.resource_delete_resource,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary,
                           fontSize: 20

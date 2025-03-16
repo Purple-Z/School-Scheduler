@@ -16,6 +16,8 @@ import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:client/graphics/graphics_methods.dart';
 import 'package:client/pages/functions.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 
@@ -35,7 +37,7 @@ class _AvailabilityDetailsPageState extends State<AvailabilityDetailsPage> {
 
     return appProvider.view_availability ?
     AvailabilityDetails(availability: availabilityDetailsProvider.availability,):
-    Text("access denied!");
+    Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
@@ -81,8 +83,8 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Availability for",
+            Text(
+              AppLocalizations.of(context)!.availability_availability_for,
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
             Text(
@@ -97,7 +99,7 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                 Row(
                   children: [
                     Text(
-                      "Start availability",
+                      AppLocalizations.of(context)!.availability_start_availability,
                       style: TextStyle(fontSize: 20),
                     ),
                     Expanded(child: SizedBox())
@@ -152,7 +154,7 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                 Row(
                   children: [
                     Text(
-                      "End availability",
+                      AppLocalizations.of(context)!.availability_end_availability,
                       style: TextStyle(fontSize: 20),
                     ),
                     Expanded(child: SizedBox())
@@ -203,11 +205,11 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
             SizedBox(height: fieldsSpacing),
 
             if (maxAvailabilityShow) Text(
-              'Max availability, ' + maxAvailabilityValue.toString(),
+              AppLocalizations.of(context)!.availability_max_availability + ', ' + maxAvailabilityValue.toString(),
               style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
             ),
             SizedBox(height: 5),
-            buildTextField(quantityController, "Quantity", Icons.person, editable: appProvider.edit_user, inputType: TextInputType.numberWithOptions()),
+            buildTextField(quantityController, AppLocalizations.of(context)!.availability_quantity, Icons.person, editable: appProvider.edit_user, inputType: TextInputType.numberWithOptions()),
             SizedBox(height: fieldsSpacing),
 
             if (appProvider.view_availability)
@@ -246,7 +248,7 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      "Check Quantity",
+                      AppLocalizations.of(context)!.availability_check_quantity,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary,
                           fontSize: 20
@@ -282,15 +284,15 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                             quantity: int.tryParse(quantityController.text) ?? 0
                         )
                         ){
-                          showTopMessage(context, "Availability Updated!");
+                          showTopMessage(context, AppLocalizations.of(context)!.availability_update_success);
                         } else {
-                          showTopMessage(context, "Error Occurred!");
+                          showTopMessage(context, AppLocalizations.of(context)!.availability_error_occurred);
                         }
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Text(
-                          "Update Availability",
+                          AppLocalizations.of(context)!.availability_update_availability,
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary,
                               fontSize: 20
@@ -317,22 +319,22 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                       )
                   ),
                   onPressed: () async {
-                    if(await confirm(context, content: Text("Delete availability?"))){
+                    if(await confirm(context, content: Text(AppLocalizations.of(context)!.availability_delete_confirmation))){
                       if (await Connection.deleteAvailability(
                           availabilityDetailsProvider.availability[0],
                           appProvider
                       )){
-                        showTopMessage(context, "Availability deleted");
+                        showTopMessage(context, AppLocalizations.of(context)!.availability_delete_success);
                         context.pop();
                       } else {
-                        showTopMessage(context, "Error Occurred");
+                        showTopMessage(context, AppLocalizations.of(context)!.availability_error_occurred);
                       }
                     }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      "Delete Availability",
+                      AppLocalizations.of(context)!.availability_delete_availability,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary,
                           fontSize: 20

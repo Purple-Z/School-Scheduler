@@ -5,8 +5,7 @@ import 'package:provider/provider.dart';
 import '../../router/routes.dart';
 import 'account_provider.dart';
 import 'package:go_router/go_router.dart';
-
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class AccountPage extends StatefulWidget {
@@ -41,7 +40,7 @@ class NotLoggedPage extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text("Not Logged", style: TextStyle(fontSize: 30),),
+        Text(AppLocalizations.of(context)!.account_not_logged, style: TextStyle(fontSize: 30),),
         SizedBox(height: 10,),
         ElevatedButton(
           onPressed: (){
@@ -49,7 +48,7 @@ class NotLoggedPage extends StatelessWidget {
           },
           child: Padding(
             padding: const EdgeInsets.all(5.0),
-            child: Text("login", style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontSize: 20),),
+            child: Text(AppLocalizations.of(context)!.account_login, style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontSize: 20),),
           ),
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.primary),
@@ -82,7 +81,7 @@ class LoggedPage extends StatelessWidget {
                 },
                 child: Row(
                   children: [
-                    Text("Logout"),
+                    Text(AppLocalizations.of(context)!.account_logout),
                     SizedBox(width: 10,),
                     Icon(Icons.logout)
                   ],
@@ -96,7 +95,7 @@ class LoggedPage extends StatelessWidget {
         Row(
           children: [
             SizedBox(width: 15,),
-            Text("Hello, ", style: TextStyle(fontSize: 25),),
+            Text(AppLocalizations.of(context)!.account_hello, style: TextStyle(fontSize: 25),),
             SizedBox(width: 5,),
             Text(appProvider.name, style: TextStyle(fontSize: 25),),
           ],
@@ -113,21 +112,23 @@ class LoggedPage extends StatelessWidget {
             crossAxisCount: 2,
             children: [
               AccountOptionButton(
-                label: 'Your Profile',
-                onTap: () {},
+                label: AppLocalizations.of(context)!.account_your_profile,
+                onTap: () {
+                  context.push(Routes.account_Profile);
+                },
               ),
               AccountOptionButton(
-                label: 'Settings',
+                label: AppLocalizations.of(context)!.account_settings,
                 onTap: () {
                   context.push(Routes.account_Settings);
                 },
               ),
               AccountOptionButton(
-                label: 'Your Bookings',
+                label: AppLocalizations.of(context)!.account_your_bookings,
                 onTap: () {},
               ),
               AccountOptionButton(
-                label: 'Your Activity',
+                label: AppLocalizations.of(context)!.account_your_activity,
                 onTap: () {},
               ),
             ],
