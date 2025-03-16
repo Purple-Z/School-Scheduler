@@ -1,0 +1,199 @@
+{
+  "@@locale": "en",
+
+  "access_denied": "Access Denied!",
+
+
+
+  "account_hello": "Hello, ",
+  "account_your_profile": "Your Profile",
+  "account_settings": "Settings",
+  "account_your_bookings": "Your Bookings",
+  "account_your_activity": "Your Activity",
+  "account_logout": "Logout",
+  "account_not_logged": "Not Logged",
+  "account_login": "Login",
+
+
+
+  "settings_theme" : "Theme",
+  "settings_language" : "Language",
+  "settings_not_logged" : "Not Logged",
+
+
+
+  "profile_not_logged" : "Not Logged",
+
+
+
+  "login_already_logged" : "Already Logged",
+  "login_login" : "Login",
+  "login_success" : "Login Success",
+  "login_failed" : "Login Failed",
+
+
+
+  "manage_users" : "Manage Users",
+  "manage_roles" : "Manage Roles",
+  "manage_types" : "Manage Types",
+  "manage_resources" : "Manage Resources",
+  "manage_go_to_page" : "Go to page",
+
+
+
+  "user_name" : "Name",
+  "user_surname" : "Surname",
+  "user_email" : "Email",
+  "user_roles" : "Roles",
+  "user_new_user" : "New User",
+  "user_add_new_user" : "Add New User",
+  "user_add_user" : "Add User",
+  "user_create_success" : "User Created",
+  "user_updated_success" : "User Updated",
+  "user_password_reset" : "Password Reset",
+  "user_delete_success" : "User Deleted",
+  "user_password_reset_confirmation" : "Reset Password?",
+  "user_error_occurred" : "Error Occurred",
+  "user_details" : "Details for",
+  "user_update_roles" : "Update Roles",
+  "user_update_user" : "Update User",
+  "user_restore_password" : "Restore Password",
+  "user_delete_user" : "Delete User",
+  "user_delete" : "Delete",
+
+
+
+  "role_name" : "Name",
+  "role_description" : "Description",
+  "role_new_role" : "New Role",
+  "role_add_role": "Add Role",
+  "role_add_new_role": "Add New Role",
+  "role_permissions": "Permissions",
+  "role_create_success" : "Role Created",
+  "role_update_success" : "Role Updated",
+  "role_delete_success" : "Role Deleted",
+  "role_error_occurred" : "Error Occurred",
+  "role_details" : "Details for",
+  "role_update_roles" : "Update Roles",
+  "role_update_role" : "Update Role",
+  "role_delete_role" : "Delete Role",
+  "role_delete": "Delete",
+
+  "role_usersPermissions": "Users Permissions",
+  "role_viewUsers": "View Users",
+  "role_editUsers": "Edit Users",
+  "role_createUsers": "Create Users",
+  "role_deleteUsers": "Delete Users",
+
+  "role_userOwnPermissions": "User Own Permissions",
+  "role_viewOwnUser": "View Own User",
+  "role_editOwnUser": "Edit Own User",
+  "role_createOwnUser": "Create Own User",
+  "role_deleteOwnUser": "Delete Own User",
+
+  "role_rolesPermissions": "Roles Permissions",
+  "role_viewRoles": "View Roles",
+  "role_editRoles": "Edit Roles",
+  "role_createRoles": "Create Roles",
+  "role_deleteRoles": "Delete Roles",
+
+  "role_availabilityPermissions": "Availability Permissions",
+  "role_viewAvailability": "View Availability",
+  "role_editAvailability": "Edit Availability",
+  "role_createAvailability": "Create Availability",
+  "role_deleteAvailability": "Delete Availability",
+
+  "role_resourcesPermissions": "Resources Permissions",
+  "role_viewResources": "View Resources",
+  "role_editResources": "Edit Resources",
+  "role_createResources": "Create Resources",
+  "role_deleteResources": "Delete Resources",
+
+  "role_bookingPermissions": "Booking Permission",
+  "role_viewBooking": "View Booking",
+  "role_editBooking": "Edit Booking",
+  "role_createBooking": "Create Booking",
+  "role_deleteBooking": "Delete Booking",
+
+  "role_userOwnBookingPermissions": "User Own Booking Permission",
+  "role_viewOwnBooking": "View Own Booking",
+  "role_editOwnBooking": "Edit Own Booking",
+  "role_createOwnBooking": "Create Own Booking",
+  "role_deleteOwnBooking": "Delete Own Booking",
+
+
+
+  "type_name" : "Name",
+  "type_description" : "Description",
+  "type_new_type" : "New Type",
+  "type_details_for" : "Details For",
+  "type_update_type" : "Update Type",
+  "type_delete_type" : "Delete Type",
+  "type_update_success" : "Type Updated",
+  "type_delete_confirmation" : "Delete",
+  "type_delete_success" : "Type Deleted",
+  "type_error_occurred" : "Error Occurred",
+  "type_add_new_type" : "Add New Type",
+  "type_add_type" : "Add Type",
+  "type_create_success" : "Type Created",
+
+
+
+  "resource_name" : "Name",
+  "resource_description" : "Description",
+  "resource_quantity" : "Quantity",
+  "resource_type" : "Type",
+  "resource_new_resource" : "New Resource",
+  "resource_add_new_resource" : "Add New Resource",
+  "resource_permissions" : "Permissions",
+  "resource_add_resource" : "Add Resource",
+  "resource_create_success" : "Resource Created",
+  "resource_view" : "View",
+  "resource_remove" : "Remove",
+  "resource_edit" : "Edit",
+  "resource_book" : "Book",
+  "resource_details_for" : "Details For",
+  "resource_view_availability" : "Manage Availability",
+  "resource_update_resource" : "Update Resource",
+  "resource_delete_resource" : "Delete Resource",
+  "resource_update_success" : "Resource Updated",
+  "resource_delete_confirmation" : "Delete",
+  "resource_delete_success" : "Resource Deleted",
+  "resource_error_occurred" : "Error Occurred",
+
+
+
+  "availability_start" : "Start",
+  "availability_end" : "End",
+  "availability_quantity" : "Quantity",
+  "availability_new_availability" : "New Availability",
+  "availability_add_new_availability_for" : "Add New Availability For",
+  "availability_start_availability" : "Start Availability",
+  "availability_end_availability" : "End Availability",
+  "availability_check_quantity" : "Check Quantity",
+  "availability_add_availability" : "Add Availability",
+  "availability_availability_for" : "Availability For",
+  "availability_update_availability" : "Update Availability",
+  "availability_delete_availability" : "Delete Availability",
+  "availability_max_availability" : "Max Availability",
+  "availability_create_success" : "Availability Created",
+  "availability_update_success" : "Availability Updated",
+  "availability_delete_success" : "Availability Deleted",
+  "availability_delete_confirmation" : "Delete Availability?",
+  "availability_error_occurred" : "Error Occurred",
+
+
+
+  "book_from" : "From",
+  "book_to" : "to",
+  "book_To" : "To",
+  "book_check_availability" : "Check Availability",
+  "book_book" : "Book",
+  "book_start" : "Start",
+  "book_end" : "End",
+  "book_quantity" : "Quantity",
+  "book_no_quantity" : "No quantity available for the selected period",
+  "book_max_availability" : "Max Availability",
+  "book_book_success" : "Booked",
+  "book_error_occurred" : "Error Occurred"
+}
