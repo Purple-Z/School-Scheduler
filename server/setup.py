@@ -101,6 +101,15 @@ class setupDB():
                     );
             ''')
 
+            # CREATE TABLE   - - -   places   - - -
+            mycursor.execute('''
+                    CREATE TABLE IF NOT EXISTS places (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(255) NOT NULL,
+                        description TEXT
+                    );
+            ''')
+
             # CREATE TABLE   - - -   resources   - - -
             mycursor.execute('''
                     CREATE TABLE IF NOT EXISTS resources (

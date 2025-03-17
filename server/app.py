@@ -715,7 +715,7 @@ def update_user():
             }
         ), 401
     
-@app.route('/reset-password', methods=['POST']) ## to be restored
+@app.route('/reset-password', methods=['POST'])
 def reset_password():
     data = request.get_json()
     email = data.get('email')
@@ -790,7 +790,7 @@ def reset_password():
             }
         ), 401
 
-@app.route('/delete-user', methods=['POST']) ## to be restored
+@app.route('/delete-user', methods=['POST'])
 def delete_user():
     data = request.get_json()
     email = data.get('email')
@@ -1038,7 +1038,7 @@ def update_type():
             }
         ), 401
     
-@app.route('/delete-type', methods=['POST']) ## to be restored
+@app.route('/delete-type', methods=['POST'])
 def delete_type():
     data = request.get_json()
     email = data.get('email')
@@ -1110,6 +1110,262 @@ def get_type_list():
     return jsonify(
         {
             "types": types,
+            "token": token_for(user_id)
+        }
+    ), 200
+
+
+# - - -   places   - - -
+
+@app.route('/get-places', methods=['POST'])
+def get_places():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'view_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    user_id = getIdFromEmail(email)
+
+    places_content = db.fetchSQL("SELECT * FROM places")
+
+
+
+
+    return jsonify(
+        {
+            "places": places_content,
+            "token": token_for(user_id)
+        }
+    ), 200
+
+@app.route('/add-place', methods=['POST'])
+def add_place():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    name = data.get('name')
+    description = data.get('description')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'create_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    user_id = getIdFromEmail(email)
+
+
+    try:
+        sql_insert = f'''
+        INSERT INTO places
+        (id, name, description)
+        VALUES (
+            0,
+            '{name}', 
+            '{description}'
+        )
+        '''
+        db.executeSQL(sql_insert)
+
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 200
+    except Exception as e:
+        print(e)
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 500
+
+@app.route('/get-place', methods=['POST'])
+def get_place():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    place_id = data.get('place_id')
+
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'view_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    user_id = getIdFromEmail(email)
+
+
+
+
+    try:
+        sql = f'''
+            SELECT * FROM places WHERE id = '{place_id}'
+        '''    
+        result = db.fetchSQL(sql)
+        place_content = result[0]
+
+        return jsonify(
+        {
+            "place": place_content,
+            "token": token_for(user_id)
+        }
+    ), 200
+    except:
+        return jsonify(
+        {
+            "token": token_for(user_id)
+        }
+    ), 401
+    
+@app.route('/update-place', methods=['POST'])
+def update_place():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    place_id = data.get('place_id')
+    name = data.get('name')
+    description = data.get('description')
+
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'edit_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+
+    user_id = getIdFromEmail(email)
+
+    sql_update = f'''
+    UPDATE places SET
+        name = '{name}',
+        description = '{description}'
+    WHERE id = {place_id}
+    '''
+
+
+    try:
+        db.executeSQL(sql_update)
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 200
+    except:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 401
+    
+@app.route('/delete-place', methods=['POST'])
+def delete_place():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    place_id = data.get('place_id')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'delete_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    user_id = getIdFromEmail(email)
+
+
+
+
+    try:
+        sql_delete = f'''
+        DELETE FROM places
+        WHERE id = {place_id}
+        '''
+
+        db.executeSQL(sql_delete)
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 200
+    except:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 401
+
+@app.route('/get-place-list', methods=['POST'])
+def get_place_list():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'view_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+
+    user_id = getIdFromEmail(email)
+
+    types = db.fetchSQL("SELECT name, description FROM places")
+
+    return jsonify(
+        {
+            "places": types,
             "token": token_for(user_id)
         }
     ), 200
