@@ -36,6 +36,7 @@
   "manage_users" : "Gestisci Utenti",
   "manage_roles" : "Gestisci Ruoli",
   "manage_types" : "Gestisci Tipi",
+  "manage_places" : "Gestisci Luoghi",
   "manage_resources" : "Gestisci Risorse",
   "manage_go_to_page" : "Vai alla pagina",
 
@@ -136,6 +137,22 @@
   "type_add_new_type" : "Aggiungi Nuovo Tipo",
   "type_add_type" : "Nuovo Tipo",
   "type_create_success" : "Tipo Creato",
+
+
+
+  "place_name" : "Nome",
+  "place_description" : "Descrizione",
+  "place_new_place" : "Nuovo Luogo",
+  "place_details_for" : "Dettagli Per",
+  "place_update_place" : "Aggiorna Luogo",
+  "place_delete_place" : "Elimina Luogo",
+  "place_update_success" : "Luogo Aggiornato",
+  "place_delete_confirmation" : "Elimina",
+  "place_delete_success" : "Luogo Eliminato",
+  "place_error_occurred" : "Si è verificato un errore",
+  "place_add_new_place" : "Aggiungi Nuovo Luogo",
+  "place_add_place" : "Nuovo Luogo",
+  "place_create_success" : "Luogo Creato",
 
 
 

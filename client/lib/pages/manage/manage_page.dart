@@ -29,6 +29,7 @@ class _ManagePageState extends State<ManagePage> {
         if (appProvider.view_user) ManageUserWidget(),
         if (appProvider.view_roles) ManageRolesWidget(),
         if (appProvider.view_resources) ManageTypesWidget(),
+        if (appProvider.view_resources) ManagePlacesWidget(),
         if (appProvider.view_resources) ManageResourcesWidget(),
       ],
     );
@@ -143,6 +144,45 @@ class ManageTypesWidget extends StatelessWidget {
                   Text(AppLocalizations.of(context)!.manage_go_to_page),
                   SizedBox(width: 10,),
                   Icon(Icons.type_specimen)
+                ],
+              )
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ManagePlacesWidget extends StatelessWidget {
+  const ManagePlacesWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text(
+                AppLocalizations.of(context)!.manage_places,
+                style: TextStyle(fontSize: 20),
+              ),
+              Expanded(child: SizedBox())
+            ],
+          ),
+          SizedBox(height: 15,),
+          ElevatedButton(
+              onPressed: () {
+                context.push(Routes.manage_Places);
+              },
+              child: Row(
+                children: [
+                  Text(AppLocalizations.of(context)!.manage_go_to_page),
+                  SizedBox(width: 10,),
+                  Icon(Icons.place)
                 ],
               )
           ),

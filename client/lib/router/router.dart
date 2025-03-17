@@ -5,6 +5,10 @@ import 'package:client/pages/account/login/login_page.dart';
 import 'package:client/pages/account/profile/profile_page.dart';
 import 'package:client/pages/account/settings/settings_page.dart';
 import 'package:client/pages/manage/manage_page.dart';
+import 'package:client/pages/manage/places/addPlace/addPlace_page.dart';
+import 'package:client/pages/manage/places/managePlaces_provider.dart';
+import 'package:client/pages/manage/places/placeDetails/placeDetails_page.dart';
+import 'package:client/pages/manage/places/placeDetails/placeDetails_provider.dart';
 import 'package:client/pages/manage/roles/addRole/addRole_page.dart';
 import 'package:client/pages/manage/roles/manageRoles_page.dart';
 import 'package:client/pages/manage/roles/manageRoles_provider.dart';
@@ -41,6 +45,7 @@ import 'package:provider/provider.dart';
 
 import 'package:client/router/routes.dart';
 
+import '../pages/manage/places/managePlaces_page.dart';
 import '../pages/resources/resource/resource_page.dart';
 import 'layout_scaffold.dart';
 
@@ -205,6 +210,41 @@ final router = GoRouter(
                       },
                     ),
                   ]
+                ),
+                GoRoute(
+                    path: Routes.places,
+                    builder: (context, state) => ManagePlacesPage(),
+                    routes: [
+                      GoRoute(
+                        path: Routes.addPlace,
+                        builder: (context, state) => AddPlacePage(),
+                        onExit: (context) {
+                          var managePlacesProvider = Provider.of<ManagePlacesProvider>(context, listen: false);
+                          managePlacesProvider.loadManagePlacesPage(context);
+                          return true;
+                        },
+                      ),
+                      GoRoute(
+                        path: Routes.placeDetails,
+                        redirect: (context, state) async {
+                          final extraData = state.extra as Map<String, dynamic>?;
+                          final placeId = extraData?['placeId'];
+
+                          var appProvider = Provider.of<AppProvider>(context, listen: false);
+                          var placeDetailsProvider = Provider.of<PlaceDetailsProvider>(context, listen: false);
+
+                          List place = await Connection.getPlace(placeId, appProvider);
+                          placeDetailsProvider.setPlace(place);
+                          return null;
+                        },
+                        builder: (context, state) => PlaceDetailsPage(),
+                        onExit: (context) {
+                          var managePlacesProvider = Provider.of<ManagePlacesProvider>(context, listen: false);
+                          managePlacesProvider.loadManagePlacesPage(context);
+                          return true;
+                        },
+                      ),
+                    ]
                 ),
                 GoRoute(
                   path: Routes.manageResources,

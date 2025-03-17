@@ -490,6 +490,140 @@ class Connection {
     }
   }
 
+  // - - -   PLACES - - -
+
+  static Future<List> getPlaces(AppProvider appProvider) async {
+    final url = Uri.parse('http://' + serverAddr + '/get-places');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token}),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      List places = data['places'];
+      print(places);
+      return places;
+    } else {
+      return [];
+    }
+  }
+
+  static Future<bool> addPlace({required String name, required String description, required AppProvider appProvider}) async {
+    final url = Uri.parse('http://' + serverAddr + '/add-place');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': appProvider.email,
+        'token': appProvider.token,
+        'name': name,
+        'description': description
+      }),
+    );
+
+    final data = jsonDecode(response.body);
+    appProvider.setLogged(true);
+    appProvider.setToken(data['token']);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> updatePlace(AppProvider appProvider, {required int place_id, required String name, required String description}) async {
+    final url = Uri.parse('http://' + serverAddr + '/update-place');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(
+          {'email': appProvider.email,
+            'token': appProvider.token,
+            'place_id': place_id,
+            'name': name,
+            'description': description
+          }
+      ),
+    );
+
+    final data = jsonDecode(response.body);
+    appProvider.setLogged(true);
+    appProvider.setToken(data['token']);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<List> getPlace(int place_id, AppProvider appProvider) async {
+    final url = Uri.parse('http://' + serverAddr + '/get-place');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token, 'place_id': place_id}),
+    );
+
+    final data = jsonDecode(response.body);
+    appProvider.setLogged(true);
+    appProvider.setToken(data['token']);
+
+    if (response.statusCode == 200) {
+      List place = data['place'];
+      print(place);
+      return place;
+    } else {
+      return [];
+    }
+  }
+
+  static Future<bool> deletePlace(int place_id, AppProvider appProvider) async {
+    final url = Uri.parse('http://' + serverAddr + '/delete-place');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token, 'place_id': place_id}),
+    );
+
+    final data = jsonDecode(response.body);
+    appProvider.setLogged(true);
+    appProvider.setToken(data['token']);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<List> getPlaceList(AppProvider appProvider) async {
+    final url = Uri.parse('http://' + serverAddr + '/get-place-list');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token}),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      List places = data['places'];
+      print(places);
+      return places;
+    } else {
+      return [];
+    }
+  }
+
   // - - -   RESOURCES   - - -
 
   static Future<List> getResources(AppProvider appProvider) async {

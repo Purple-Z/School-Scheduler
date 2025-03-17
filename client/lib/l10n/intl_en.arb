@@ -36,6 +36,7 @@
   "manage_users" : "Manage Users",
   "manage_roles" : "Manage Roles",
   "manage_types" : "Manage Types",
+  "manage_places" : "Manage Places",
   "manage_resources" : "Manage Resources",
   "manage_go_to_page" : "Go to page",
 
@@ -136,6 +137,22 @@
   "type_add_new_type" : "Add New Type",
   "type_add_type" : "Add Type",
   "type_create_success" : "Type Created",
+
+
+
+  "place_name" : "Name",
+  "place_description" : "Description",
+  "place_new_place" : "New Place",
+  "place_details_for" : "Details For",
+  "place_update_place" : "Update Place",
+  "place_delete_place" : "Delete Place",
+  "place_update_success" : "Place Updated",
+  "place_delete_confirmation" : "Delete",
+  "place_delete_success" : "Place Deleted",
+  "place_error_occurred" : "Error Occurred",
+  "place_add_new_place" : "Add New Place",
+  "place_add_place" : "Add Place",
+  "place_create_success" : "Place Created",
 
 
 

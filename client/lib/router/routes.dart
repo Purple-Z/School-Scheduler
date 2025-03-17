@@ -37,6 +37,15 @@ class Routes {
   static const String typeDetails = 'typeDetails';
   static const String manage_Types_TypeDetails = '/manage/types/typeDetails';
 
+  static const String places = 'places';
+  static const String manage_Places = '/manage/places';
+
+  static const String addPlace = 'addPlace';
+  static const String manage_Places_AddPlace = '/manage/places/addPlace';
+
+  static const String placeDetails = 'placeDetails';
+  static const String manage_Places_PlaceDetails = '/manage/places/placeDetails';
+
   static const String manageResources = 'manageResources';
   static const String manage_ManageResources = '/manage/manageResources';
 
