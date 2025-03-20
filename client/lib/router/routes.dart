@@ -46,6 +46,15 @@ class Routes {
   static const String placeDetails = 'placeDetails';
   static const String manage_Places_PlaceDetails = '/manage/places/placeDetails';
 
+  static const String activities = 'activities';
+  static const String manage_Activities = '/manage/activities';
+
+  static const String addActivity = 'addActivity';
+  static const String manage_Activities_addActivity = '/manage/activities/addActivity';
+
+  static const String activityDetails = 'activityDetails';
+  static const String manage_Activities_activityDetails = '/manage/activities/activityDetails';
+
   static const String manageResources = 'manageResources';
   static const String manage_ManageResources = '/manage/manageResources';
 

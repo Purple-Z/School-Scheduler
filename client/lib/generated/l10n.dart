@@ -240,6 +240,16 @@ class S {
     );
   }
 
+  /// `Manage Activities`
+  String get manage_activities {
+    return Intl.message(
+      'Manage Activities',
+      name: 'manage_activities',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Manage Resources`
   String get manage_resources {
     return Intl.message(
@@ -1130,6 +1140,131 @@ class S {
     return Intl.message(
       'Place Created',
       name: 'place_create_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get activity_name {
+    return Intl.message('Name', name: 'activity_name', desc: '', args: []);
+  }
+
+  /// `Description`
+  String get activity_description {
+    return Intl.message(
+      'Description',
+      name: 'activity_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Activity`
+  String get activity_new_activity {
+    return Intl.message(
+      'New Activity',
+      name: 'activity_new_activity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Details For`
+  String get activity_details_for {
+    return Intl.message(
+      'Details For',
+      name: 'activity_details_for',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update Activity`
+  String get activity_update_activity {
+    return Intl.message(
+      'Update Activity',
+      name: 'activity_update_activity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Activity`
+  String get activity_delete_activity {
+    return Intl.message(
+      'Delete Activity',
+      name: 'activity_delete_activity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activity Updated`
+  String get activity_update_success {
+    return Intl.message(
+      'Activity Updated',
+      name: 'activity_update_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get activity_delete_confirmation {
+    return Intl.message(
+      'Delete',
+      name: 'activity_delete_confirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activity Deleted`
+  String get activity_delete_success {
+    return Intl.message(
+      'Activity Deleted',
+      name: 'activity_delete_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error Occurred`
+  String get activity_error_occurred {
+    return Intl.message(
+      'Error Occurred',
+      name: 'activity_error_occurred',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add New Activity`
+  String get activity_add_new_activity {
+    return Intl.message(
+      'Add New Activity',
+      name: 'activity_add_new_activity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Activity`
+  String get activity_add_activity {
+    return Intl.message(
+      'Add Activity',
+      name: 'activity_add_activity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activity Created`
+  String get activity_create_success {
+    return Intl.message(
+      'Activity Created',
+      name: 'activity_create_success',
       desc: '',
       args: [],
     );

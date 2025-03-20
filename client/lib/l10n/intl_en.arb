@@ -37,6 +37,7 @@
   "manage_roles" : "Manage Roles",
   "manage_types" : "Manage Types",
   "manage_places" : "Manage Places",
+  "manage_activities" : "Manage Activities",
   "manage_resources" : "Manage Resources",
   "manage_go_to_page" : "Go to page",
 
@@ -154,6 +155,20 @@
   "place_add_place" : "Add Place",
   "place_create_success" : "Place Created",
 
+
+  "activity_name" : "Name",
+  "activity_description" : "Description",
+  "activity_new_activity" : "New Activity",
+  "activity_details_for" : "Details For",
+  "activity_update_activity" : "Update Activity",
+  "activity_delete_activity" : "Delete Activity",
+  "activity_update_success" : "Activity Updated",
+  "activity_delete_confirmation" : "Delete",
+  "activity_delete_success" : "Activity Deleted",
+  "activity_error_occurred" : "Error Occurred",
+  "activity_add_new_activity" : "Add New Activity",
+  "activity_add_activity" : "Add Activity",
+  "activity_create_success" : "Activity Created",
 
 
   "resource_name" : "Name",

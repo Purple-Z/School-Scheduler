@@ -4,6 +4,11 @@ import 'package:client/pages/account/account_page.dart';
 import 'package:client/pages/account/login/login_page.dart';
 import 'package:client/pages/account/profile/profile_page.dart';
 import 'package:client/pages/account/settings/settings_page.dart';
+import 'package:client/pages/manage/activities/activityDetails/activityDetails_page.dart';
+import 'package:client/pages/manage/activities/activityDetails/activityDetails_provider.dart';
+import 'package:client/pages/manage/activities/addActivity/addActivity_page.dart';
+import 'package:client/pages/manage/activities/manageActivities_page.dart';
+import 'package:client/pages/manage/activities/manageActivities_provider.dart';
 import 'package:client/pages/manage/manage_page.dart';
 import 'package:client/pages/manage/places/addPlace/addPlace_page.dart';
 import 'package:client/pages/manage/places/managePlaces_provider.dart';
@@ -241,6 +246,41 @@ final router = GoRouter(
                         onExit: (context) {
                           var managePlacesProvider = Provider.of<ManagePlacesProvider>(context, listen: false);
                           managePlacesProvider.loadManagePlacesPage(context);
+                          return true;
+                        },
+                      ),
+                    ]
+                ),
+                GoRoute(
+                    path: Routes.activities,
+                    builder: (context, state) => ManageActivitiesPage(),
+                    routes: [
+                      GoRoute(
+                        path: Routes.addActivity,
+                        builder: (context, state) => AddActivityPage(),
+                        onExit: (context) {
+                          var manageActivitiesProvider = Provider.of<ManageActivitiesProvider>(context, listen: false);
+                          manageActivitiesProvider.loadManageActivitiesPage(context);
+                          return true;
+                        },
+                      ),
+                      GoRoute(
+                        path: Routes.activityDetails,
+                        redirect: (context, state) async {
+                          final extraData = state.extra as Map<String, dynamic>?;
+                          final activityId = extraData?['activityId'];
+
+                          var appProvider = Provider.of<AppProvider>(context, listen: false);
+                          var activityDetailsProvider = Provider.of<ActivityDetailsProvider>(context, listen: false);
+
+                          List activity = await Connection.getActivity(activityId, appProvider);
+                          activityDetailsProvider.setActivity(activity);
+                          return null;
+                        },
+                        builder: (context, state) => ActivityDetailsPage(),
+                        onExit: (context) {
+                          var manageActivitiesProvider = Provider.of<ManageActivitiesProvider>(context, listen: false);
+                          manageActivitiesProvider.loadManageActivitiesPage(context);
                           return true;
                         },
                       ),

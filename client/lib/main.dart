@@ -2,6 +2,9 @@ import 'package:client/pages/account/account_provider.dart';
 import 'package:client/pages/account/login/login_provider.dart';
 import 'package:client/pages/account/profile/profile_provider.dart';
 import 'package:client/pages/account/settings/settings_provider.dart';
+import 'package:client/pages/manage/activities/activityDetails/activityDetails_provider.dart';
+import 'package:client/pages/manage/activities/addActivity/addActivity_provider.dart';
+import 'package:client/pages/manage/activities/manageActivities_provider.dart';
 import 'package:client/pages/manage/manage_provider.dart';
 import 'package:client/pages/manage/places/addPlace/addPlace_provider.dart';
 import 'package:client/pages/manage/places/managePlaces_provider.dart';
@@ -69,6 +72,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ManagePlacesProvider()),
         ChangeNotifierProvider(create: (_) => AddPlaceProvider()),
         ChangeNotifierProvider(create: (_) => PlaceDetailsProvider()),
+        ChangeNotifierProvider(create: (_) => ManageActivitiesProvider()),
+        ChangeNotifierProvider(create: (_) => AddActivityProvider()),
+        ChangeNotifierProvider(create: (_) => ActivityDetailsProvider()),
       ],
       child: Consumer<AppProvider>(
         builder: (context, dataProvider, child) {

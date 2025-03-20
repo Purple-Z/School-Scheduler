@@ -1481,7 +1481,6 @@ def get_activity():
 
 
 
-
     try:
         sql = f'''
             SELECT * FROM activities WHERE id = '{activity_id}'
@@ -1500,7 +1499,7 @@ def get_activity():
         {
             "token": token_for(user_id)
         }
-    ), 401
+    ), 402
     
 @app.route('/update-activity', methods=['POST'])
 def update_activity():

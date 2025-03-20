@@ -680,7 +680,7 @@ class Connection {
       body: jsonEncode(
           {'email': appProvider.email,
             'token': appProvider.token,
-            'place_id': activity_id,
+            'activity_id': activity_id,
             'name': name,
             'description': description
           }

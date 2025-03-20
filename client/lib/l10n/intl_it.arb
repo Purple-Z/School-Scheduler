@@ -37,6 +37,7 @@
   "manage_roles" : "Gestisci Ruoli",
   "manage_types" : "Gestisci Tipi",
   "manage_places" : "Gestisci Luoghi",
+  "manage_activities" : "Gestisci Attività",
   "manage_resources" : "Gestisci Risorse",
   "manage_go_to_page" : "Vai alla pagina",
 
@@ -154,6 +155,20 @@
   "place_add_place" : "Nuovo Luogo",
   "place_create_success" : "Luogo Creato",
 
+
+  "activities_name" : "Nome",
+  "activities_description" : "Descrizione",
+  "activities_new_place" : "Nuova Attività",
+  "activities_details_for" : "Dettagli Per",
+  "activities_update_place" : "Aggiorna Attività",
+  "activities_delete_place" : "Elimina Attività",
+  "activities_update_success" : "Attività Aggiornata",
+  "activities_delete_confirmation" : "Elimina",
+  "activities_delete_success" : "Attività Eliminata",
+  "activities_error_occurred" : "Si è verificato un errore",
+  "activities_add_new_place" : "Aggiungi Nuova Attività",
+  "activities_add_place" : "Nuova Attività",
+  "activities_create_success" : "Attività Creata",
 
 
   "resource_name" : "Nome",
