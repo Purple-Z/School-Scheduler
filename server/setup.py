@@ -110,6 +110,15 @@ class setupDB():
                     );
             ''')
 
+             # CREATE TABLE   - - -   activities   - - -
+            mycursor.execute('''
+                    CREATE TABLE IF NOT EXISTS activities (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        name VARCHAR(255) NOT NULL,
+                        description TEXT
+                    );
+            ''')
+
             # CREATE TABLE   - - -   resources   - - -
             mycursor.execute('''
                     CREATE TABLE IF NOT EXISTS resources (

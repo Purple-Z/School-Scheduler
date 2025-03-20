@@ -1370,6 +1370,263 @@ def get_place_list():
         }
     ), 200
 
+
+# - - -   activities   - - -
+
+@app.route('/get-activities', methods=['POST'])
+def get_activities():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'view_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    user_id = getIdFromEmail(email)
+
+    activities_content = db.fetchSQL("SELECT * FROM activities")
+
+
+
+
+    return jsonify(
+        {
+            "activities": activities_content,
+            "token": token_for(user_id)
+        }
+    ), 200
+
+@app.route('/add-activity', methods=['POST'])
+def add_activity():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    name = data.get('name')
+    description = data.get('description')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'create_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    user_id = getIdFromEmail(email)
+
+
+    try:
+        sql_insert = f'''
+        INSERT INTO activities
+        (id, name, description)
+        VALUES (
+            0,
+            '{name}', 
+            '{description}'
+        )
+        '''
+        db.executeSQL(sql_insert)
+
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 200
+    except Exception as e:
+        print(e)
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 500
+
+@app.route('/get-activity', methods=['POST'])
+def get_activity():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    activity_id = data.get('activity_id')
+
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'view_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    user_id = getIdFromEmail(email)
+
+
+
+
+    try:
+        sql = f'''
+            SELECT * FROM activities WHERE id = '{activity_id}'
+        '''    
+        result = db.fetchSQL(sql)
+        activity_content = result[0]
+
+        return jsonify(
+        {
+            "activity": activity_content,
+            "token": token_for(user_id)
+        }
+    ), 200
+    except:
+        return jsonify(
+        {
+            "token": token_for(user_id)
+        }
+    ), 401
+    
+@app.route('/update-activity', methods=['POST'])
+def update_activity():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    activity_id = data.get('activity_id')
+    name = data.get('name')
+    description = data.get('description')
+
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'edit_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+
+    user_id = getIdFromEmail(email)
+
+    sql_update = f'''
+    UPDATE activities SET
+        name = '{name}',
+        description = '{description}'
+    WHERE id = {activity_id}
+    '''
+
+
+    try:
+        db.executeSQL(sql_update)
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 200
+    except:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 401
+    
+@app.route('/delete-activity', methods=['POST'])
+def delete_activity():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    activity_id = data.get('activity_id')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'delete_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    user_id = getIdFromEmail(email)
+
+
+
+
+    try:
+        sql_delete = f'''
+        DELETE FROM activities
+        WHERE id = {activity_id}
+        '''
+
+        db.executeSQL(sql_delete)
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 200
+    except:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 401
+
+@app.route('/get-activity-list', methods=['POST'])
+def get_activity_list():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'view_resources'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+
+    user_id = getIdFromEmail(email)
+
+    activities = db.fetchSQL("SELECT name, description FROM activities")
+
+    return jsonify(
+        {
+            "activities": activities,
+            "token": token_for(user_id)
+        }
+    ), 200
+
+
 # - - -   resources   - - -
 
 @app.route('/get-resources', methods=['POST'])

@@ -624,6 +624,141 @@ class Connection {
     }
   }
 
+
+  // - - -   ACTIVITIES - - -
+
+  static Future<List> getActivities(AppProvider appProvider) async {
+    final url = Uri.parse('http://' + serverAddr + '/get-activities');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token}),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      List activities = data['activities'];
+      print(activities);
+      return activities;
+    } else {
+      return [];
+    }
+  }
+
+  static Future<bool> addActivity({required String name, required String description, required AppProvider appProvider}) async {
+    final url = Uri.parse('http://' + serverAddr + '/add-activity');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': appProvider.email,
+        'token': appProvider.token,
+        'name': name,
+        'description': description
+      }),
+    );
+
+    final data = jsonDecode(response.body);
+    appProvider.setLogged(true);
+    appProvider.setToken(data['token']);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> updateActivity(AppProvider appProvider, {required int activity_id, required String name, required String description}) async {
+    final url = Uri.parse('http://' + serverAddr + '/update-activity');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(
+          {'email': appProvider.email,
+            'token': appProvider.token,
+            'place_id': activity_id,
+            'name': name,
+            'description': description
+          }
+      ),
+    );
+
+    final data = jsonDecode(response.body);
+    appProvider.setLogged(true);
+    appProvider.setToken(data['token']);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<List> getActivity(int activity_id, AppProvider appProvider) async {
+    final url = Uri.parse('http://' + serverAddr + '/get-activity');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token, 'activity_id': activity_id}),
+    );
+
+    final data = jsonDecode(response.body);
+    appProvider.setLogged(true);
+    appProvider.setToken(data['token']);
+
+    if (response.statusCode == 200) {
+      List activity = data['activity'];
+      print(activity);
+      return activity;
+    } else {
+      return [];
+    }
+  }
+
+  static Future<bool> deleteActivity(int activity_id, AppProvider appProvider) async {
+    final url = Uri.parse('http://' + serverAddr + '/delete-activity');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token, 'activity_id': activity_id}),
+    );
+
+    final data = jsonDecode(response.body);
+    appProvider.setLogged(true);
+    appProvider.setToken(data['token']);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<List> getActivityList(AppProvider appProvider) async {
+    final url = Uri.parse('http://' + serverAddr + '/get-activity-list');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token}),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      List activities = data['activities'];
+      print(activities);
+      return activities;
+    } else {
+      return [];
+    }
+  }
+
   // - - -   RESOURCES   - - -
 
   static Future<List> getResources(AppProvider appProvider) async {
