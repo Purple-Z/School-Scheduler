@@ -1678,6 +1678,8 @@ def add_resource():
     name = data.get('name')
     description = data.get('description')
     quantity = data.get('quantity')
+    auto_accept = data.get('auto_accept')
+    over_booking = data.get('over_booking')
     type = data.get('type')
     place = data.get('place')
     activity = data.get('activity')
@@ -1730,7 +1732,7 @@ def add_resource():
     try:
         sql_insert = f'''
         INSERT INTO resources
-        (id, name, description, quantity, type_id, place_id, activity_id, slot)
+        (id, name, description, quantity, type_id, place_id, activity_id, slot, auto_accept, overbooking)
         VALUES (
             0,
             '{name}', 
@@ -1739,12 +1741,12 @@ def add_resource():
             {type_id},
             {'null' if place_id is None else place_id},
             {'null' if activity_id is None else activity_id},
-            {'null' if slot is None else slot}
+            {'null' if slot is None else slot},
+            {auto_accept},
+            {over_booking}
         )
         '''
-        print('till here ok')
         db.executeSQL(sql_insert)
-        print('till here ok')
 
         resource_id = db.fetchSQL(
                 f'''SELECT id FROM resources WHERE name = '{name}\''''
@@ -1764,6 +1766,7 @@ def add_resource():
                 {resource_permissions[role][1]},
                 {resource_permissions[role][2]}, 
                 {resource_permissions[role][3]},
+                {resource_permissions[role][4]},
                 {role_id},
                 {resource_id}
             )
@@ -1844,6 +1847,8 @@ def get_resource():
         resource[4] = type_name
         resource[5] = place_name
         resource[6] = activities_name
+        resource[8] = resource[8]==1
+        resource[9] = resource[9]==1
 
         return jsonify(
         {
@@ -1868,6 +1873,8 @@ def update_resource():
     name = data.get('name')
     description = data.get('description')
     quantity = data.get('quantity')
+    auto_accept = data.get('auto_accept')
+    over_booking = data.get('over_booking')
     type = data.get('type')
     resource_permissions = data.get('resource_permissions')
 
@@ -1904,7 +1911,9 @@ def update_resource():
         name = '{name}',
         description = '{description}',
         quantity = {quantity},
-        type_id = {type_id}
+        type_id = {type_id},
+        auto_accept = {auto_accept},
+        overbooking = {over_booking}
     WHERE id = {resource_id}
     '''
 
@@ -1930,6 +1939,7 @@ def update_resource():
                 {resource_permissions[role][1]},
                 {resource_permissions[role][2]}, 
                 {resource_permissions[role][3]},
+                {resource_permissions[role][4]},
                 {role_id},
                 {resource_id}
             )
@@ -2037,6 +2047,7 @@ def get_resource_permission():
         remove = False
         edit = False
         book = False
+        can_accept = False
 
         if len(permission) != 0:
             permission = permission[0]
@@ -2045,10 +2056,11 @@ def get_resource_permission():
             remove = permission[2]==1
             edit = permission[3]==1
             book = permission[4]==1
+            can_accept = permission[5]==1
 
         
 
-        roles_permission[role] = [view, remove, edit, book]
+        roles_permission[role] = [view, remove, edit, book, can_accept]
 
 
     

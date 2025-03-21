@@ -130,6 +130,8 @@ class setupDB():
                         place_id INT,
                         activity_id INT,
                         slot INT,
+                        auto_accept BOOLEAN,
+                        overbooking BOOLEAN,
                         FOREIGN KEY (type_id) REFERENCES types(id) ON DELETE SET NULL,
                         FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE SET NULL,
                         FOREIGN KEY (activity_id) REFERENCES activities(id) ON DELETE SET NULL
@@ -144,6 +146,7 @@ class setupDB():
                         remove BOOLEAN DEFAULT FALSE,
                         edit BOOLEAN DEFAULT FALSE,
                         book BOOLEAN DEFAULT FALSE,
+                        can_accept BOOLEAN,
                         role_id INT,
                         resource_id INT,
                         FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
