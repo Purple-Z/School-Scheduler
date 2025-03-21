@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'app_provider.dart';
 
 class Connection {
-  static String serverAddr = "192.168.178.32:5000";
+  static String serverAddr = "192.168.66.78:5000";
 
   static Future<bool> login(String email, String password, AppProvider appProvider) async {
     final url = Uri.parse('http://' + serverAddr + '/login');
@@ -782,7 +782,18 @@ class Connection {
     }
   }
 
-  static Future<bool> addResource({required String name, required String description, required int quantity, required String type, required AppProvider appProvider, required Map resource_permissions}) async {
+  static Future<bool> addResource({
+    required String name,
+    required String description,
+    required int quantity,
+    required String type,
+    required String place,
+    required String activity,
+    required int slot,
+    required List<String> referents,
+    required AppProvider appProvider,
+    required Map resource_permissions
+  }) async {
     final url = Uri.parse('http://' + serverAddr + '/add-resource');
     final response = await http.post(
       url,
@@ -794,6 +805,10 @@ class Connection {
         'description': description,
         'quantity': quantity,
         'type': type,
+        'place': place,
+        'activity': activity,
+        'slot': slot,
+        'referents': referents,
         'resource_permissions': resource_permissions
       }),
     );

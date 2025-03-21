@@ -8,6 +8,8 @@ import 'package:client/pages/manage/resources/resourceDetails/resourceDetails_pr
 import 'package:client/router/layout_scaffold.dart';
 import 'package:client/router/routes.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
+import 'package:drop_down_list/drop_down_list.dart';
+import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -99,23 +101,210 @@ class _ResourceDetailsState extends State<ResourceDetails> {
 
             const SizedBox(height: 30),
 
-            Text(AppLocalizations.of(context)!.resource_type, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(child: SizedBox()),
+                Column(
+                  children: [
+                    Text("Place", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
 
-            DropdownMenu<String>(
-              //enabled: appProvider.edit_resources
-              enabled: false,
-              initialSelection: type,
-              onSelected: (String? value) {
-                // This is called when the user selects an item.
-                setState(() {
-                  type = value!;
-                });
-              },
-              dropdownMenuEntries: resourceDetailsProvider.types
-                  .map<DropdownMenuEntry<String>>((type) => DropdownMenuEntry(value: type[0], label: type[0]))
-                  .toList(),
+
+                    ElevatedButton(
+                      onPressed: () async {
+                        List<SelectedListItem<String>> selections = [];
+                        for (var data in resourceDetailsProvider.places){
+                          selections.add(SelectedListItem<String>(data: data[0]));
+                        }
+                        DropDownState<String>(
+                          dropDown: DropDown<String>(
+                            data: selections,
+                            onSelected: (selectedItems) {
+                              List<String> list = [];
+                              for (var item in selectedItems) {
+                                list.add(item.data);
+                              }
+
+                              resourceDetailsProvider.changePlaceValue(list.first);
+                            },
+                          ),
+                        ).showModal(context);
+                      },
+                      child: Text(
+                        resourceDetailsProvider.place,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      style: ButtonStyle(
+                          shadowColor: WidgetStatePropertyAll(Colors.transparent)
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(child: SizedBox())
+              ],
             ),
+            Row(
+              children: [
+                Expanded(child: SizedBox()),
+                Column(
+                  children: [
+                    Text("Activity", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+
+
+                    ElevatedButton(
+                      onPressed: () async {
+                        List<SelectedListItem<String>> selections = [];
+                        for (var data in resourceDetailsProvider.activities){
+                          selections.add(SelectedListItem<String>(data: data[0]));
+                        }
+                        DropDownState<String>(
+                          dropDown: DropDown<String>(
+                            data: selections,
+                            onSelected: (selectedItems) {
+                              List<String> list = [];
+                              for (var item in selectedItems) {
+                                list.add(item.data);
+                              }
+
+                              resourceDetailsProvider.changeActivityValue(list.first);
+                            },
+                          ),
+                        ).showModal(context);
+                      },
+                      child: Text(
+                        resourceDetailsProvider.activity,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      style: ButtonStyle(
+                          shadowColor: WidgetStatePropertyAll(Colors.transparent)
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(child: SizedBox())
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(child: SizedBox()),
+                Column(
+                  children: [
+                    Text(AppLocalizations.of(context)!.resource_type, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+
+
+                    ElevatedButton(
+                      onPressed: () async {
+                        List<SelectedListItem<String>> selections = [];
+                        for (var data in resourceDetailsProvider.types){
+                          selections.add(SelectedListItem<String>(data: data[0]));
+                        }
+                        DropDownState<String>(
+                          dropDown: DropDown<String>(
+                            data: selections,
+                            onSelected: (selectedItems) {
+                              List<String> list = [];
+                              for (var item in selectedItems) {
+                                list.add(item.data);
+                              }
+
+                              resourceDetailsProvider.changeTypeValue(list.first);
+                            },
+                          ),
+                        ).showModal(context);
+                      },
+                      child: Text(
+                        resourceDetailsProvider.type,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      style: ButtonStyle(
+                          shadowColor: WidgetStatePropertyAll(Colors.transparent)
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(child: SizedBox())
+              ],
+            ),
+
+            ExpansionTile(
+
+              title: Text('Referents', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+              controlAffinity: ListTileControlAffinity.leading,
+              children: <Widget>[
+                Row(
+                  children: [
+                    Expanded(child: SizedBox()),
+                    Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            List<SelectedListItem<ListItem>> selections = [];
+                            for (List user in resourceDetailsProvider.users){
+                              selections.add(SelectedListItem<ListItem>(
+                                  data: ListItem(
+                                    display: (user[1]+', '+user[2]+'\n'+user[3]),
+                                    value: user[3],
+                                  ),
+                                  isSelected: user.last
+                              ));
+                            }
+                            DropDownState<ListItem>(
+                              dropDown: DropDown<ListItem>(
+                                enableMultipleSelection: true,
+                                data: selections,
+                                onSelected: (selectedItems) {
+                                  List<String> list = [];
+                                  for (var item in selectedItems) {
+                                    list.add(item.data.value);
+                                  }
+
+                                  resourceDetailsProvider.changeUsersValue(list);
+                                },
+                              ),
+                            ).showModal(context);
+                          },
+                          style: const ButtonStyle(
+                              shadowColor: WidgetStatePropertyAll(Colors.transparent),
+                              overlayColor: WidgetStatePropertyAll(Colors.transparent)
+                          ),
+                          child: Column(
+                            children: [
+                              if(resourceDetailsProvider.users.every((riga) => riga[riga.length-1] == false))
+                                Text('Empty list, tap to add'),
+                              for (var user in resourceDetailsProvider.users)
+                                if (user.last == true)
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          user[1]+' '+user[2],
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Theme.of(context).colorScheme.primary
+                                          ),
+                                        ),
+                                        Text(
+                                          user[3],
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Theme.of(context).colorScheme.primary
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Expanded(child: SizedBox())
+                  ],
+                ),
+              ],
+            ),
+
+
 
             const SizedBox(height: 30),
 
@@ -278,5 +467,17 @@ class _ResourceDetailsState extends State<ResourceDetails> {
         ),
       ),
     );
+  }
+}
+
+class ListItem {
+  final String display;
+  final dynamic value;
+
+  ListItem({required this.display, required this.value});
+  @override
+  String toString() {
+    // TODO: implement toString
+    return display;
   }
 }

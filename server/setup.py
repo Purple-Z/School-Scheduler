@@ -127,7 +127,12 @@ class setupDB():
                         description TEXT,
                         quantity INT NOT NULL,
                         type_id INT,
-                        FOREIGN KEY (type_id) REFERENCES types(id) ON DELETE SET NULL
+                        place_id INT,
+                        activity_id INT,
+                        slot INT,
+                        FOREIGN KEY (type_id) REFERENCES types(id) ON DELETE SET NULL,
+                        FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE SET NULL,
+                        FOREIGN KEY (activity_id) REFERENCES activities(id) ON DELETE SET NULL
                     );
             ''')
 
@@ -167,9 +172,9 @@ class setupDB():
                         end DATETIME NOT NULL,
                         quantity INT NOT NULL,
                         user_id INT,
-                        availability_id INT,
+                        resource_id INT,
                         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-                        FOREIGN KEY (availability_id) REFERENCES availability(id) ON DELETE CASCADE
+                        FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE
                     );
             ''')
 
@@ -187,7 +192,7 @@ class setupDB():
             mycursor = mydb.cursor()
 
             # Crea il database school_scheduler
-            mycursor.execute("CREATE DATABASE school_scheduler")
+            mycursor.execute("CREATE DATABASE if not exists school_scheduler")
 
             # Seleziona il database register
             mycursor.execute("USE school_scheduler")

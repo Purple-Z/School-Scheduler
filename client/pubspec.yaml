@@ -29,6 +29,7 @@ dependencies:
   fl_chart: ^0.63.0
   syncfusion_flutter_charts: ^27.1.56
   dark_light_button: ^0.0.2
+  drop_down_list: ^2.0.0
 
 dev_dependencies:
   flutter_test:

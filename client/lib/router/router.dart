@@ -296,9 +296,15 @@ final router = GoRouter(
 
                         var appProvider = Provider.of<AppProvider>(context, listen: false);
                         List types = await Connection.getTypeList(appProvider);
+                        List places = await Connection.getPlaceList(appProvider);
+                        List activities = await Connection.getActivityList(appProvider);
+                        List users = await Connection.getUsers(appProvider);
 
                         var addResourceProvider = Provider.of<AddResourceProvider>(context, listen: false);
                         addResourceProvider.setTypes(types);
+                        addResourceProvider.setPlaces(places);
+                        addResourceProvider.setActivities(activities);
+                        addResourceProvider.setUsers(users);
 
                         List roles_with_description = await Connection.getRoleList(appProvider);
                         List<String> roles = [];
@@ -327,11 +333,19 @@ final router = GoRouter(
                         var appProvider = Provider.of<AppProvider>(context, listen: false);
                         var resourceDetailsProvider = Provider.of<ResourceDetailsProvider>(context, listen: false);
 
-                        List resource = await Connection.getResource(resourceId, appProvider);
-                        resourceDetailsProvider.setResource(resource);
 
                         List types = await Connection.getTypeList(appProvider);
+                        List places = await Connection.getPlaceList(appProvider);
+                        List activities = await Connection.getActivityList(appProvider);
+                        List users = await Connection.getUsers(appProvider);
+                        List resource = await Connection.getResource(resourceId, appProvider);
+
+
                         resourceDetailsProvider.setTypes(types);
+                        resourceDetailsProvider.setPlaces(places);
+                        resourceDetailsProvider.setActivities(activities);
+                        resourceDetailsProvider.setUsers(users);
+                        resourceDetailsProvider.setResource(resource);
 
                         List roles_with_description = await Connection.getRoleList(appProvider);
                         List<String> roles = [];

@@ -1655,7 +1655,7 @@ def get_resources():
     for resource in resources_content:
         resource = list(resource)
         sql = f'''
-            SELECT name FROM types WHERE id = '{resource[len(resource)-1]}'
+            SELECT name FROM types WHERE id = '{resource[4]}'
         '''    
         result = db.fetchSQL(sql)
         type_name = result[0][0]
@@ -1679,6 +1679,10 @@ def add_resource():
     description = data.get('description')
     quantity = data.get('quantity')
     type = data.get('type')
+    place = data.get('place')
+    activity = data.get('activity')
+    slot = data.get('slot')
+    referents = data.get('referents')
     resource_permissions = data.get('resource_permissions')
     
     if not checkUserToken(email, token):
@@ -1708,20 +1712,39 @@ def add_resource():
     
     type_id = result[0][0]
 
+    sql = "SELECT id FROM places WHERE name = '" + place + "'"
+    result = db.fetchSQL(sql)
+    place_id = None
+    if len(result) != 0:
+        place_id = result[0][0]
+
+    sql = "SELECT id FROM activities WHERE name = '" + activity + "'"
+    result = db.fetchSQL(sql)
+    activity_id = None
+    if len(result) != 0:
+        activity_id = result[0][0]
+
+    if slot == -1:
+        slot = None
 
     try:
         sql_insert = f'''
         INSERT INTO resources
-        (id, name, description, quantity, type_id)
+        (id, name, description, quantity, type_id, place_id, activity_id, slot)
         VALUES (
             0,
             '{name}', 
             '{description}',
             {quantity}, 
-            {type_id}
+            {type_id},
+            {'null' if place_id is None else place_id},
+            {'null' if activity_id is None else activity_id},
+            {'null' if slot is None else slot}
         )
         '''
+        print('till here ok')
         db.executeSQL(sql_insert)
+        print('till here ok')
 
         resource_id = db.fetchSQL(
                 f'''SELECT id FROM resources WHERE name = '{name}\''''
@@ -1793,16 +1816,34 @@ def get_resource():
         resource_content = result[0]
 
         sql = f'''
-            SELECT name FROM types WHERE id = '{resource_content[len(resource_content)-1]}'
+            SELECT name FROM types WHERE id = '{resource_content[4]}'
         '''    
         result = db.fetchSQL(sql)
         type_name = result[0][0]
+
+        sql = f'''
+            SELECT name FROM places WHERE id = '{resource_content[5]}'
+        '''    
+        result = db.fetchSQL(sql)
+        place_name = ''
+        if len(result) != 0:
+            place_name = result[0][0]
+
+        sql = f'''
+            SELECT name FROM activities WHERE id = '{resource_content[6]}'
+        '''    
+        result = db.fetchSQL(sql)
+        activities_name = ''
+        if len(result) != 0:
+            activities_name = result[0][0]
 
         resource = []
         for quality in resource_content:
             resource.append(quality)
 
-        resource[len(resource)-1] = type_name
+        resource[4] = type_name
+        resource[5] = place_name
+        resource[6] = activities_name
 
         return jsonify(
         {
@@ -1810,7 +1851,8 @@ def get_resource():
             "token": token_for(user_id)
         }
     ), 200
-    except:
+    except Exception as e:
+        print(e)
         return jsonify(
         {
             "token": token_for(user_id)
@@ -2476,13 +2518,13 @@ def get_resources_feed():
 
         type_name = db.fetchSQL(
             f'''
-                SELECT name FROM types WHERE id = {resource[len(resource)-1]}
+                SELECT name FROM types WHERE id = {resource[4]}
             '''
         )[0][0]
         
         resource = list(resource)
 
-        resource[len(resource)-1] = type_name
+        resource[4] = type_name
 
         resources.append(resource)
 
@@ -2540,7 +2582,7 @@ def get_resource_for_booking():
             {
                 'message': 'Access denied'
             }
-            ), 401
+            ), 402
     
 
 
@@ -2552,7 +2594,7 @@ def get_resource_for_booking():
         resource_content = result[0]
 
         sql = f'''
-            SELECT name FROM types WHERE id = '{resource_content[len(resource_content)-1]}'
+            SELECT name FROM types WHERE id = '{resource_content[4]}'
         '''    
         result = db.fetchSQL(sql)
         type_name = result[0][0]
@@ -2561,7 +2603,8 @@ def get_resource_for_booking():
         for quality in resource_content:
             resource.append(quality)
 
-        resource[len(resource)-1] = type_name
+        resource[4] = type_name
+
 
 
         user_id = getIdFromEmail(email)
@@ -2611,7 +2654,7 @@ def get_resource_for_booking():
         {
             #"token": token_for(user_id)
         }
-    ), 401
+    ), 403
     
 @app.route('/check-bookings-quantity', methods=['POST'])
 def check_bookings_quantity():
@@ -2935,6 +2978,7 @@ def selectAvailabilityRecordsFromShift(start, end, resource_id, remove_availabil
     return shifts_content
 
 def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1):
+
     sql = f'''
     SELECT * FROM availability WHERE
 
@@ -2968,6 +3012,7 @@ def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1):
     AND
     resource_id = {resource_id}
     '''
+    print('here ok', resource_id)
     result = db.fetchSQL(sql)
 
     for record in result:
