@@ -103,10 +103,50 @@ class _ResourceDetailsState extends State<ResourceDetails> {
 
             Row(
               children: [
+                Checkbox(
+                  checkColor: Colors.white,
+                  value: resourceDetailsProvider.resource[8],
+                  onChanged: (bool? value) {
+                    setState(() {
+                      resourceDetailsProvider.resource[8] = value!;
+                    });
+                  },
+                ),
+                SizedBox(width: 20,),
+                Text(
+                  'Auto Accept',
+                  style: TextStyle(fontSize: 20)
+                )
+              ],
+            ),
+
+            Row(
+              children: [
+                Checkbox(
+                  checkColor: Colors.white,
+                  value: resourceDetailsProvider.resource[9],
+                  onChanged: (bool? value) {
+                    setState(() {
+                      resourceDetailsProvider.resource[9] = value!;
+                    });
+                  },
+                ),
+                SizedBox(width: 20,),
+                Text(
+                  'Allow Over Booking',
+                  style: TextStyle(fontSize: 20)
+                )
+              ],
+            ),
+
+            const SizedBox(height: 30),
+
+            Row(
+              children: [
                 Expanded(child: SizedBox()),
                 Column(
                   children: [
-                    Text("Place", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                    Text(AppLocalizations.of(context)!.resource_place, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
 
 
                     ElevatedButton(
@@ -147,7 +187,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                 Expanded(child: SizedBox()),
                 Column(
                   children: [
-                    Text("Activity", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                    Text(AppLocalizations.of(context)!.resource_activity, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
 
 
                     ElevatedButton(
@@ -227,7 +267,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
 
             ExpansionTile(
 
-              title: Text('Referents', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+              title: Text(AppLocalizations.of(context)!.resource_referents, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
                 Row(
@@ -269,7 +309,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                           child: Column(
                             children: [
                               if(resourceDetailsProvider.users.every((riga) => riga[riga.length-1] == false))
-                                Text('Empty list, tap to add'),
+                                Text(AppLocalizations.of(context)!.resource_referents_empty),
                               for (var user in resourceDetailsProvider.users)
                                 if (user.last == true)
                                   Padding(
@@ -334,6 +374,11 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                     buildSwitch(context, AppLocalizations.of(context)!.resource_book, entry.value[3], (value) {
                       setState(() {
                         entry.value[3] = value;
+                      });
+                    }, isEditable: appProvider.edit_resources),
+                    buildSwitch(context, AppLocalizations.of(context)!.resource_can_accept, entry.value[4], (value) {
+                      setState(() {
+                        entry.value[4] = value;
                       });
                     }, isEditable: appProvider.edit_resources),
                   ],
@@ -403,6 +448,8 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                             name: nameController.text,
                             description: descriptionController.text,
                             quantity: int.tryParse(quantityController.text) ?? 0,
+                            auto_accept: resourceDetailsProvider.resource[8],
+                            over_booking: resourceDetailsProvider.resource[9],
                             type: type,
                             resource_permissions: resourceDetailsProvider.resource_permission
                         )){

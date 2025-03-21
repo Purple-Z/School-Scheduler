@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 class ResourceDetailsProvider extends ChangeNotifier {
@@ -33,8 +35,8 @@ class ResourceDetailsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  setPlaces (List c_places) {
-    c_places.insert(0, ['Not Specified', '']);
+  setPlaces (List c_places, BuildContext context) {
+    c_places.insert(0, [AppLocalizations.of(context)!.resource_not_specified, '']);
     places = c_places;
     place = c_places.first[0];
     notifyListeners();
@@ -45,8 +47,8 @@ class ResourceDetailsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  setActivities (List c_activities) {
-    c_activities.insert(0, ['Not Specified', '']);
+  setActivities (List c_activities, BuildContext context) {
+    c_activities.insert(0, [AppLocalizations.of(context)!.resource_not_specified, '']);
     activities = c_activities;
     activity = c_activities.first[0];
     notifyListeners();

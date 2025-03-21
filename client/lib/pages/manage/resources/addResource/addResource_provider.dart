@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 class AddResourceProvider extends ChangeNotifier {
@@ -10,6 +12,9 @@ class AddResourceProvider extends ChangeNotifier {
   var activity;
   List users = [];
   Map resource_permission = {};
+  bool auto_accept_check = false;
+  bool over_bookig_check = false;
+  bool slot_chek = false;
 
   loadAddResourcePage() async {
     notifyListeners();
@@ -31,8 +36,8 @@ class AddResourceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  setPlaces (List c_places) {
-    c_places.insert(0, ['Not Specified', '']);
+  setPlaces (List c_places, BuildContext context) {
+    c_places.insert(0, [AppLocalizations.of(context)!.resource_not_specified, '']);
     places = c_places;
     place = c_places.first[0];
     notifyListeners();
@@ -43,8 +48,8 @@ class AddResourceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  setActivities (List c_activities) {
-    c_activities.insert(0, ['Not Specified', '']);
+  setActivities (List c_activities, BuildContext context) {
+    c_activities.insert(0, [AppLocalizations.of(context)!.resource_not_specified, '']);
     activities = c_activities;
     activity = c_activities.first[0];
     notifyListeners();

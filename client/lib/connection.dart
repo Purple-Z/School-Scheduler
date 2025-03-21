@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'app_provider.dart';
 
 class Connection {
-  static String serverAddr = "192.168.66.78:5000";
+  static String serverAddr = "192.168.178.32:5000";
 
   static Future<bool> login(String email, String password, AppProvider appProvider) async {
     final url = Uri.parse('http://' + serverAddr + '/login');
@@ -786,6 +786,8 @@ class Connection {
     required String name,
     required String description,
     required int quantity,
+    required bool auto_accept,
+    required bool over_booking,
     required String type,
     required String place,
     required String activity,
@@ -804,6 +806,8 @@ class Connection {
         'name': name,
         'description': description,
         'quantity': quantity,
+        'auto_accept': auto_accept,
+        'over_booking': over_booking,
         'type': type,
         'place': place,
         'activity': activity,
@@ -845,7 +849,7 @@ class Connection {
     }
   }
 
-  static Future<bool> updateResource(AppProvider appProvider, {required int resource_id, required String name, required String description, required int quantity, required String type, required Map resource_permissions}) async {
+  static Future<bool> updateResource(AppProvider appProvider, {required int resource_id, required String name, required String description, required int quantity, required bool auto_accept, required bool over_booking, required String type, required Map resource_permissions}) async {
     final url = Uri.parse('http://' + serverAddr + '/update-resource');
     final response = await http.post(
       url,
@@ -857,6 +861,8 @@ class Connection {
             'name': name,
             'description': description,
             'quantity': quantity,
+            'auto_accept': auto_accept,
+            'over_booking': over_booking,
             'type': type,
             'resource_permissions': resource_permissions
           }

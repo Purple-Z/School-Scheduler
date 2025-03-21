@@ -302,8 +302,8 @@ final router = GoRouter(
 
                         var addResourceProvider = Provider.of<AddResourceProvider>(context, listen: false);
                         addResourceProvider.setTypes(types);
-                        addResourceProvider.setPlaces(places);
-                        addResourceProvider.setActivities(activities);
+                        addResourceProvider.setPlaces(places, context);
+                        addResourceProvider.setActivities(activities, context);
                         addResourceProvider.setUsers(users);
 
                         List roles_with_description = await Connection.getRoleList(appProvider);
@@ -320,6 +320,9 @@ final router = GoRouter(
                       builder: (context, state) => AddResourcePage(),
                       onExit: (context) {
                         var manageUsersProvider = Provider.of<ManageResourcesProvider>(context, listen: false);
+                        var addResourceProvider = Provider.of<AddResourceProvider>(context, listen: false);
+                        addResourceProvider.auto_accept_check = false;
+                        addResourceProvider.over_bookig_check = false;
                         manageUsersProvider.loadManageResourcesPage(context);
                         return true;
                       },
@@ -342,8 +345,8 @@ final router = GoRouter(
 
 
                         resourceDetailsProvider.setTypes(types);
-                        resourceDetailsProvider.setPlaces(places);
-                        resourceDetailsProvider.setActivities(activities);
+                        resourceDetailsProvider.setPlaces(places, context);
+                        resourceDetailsProvider.setActivities(activities, context);
                         resourceDetailsProvider.setUsers(users);
                         resourceDetailsProvider.setResource(resource);
 

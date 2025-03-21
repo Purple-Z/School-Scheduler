@@ -7,6 +7,7 @@ import 'package:client/pages/manage/resources/addResource/addResource_provider.d
 import 'package:client/router/layout_scaffold.dart';
 import 'package:client/router/routes.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
+import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -49,6 +50,7 @@ class _AddResourceState extends State<AddResource> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
+  Duration slot_duration = Duration(hours: 0, minutes: 0);
 
   @override
   void dispose() {
@@ -82,6 +84,87 @@ class _AddResourceState extends State<AddResource> {
             buildTextField(descriptionController, AppLocalizations.of(context)!.resource_description, Icons.person_outline),
             SizedBox(height: fieldsSpacing),
             buildTextField(quantityController, AppLocalizations.of(context)!.resource_quantity, Icons.person_outline, inputType: TextInputType.number),
+
+            const SizedBox(height: 30),
+
+            Row(
+              children: [
+                Checkbox(
+                  checkColor: Colors.white,
+                  value: addResourceProvider.slot_chek,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      addResourceProvider.slot_chek = value!;
+                    });
+                  },
+                ),
+                SizedBox(width: 20,),
+                Text(
+                    'Manage With Slots',
+                    style: TextStyle(fontSize: 20)
+                )
+              ],
+            ),
+
+            if (addResourceProvider.slot_chek) Column(
+              children: [
+                SizedBox(height: fieldsSpacing),
+                ElevatedButton(
+                  onPressed: () async {
+
+                    await showDurationPicker(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Theme.of(context).colorScheme.surface
+                      ),
+                      context: context,
+                      initialTime: Duration(minutes: 30),
+                    );
+
+                  },
+                  child: Text('duration')
+                )
+              ],
+            ),
+
+            Row(
+              children: [
+                Checkbox(
+                  checkColor: Colors.white,
+                  value: addResourceProvider.auto_accept_check,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      addResourceProvider.auto_accept_check = value!;
+                    });
+                  },
+                ),
+                SizedBox(width: 20,),
+                Text(
+                  'Auto Accept',
+                  style: TextStyle(fontSize: 20)
+                )
+              ],
+            ),
+
+            Row(
+              children: [
+                Checkbox(
+                  checkColor: Colors.white,
+                  value: addResourceProvider.over_bookig_check,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      addResourceProvider.over_bookig_check = value!;
+                    });
+                  },
+                ),
+                SizedBox(width: 20,),
+                Text(
+                  'Allow Over Booking',
+                  style: TextStyle(fontSize: 20)
+                )
+              ],
+            ),
+
             const SizedBox(height: 30),
 
             Row(
@@ -89,7 +172,7 @@ class _AddResourceState extends State<AddResource> {
                 Expanded(child: SizedBox()),
                 Column(
                   children: [
-                    Text("Place", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                    Text(AppLocalizations.of(context)!.resource_place, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
 
 
                     ElevatedButton(
@@ -130,7 +213,7 @@ class _AddResourceState extends State<AddResource> {
                 Expanded(child: SizedBox()),
                 Column(
                   children: [
-                    Text("Activity", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                    Text(AppLocalizations.of(context)!.resource_activity, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
 
 
                     ElevatedButton(
@@ -210,7 +293,7 @@ class _AddResourceState extends State<AddResource> {
 
             ExpansionTile(
 
-              title: Text('Referents', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+              title: Text(AppLocalizations.of(context)!.resource_referents, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
                 Row(
@@ -252,7 +335,7 @@ class _AddResourceState extends State<AddResource> {
                           child: Column(
                             children: [
                               if(addResourceProvider.users.every((riga) => riga[riga.length-1] == false))
-                                Text('Empty list, tap to add'),
+                                Text(AppLocalizations.of(context)!.resource_referents_empty),
                               for (var user in addResourceProvider.users)
                                 if (user.last == true)
                                   Padding(
@@ -317,6 +400,11 @@ class _AddResourceState extends State<AddResource> {
                         entry.value[3] = value;
                       });
                     }, isEditable: appProvider.edit_resources),
+                    buildSwitch(context, AppLocalizations.of(context)!.resource_can_accept, entry.value[4], (value) {
+                      setState(() {
+                        entry.value[4] = value;
+                      });
+                    }, isEditable: appProvider.edit_resources),
                   ],
                 );
               }
@@ -347,6 +435,8 @@ class _AddResourceState extends State<AddResource> {
                       name: nameController.text,
                       description: descriptionController.text,
                       quantity: int.tryParse(quantityController.text) ?? 0,
+                      auto_accept: addResourceProvider.auto_accept_check,
+                      over_booking: addResourceProvider.over_bookig_check,
                       type: addResourceProvider.type,
                       appProvider: appProvider,
                       resource_permissions: addResourceProvider.resource_permission,

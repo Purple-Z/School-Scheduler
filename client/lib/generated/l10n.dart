@@ -1295,9 +1295,54 @@ class S {
     );
   }
 
+  /// `Place`
+  String get resource_place {
+    return Intl.message('Place', name: 'resource_place', desc: '', args: []);
+  }
+
+  /// `Activity`
+  String get resource_activity {
+    return Intl.message(
+      'Activity',
+      name: 'resource_activity',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Type`
   String get resource_type {
     return Intl.message('Type', name: 'resource_type', desc: '', args: []);
+  }
+
+  /// `Referents`
+  String get resource_referents {
+    return Intl.message(
+      'Referents',
+      name: 'resource_referents',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not Specified`
+  String get resource_not_specified {
+    return Intl.message(
+      'Not Specified',
+      name: 'resource_not_specified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Empty List, Tap To Add`
+  String get resource_referents_empty {
+    return Intl.message(
+      'Empty List, Tap To Add',
+      name: 'resource_referents_empty',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `New Resource`
@@ -1368,6 +1413,16 @@ class S {
   /// `Book`
   String get resource_book {
     return Intl.message('Book', name: 'resource_book', desc: '', args: []);
+  }
+
+  /// `Can Accept`
+  String get resource_can_accept {
+    return Intl.message(
+      'Can Accept',
+      name: 'resource_can_accept',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Details For`
