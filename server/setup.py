@@ -188,6 +188,7 @@ class setupDB():
                         quantity INT NOT NULL,
                         user_id INT,
                         resource_id INT,
+                        accepted BOOLEAN DEFAULT FALSE,
                         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
                         FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE
                     );

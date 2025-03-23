@@ -782,20 +782,7 @@ class Connection {
     }
   }
 
-  static Future<bool> addResource({
-    required String name,
-    required String description,
-    required int quantity,
-    required bool auto_accept,
-    required bool over_booking,
-    required String type,
-    required String place,
-    required String activity,
-    required int slot,
-    required Map referents,
-    required AppProvider appProvider,
-    required Map resource_permissions
-  }) async {
+  static Future<bool> addResource({required String name, required String description, required int quantity, required bool auto_accept, required bool over_booking, required String type, required String place, required String activity, required int slot, required Map referents, required AppProvider appProvider, required Map resource_permissions}) async {
     final url = Uri.parse('http://' + serverAddr + '/add-resource');
     final response = await http.post(
       url,
@@ -1176,5 +1163,29 @@ class Connection {
       return false;
     }
   }
-  
+
+  static Future<List> getPendingBookings(AppProvider appProvider) async {
+    final url = Uri.parse('http://' + serverAddr + '/get-pending-bookings');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token}),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      List bookings = data['bookings'];
+      for (var booking in bookings) {
+        print(booking);
+      }
+      print(bookings);
+      return bookings;
+    } else {
+      return [];
+    }
+  }
+
 }

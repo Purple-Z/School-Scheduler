@@ -1,4 +1,5 @@
 import 'package:client/app_provider.dart';
+import 'package:client/connection.dart';
 import 'package:client/router/layout_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -129,7 +130,9 @@ class LoggedPage extends StatelessWidget {
               ),
               AccountOptionButton(
                 label: AppLocalizations.of(context)!.account_your_activity,
-                onTap: () {},
+                onTap: () {
+                  Connection.getPendingBookings(appProvider);
+                },
               ),
             ],
           ),

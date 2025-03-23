@@ -14,6 +14,7 @@ import 'package:client/pages/manage/places/addPlace/addPlace_page.dart';
 import 'package:client/pages/manage/places/managePlaces_provider.dart';
 import 'package:client/pages/manage/places/placeDetails/placeDetails_page.dart';
 import 'package:client/pages/manage/places/placeDetails/placeDetails_provider.dart';
+import 'package:client/pages/manage/requests/manageRequests_page.dart';
 import 'package:client/pages/manage/roles/addRole/addRole_page.dart';
 import 'package:client/pages/manage/roles/manageRoles_page.dart';
 import 'package:client/pages/manage/roles/manageRoles_provider.dart';
@@ -419,6 +420,32 @@ final router = GoRouter(
                       },
                     ),
                   ]
+                ),
+                GoRoute(
+                    path: Routes.requests,
+                    builder: (context, state) => ManageRequestsPage(),
+                    routes: [
+                      GoRoute(
+                        path: Routes.requestDetails,
+                        builder: (context, state) => RoleDetailsPage(),
+                        redirect: (context, state) async {
+                          final extraData = state.extra as Map<String, dynamic>?;
+                          final roleId = extraData?['roleId'];
+                          print("role id: " + roleId.toString());
+
+                          var appProvider = Provider.of<AppProvider>(context, listen: false);
+                          List role = await Connection.getRole(roleId, appProvider);
+                          var userDetailsProvider = Provider.of<RoleDetailsProvider>(context, listen: false);
+                          userDetailsProvider.setRole(role);
+                          return null;
+                        },
+                        onExit: (context) {
+                          var manageRolesProvider = Provider.of<ManageRolesProvider>(context, listen: false);
+                          manageRolesProvider.loadManageRolesPage(context);
+                          return true;
+                        },
+                      ),
+                    ]
                 ),
               ]
             ),

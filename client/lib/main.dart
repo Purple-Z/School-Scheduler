@@ -9,6 +9,7 @@ import 'package:client/pages/manage/manage_provider.dart';
 import 'package:client/pages/manage/places/addPlace/addPlace_provider.dart';
 import 'package:client/pages/manage/places/managePlaces_provider.dart';
 import 'package:client/pages/manage/places/placeDetails/placeDetails_provider.dart';
+import 'package:client/pages/manage/requests/manageRequests_provider.dart';
 import 'package:client/pages/manage/roles/addRole/addRole_provider.dart';
 import 'package:client/pages/manage/roles/manageRoles_provider.dart';
 import 'package:client/pages/manage/roles/roleDetails/roleDetails_provider.dart';
@@ -75,6 +76,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ManageActivitiesProvider()),
         ChangeNotifierProvider(create: (_) => AddActivityProvider()),
         ChangeNotifierProvider(create: (_) => ActivityDetailsProvider()),
+        ChangeNotifierProvider(create: (_) => ManageRequestsProvider()),
       ],
       child: Consumer<AppProvider>(
         builder: (context, dataProvider, child) {

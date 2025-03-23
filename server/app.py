@@ -2699,6 +2699,9 @@ def get_resource_for_booking():
             resource.append(quality)
 
         resource[4] = type_name
+        resource[8] = resource[8]==1
+        resource[9] = resource[9]==1
+        
 
 
 
@@ -2865,6 +2868,21 @@ def add_booking():
                 "token": token_for(user_id)
             }
             ), 403
+    
+    sql = f'''
+            SELECT * FROM resources WHERE id = '{resource_id}'
+        '''    
+    result = db.fetchSQL(sql)
+    if len(result) == 0:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 500
+    
+    slot = result[0][7]
+    auto_accept = result[0][8]==1
+    over_booking = result[0][9]==1
 
     maxBookability = getMaxBookability(resource_id, start, end, -1)
 
@@ -2886,16 +2904,20 @@ def add_booking():
 
 
     try:
+        
+
+
         sql_insert = f'''
         INSERT INTO bookings
-        (id, start, end, quantity, resource_id, user_id)
+        (id, start, end, quantity, resource_id, user_id, accepted)
         VALUES (
             0,
             '{start}', 
             '{end}',
             {quantity}, 
             {resource_id},
-            {user_id}
+            {user_id},
+            {auto_accept}
         )
         '''
         db.executeSQL(sql_insert)
@@ -2913,6 +2935,80 @@ def add_booking():
             }
         ), 500
     
+@app.route('/get-pending-bookings', methods=['POST'])
+def get_pending_bookings():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'view_booking'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    user_id = getIdFromEmail(email)
+
+    bookings_content = db.fetchSQL(
+        f'''
+            SELECT * FROM bookings WHERE accepted = 0
+        '''
+    )
+
+    roles_id = db.fetchSQL(
+        f'''
+            SELECT role_id FROM users_roles WHERE user_id = {user_id}
+        '''
+    )
+
+    permission = getResourcesPermissions(roles_id)
+
+    bookings = []
+    for booking in bookings_content:
+        resource_id = booking[5]
+
+        if resource_id not in permission or permission[resource_id][4] != 1:
+            continue
+
+
+        booking = list(booking)
+        sql = f'''
+            SELECT name FROM resources WHERE id = '{booking[5]}'
+        '''    
+        result = db.fetchSQL(sql)
+        resource_name = result[0][0]
+
+        sql = f'''
+            SELECT email FROM users WHERE id = '{booking[4]}'
+        '''    
+        result = db.fetchSQL(sql)
+        user_email = result[0][0]
+
+        booking[1] = booking[1].isoformat()
+        booking[2] = booking[2].isoformat()
+
+        booking[4] = user_email
+        booking[5] = resource_name
+        bookings.append(booking)
+
+    return jsonify(
+        {
+            "bookings": bookings,
+            "token": token_for(user_id)
+        }
+    ), 200
+
+
+
+
 
 def checkUserToken(email, token):
     #collecting data...
@@ -3025,13 +3121,14 @@ def getResourcesPermissions(roles_id):
             continue
 
         for record in result:
-            resource_id = record[6]
+            resource_id = record[7]
             
             if resource_id in permission:
                 permission[resource_id][1] = permission[resource_id][1] or record[1]
                 permission[resource_id][2] = permission[resource_id][2] or record[2]
                 permission[resource_id][3] = permission[resource_id][3] or record[3]
                 permission[resource_id][4] = permission[resource_id][4] or record[4]
+                permission[resource_id][5] = permission[resource_id][5] or record[5]
             else:
                 new_list_record = []
                 for element in record:
@@ -3043,7 +3140,7 @@ def getResourcesPermissions(roles_id):
 
     for key in permission.keys():
         c = permission[key]
-        permission[key] = [c[1], c[2], c[3], c[4]]
+        permission[key] = [c[1], c[2], c[3], c[4], c[5]]
 
     return permission
 
@@ -3074,6 +3171,18 @@ def selectAvailabilityRecordsFromShift(start, end, resource_id, remove_availabil
 
 def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1):
 
+    sql = f'SELECT * FROM resources WHERE id = {resource_id}'
+    result = db.fetchSQL(sql)
+    if len(result) == 0:
+        return -1
+    
+    slot = result[0][7]
+    auto_accept = result[0][8]==1
+    over_booking = result[0][9]==1
+
+
+
+
     sql = f'''
     SELECT * FROM availability WHERE
 
@@ -3100,9 +3209,15 @@ def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1):
     SELECT * FROM bookings WHERE
 
     (
-        (NOT(start > '{end}' AND end > '{end}'))
-        AND
-        (NOT(start < '{start}' AND end < '{start}'))
+        (
+            (NOT(start > '{end}' AND end > '{end}'))
+            AND
+            (NOT(start < '{start}' AND end < '{start}'))
+        ) AND (
+            (accepted = 1 OR {1 if over_booking is True else 0} = 0) AND ({1 if auto_accept is True else 0} = 0)
+            OR 
+            ({1 if auto_accept is True else 0} = 1)
+        )
     )
     AND
     resource_id = {resource_id}
@@ -3154,10 +3269,14 @@ def getMaxBookability(resource_id, start, end, remove_booking_id):
     if end < start:
         return -1
     
-    sql = f'SELECT quantity FROM resources WHERE id = {resource_id}'
+    sql = f'SELECT * FROM resources WHERE id = {resource_id}'
     result = db.fetchSQL(sql)
     if len(result) == 0:
         return -1
+    
+    slot = result[0][7]
+    auto_accept = result[0][8]==1
+    over_booking = result[0][9]==1
 
 
     shifts_content = selectAllRecordsFromShift(start, end, resource_id, remove_booking_id)

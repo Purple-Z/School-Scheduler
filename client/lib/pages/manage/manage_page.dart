@@ -2,6 +2,8 @@ import 'package:client/app_provider.dart';
 import 'package:client/pages/manage/activities/manageActivities_provider.dart';
 import 'package:client/pages/manage/activities/manageActivities_provider.dart';
 import 'package:client/pages/manage/manage_provider.dart';
+import 'package:client/pages/manage/requests/manageRequests_page.dart';
+import 'package:client/pages/manage/requests/manageRequests_page.dart';
 import 'package:client/router/layout_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,16 +27,20 @@ class _ManagePageState extends State<ManagePage> {
     var accountProvider = context.watch<ManageProvider>();
     var appProvider = context.watch<AppProvider>();
 
-    return Column(
-      children: [
-        SizedBox(height: 25,),
-        if (appProvider.view_user) ManageUserWidget(),
-        if (appProvider.view_roles) ManageRolesWidget(),
-        if (appProvider.view_resources) ManageTypesWidget(),
-        if (appProvider.view_resources) ManagePlacesWidget(),
-        if (appProvider.view_resources) ManageActivitiesWidget(),
-        if (appProvider.view_resources) ManageResourcesWidget(),
-      ],
+    return Expanded(
+      child: ListView(
+        children:
+        [
+          SizedBox(height: 25,),
+          if (appProvider.view_user) ManageUserWidget(),
+          if (appProvider.view_roles) ManageRolesWidget(),
+          if (appProvider.view_resources) ManageTypesWidget(),
+          if (appProvider.view_resources) ManagePlacesWidget(),
+          if (appProvider.view_resources) ManageActivitiesWidget(),
+          if (appProvider.view_resources) ManageResourcesWidget(),
+          if (appProvider.view_resources) ManageRequestsPage(),
+        ]
+      ),
     );
   }
 }
@@ -258,6 +264,46 @@ class ManageResourcesWidget extends StatelessWidget {
           ElevatedButton(
               onPressed: () {
                 context.push(Routes.manage_ManageResources);
+              },
+              child: Row(
+                children: [
+                  Text(AppLocalizations.of(context)!.manage_go_to_page),
+                  SizedBox(width: 10,),
+                  Icon(Icons.account_balance_rounded)
+                ],
+              )
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class ManageRequestsWidget extends StatelessWidget {
+  const ManageRequestsWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text(
+                'Manage Requests',
+                style: TextStyle(fontSize: 20),
+              ),
+              Expanded(child: SizedBox())
+            ],
+          ),
+          SizedBox(height: 15,),
+          ElevatedButton(
+              onPressed: () {
+                context.push(Routes.manage_Requests);
               },
               child: Row(
                 children: [

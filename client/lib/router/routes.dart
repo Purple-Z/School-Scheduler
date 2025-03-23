@@ -73,6 +73,12 @@ class Routes {
   static const String availabilityDetails = 'availabilityDetails';
   static const String manage_ManageResources_AvailabilityDetails = '/manage/manageResources/availabilityDetails';
 
+  static const String requests = 'requests';
+  static const String manage_Requests = '/manage/requests';
+
+  static const String requestDetails = 'requestDetails';
+  static const String manage_Requests_RequestDetails = '/manage/requests/requestDetails';
+
 
 
 

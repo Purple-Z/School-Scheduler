@@ -29,6 +29,10 @@ class ResourceProvider extends ChangeNotifier {
     resourceProvider.setShifts(content['shifts']);
   }
 
+  notify(){
+    notifyListeners();
+  }
+
   setResource(List c_resource) {
     resource = c_resource;
     notifyListeners();
