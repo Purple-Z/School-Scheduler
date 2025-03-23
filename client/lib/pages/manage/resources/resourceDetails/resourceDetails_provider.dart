@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
@@ -13,10 +14,32 @@ class ResourceDetailsProvider extends ChangeNotifier {
   var activity;
   List users = [];
   Map resource_permission = {};
+  bool slot_chek = false;
+  Duration slot_duration = Duration(hours: 0, minutes: 0);
 
 
   loadResourceDetailsPage() async {
     notifyListeners();
+  }
+
+  setSlotDuration(Duration d) {
+    slot_duration = d;
+    notifyListeners();
+  }
+
+  getSlotDuration() {
+    if (slot_chek){
+      return slot_duration.inMinutes;
+    } else {
+      return -1;
+    }
+  }
+
+  getOverbooking() {
+    if (resource[8]) {
+      return false;
+    }
+    return resource[9];
   }
 
   changeTypeValue(var value){
@@ -75,23 +98,43 @@ class ResourceDetailsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getUser (){
-    List<String> c_user = [];
+  Map getUser (){
+    Map referents = {};
     for (List user in users){
       if (user.last == true){
-        c_user.add(
-            user[3]
-        );
+        referents[user[3]] = true;
       }
     }
 
-    return c_user;
+    return referents;
   }
 
   setResource (List c_resource) {
-    resource = c_resource;
+    resource = c_resource.sublist(0, c_resource.length-1);
     place = resource[5] == '' ? places.first[0] : resource[5].toString();
     activity = resource[6] == '' ? places.first[0] : resource[6].toString();
+
+    //restore slots
+
+    if (resource[7] != null){
+      slot_chek = true;
+      slot_duration = Duration(minutes: resource[7]);
+    } else {
+      slot_chek = false;
+      slot_duration = Duration();
+    }
+
+
+    //restore referents
+    Map referents = c_resource[c_resource.length-1];
+
+    List<String> ref_emails = [];
+    for (String email in referents.keys){
+      ref_emails.add(email);
+    }
+
+    changeUsersValue(ref_emails);
+
     notifyListeners();
   }
 

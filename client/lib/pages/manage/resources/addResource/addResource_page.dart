@@ -50,7 +50,6 @@ class _AddResourceState extends State<AddResource> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
-  Duration slot_duration = Duration(hours: 0, minutes: 0);
 
   @override
   void dispose() {
@@ -111,18 +110,22 @@ class _AddResourceState extends State<AddResource> {
                 SizedBox(height: fieldsSpacing),
                 ElevatedButton(
                   onPressed: () async {
-
-                    await showDurationPicker(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: Theme.of(context).colorScheme.surface
-                      ),
-                      context: context,
-                      initialTime: Duration(minutes: 30),
+                    addResourceProvider.setSlotDuration(
+                      await showDurationPicker(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Theme.of(context).colorScheme.surface
+                        ),
+                        context: context,
+                        initialTime: addResourceProvider.slot_duration,
+                      ) ?? addResourceProvider.slot_duration
                     );
 
                   },
-                  child: Text('duration')
+                  child: Text(
+                    addResourceProvider.slot_duration.inHours.toString()+' hours '+
+                    (addResourceProvider.slot_duration.inMinutes-addResourceProvider.slot_duration.inHours*60).toString()+' minutes'
+                  )
                 )
               ],
             ),
@@ -146,7 +149,7 @@ class _AddResourceState extends State<AddResource> {
               ],
             ),
 
-            Row(
+            if (!addResourceProvider.auto_accept_check) Row(
               children: [
                 Checkbox(
                   checkColor: Colors.white,
@@ -436,13 +439,13 @@ class _AddResourceState extends State<AddResource> {
                       description: descriptionController.text,
                       quantity: int.tryParse(quantityController.text) ?? 0,
                       auto_accept: addResourceProvider.auto_accept_check,
-                      over_booking: addResourceProvider.over_bookig_check,
+                      over_booking: addResourceProvider.getOverbooking(),
                       type: addResourceProvider.type,
                       appProvider: appProvider,
                       resource_permissions: addResourceProvider.resource_permission,
                       place: addResourceProvider.place,
                       activity: addResourceProvider.activity,
-                      slot: -1,
+                      slot: addResourceProvider.getSlotDuration(),
                       referents: addResourceProvider.getUser()
                   )){
                     showTopMessage(context, AppLocalizations.of(context)!.resource_create_success);

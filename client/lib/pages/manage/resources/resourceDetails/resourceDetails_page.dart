@@ -10,6 +10,7 @@ import 'package:client/router/routes.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
+import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +56,6 @@ class ResourceDetails extends StatefulWidget {
 class _ResourceDetailsState extends State<ResourceDetails> {
   List resource = [];
   List types = [];
-  var type;
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -65,7 +65,6 @@ class _ResourceDetailsState extends State<ResourceDetails> {
     nameController.text = resource[1];
     descriptionController.text = resource[2];
     quantityController.text = resource[3].toString();
-    type = resource[4].toString();
   }
 
 
@@ -105,6 +104,50 @@ class _ResourceDetailsState extends State<ResourceDetails> {
               children: [
                 Checkbox(
                   checkColor: Colors.white,
+                  value: resourceDetailsProvider.slot_chek,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      resourceDetailsProvider.slot_chek = value!;
+                    });
+                  },
+                ),
+                SizedBox(width: 20,),
+                Text(
+                    'Manage With Slots',
+                    style: TextStyle(fontSize: 20)
+                )
+              ],
+            ),
+
+            if (resourceDetailsProvider.slot_chek) Column(
+              children: [
+                SizedBox(height: fieldsSpacing),
+                ElevatedButton(
+                    onPressed: () async {
+                      resourceDetailsProvider.setSlotDuration(
+                          await showDurationPicker(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Theme.of(context).colorScheme.surface
+                            ),
+                            context: context,
+                            initialTime: resourceDetailsProvider.slot_duration,
+                          ) ?? resourceDetailsProvider.slot_duration
+                      );
+
+                    },
+                    child: Text(
+                        resourceDetailsProvider.slot_duration.inHours.toString()+' hours '+
+                            (resourceDetailsProvider.slot_duration.inMinutes-resourceDetailsProvider.slot_duration.inHours*60).toString()+' minutes'
+                    )
+                )
+              ],
+            ),
+
+            Row(
+              children: [
+                Checkbox(
+                  checkColor: Colors.white,
                   value: resourceDetailsProvider.resource[8],
                   onChanged: (bool? value) {
                     setState(() {
@@ -120,7 +163,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
               ],
             ),
 
-            Row(
+            if (!resourceDetailsProvider.resource[8]) Row(
               children: [
                 Checkbox(
                   checkColor: Colors.white,
@@ -449,9 +492,13 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                             description: descriptionController.text,
                             quantity: int.tryParse(quantityController.text) ?? 0,
                             auto_accept: resourceDetailsProvider.resource[8],
-                            over_booking: resourceDetailsProvider.resource[9],
-                            type: type,
-                            resource_permissions: resourceDetailsProvider.resource_permission
+                            over_booking: resourceDetailsProvider.getOverbooking(),
+                            type: resourceDetailsProvider.type,
+                            resource_permissions: resourceDetailsProvider.resource_permission,
+                            place: resourceDetailsProvider.place,
+                            activity: resourceDetailsProvider.activity,
+                            slot: resourceDetailsProvider.getSlotDuration(),
+                            referents: resourceDetailsProvider.getUser()
                         )){
                           showTopMessage(context, AppLocalizations.of(context)!.resource_update_success);
                         } else {

@@ -15,9 +15,30 @@ class AddResourceProvider extends ChangeNotifier {
   bool auto_accept_check = false;
   bool over_bookig_check = false;
   bool slot_chek = false;
+  Duration slot_duration = Duration(hours: 0, minutes: 0);
 
   loadAddResourcePage() async {
     notifyListeners();
+  }
+
+  setSlotDuration(Duration d) {
+    slot_duration = d;
+    notifyListeners();
+  }
+
+  getSlotDuration() {
+    if (slot_chek){
+      return slot_duration.inMinutes;
+    } else {
+      return -1;
+    }
+  }
+
+  getOverbooking() {
+    if (auto_accept_check) {
+      return false;
+    }
+    return over_bookig_check;
   }
 
   changeTypeValue(var value){
@@ -76,17 +97,15 @@ class AddResourceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getUser (){
-    List<String> c_user = [];
+  Map getUser (){
+    Map referents = {};
     for (List user in users){
       if (user.last == true){
-        c_user.add(
-          user[3]
-        );
+        referents[user[3]] = true;
       }
     }
 
-    return c_user;
+    return referents;
   }
 
   setResourcePermission (Map c_resource_permission){

@@ -1725,7 +1725,7 @@ def add_resource():
     activity_id = None
     if len(result) != 0:
         activity_id = result[0][0]
-
+    
     if slot == -1:
         slot = None
 
@@ -1768,6 +1768,22 @@ def add_resource():
                 {resource_permissions[role][3]},
                 {resource_permissions[role][4]},
                 {role_id},
+                {resource_id}
+            )
+            '''
+            db.executeSQL(sql_insert)
+
+
+        for referent in referents.keys():
+
+            referent_id = getIdFromEmail(referent)
+
+            sql_insert = f'''
+            INSERT INTO referents
+            VALUES (
+                0,
+                {referents[referent]}, 
+                {referent_id},
                 {resource_id}
             )
             '''
@@ -1850,6 +1866,26 @@ def get_resource():
         resource[8] = resource[8]==1
         resource[9] = resource[9]==1
 
+        sql = f'''
+            SELECT * FROM referents WHERE resource_id = '{resource_id}'
+        '''    
+        result = db.fetchSQL(sql)
+
+        referents = {}
+
+        for record in result:
+            referent_id = record[2]
+
+            sql = "SELECT email FROM users WHERE id = " + str(referent_id)
+            result = db.fetchSQL(sql)
+            if len(result) == 0:
+                continue
+            user_email = result[0][0]
+            referents[user_email] = record[1]
+
+        resource.append(referents)
+
+
         return jsonify(
         {
             "resource": resource,
@@ -1869,16 +1905,20 @@ def update_resource():
     data = request.get_json()
     email = data.get('email')
     token = data.get('token')
-    resource_id = data.get('resource_id')
     name = data.get('name')
+    resource_id = data.get('resource_id')
     description = data.get('description')
     quantity = data.get('quantity')
     auto_accept = data.get('auto_accept')
     over_booking = data.get('over_booking')
     type = data.get('type')
+    place = data.get('place')
+    activity = data.get('activity')
+    slot = data.get('slot')
+    referents = data.get('referents')
     resource_permissions = data.get('resource_permissions')
-
     
+
     if not checkUserToken(email, token):
         return jsonify(
             {
@@ -1906,6 +1946,23 @@ def update_resource():
     
     type_id = result[0][0]
 
+
+    sql = "SELECT id FROM places WHERE name = '" + place + "'"
+    result = db.fetchSQL(sql)
+    place_id = None
+    if len(result) != 0:
+        place_id = result[0][0]
+
+    sql = "SELECT id FROM activities WHERE name = '" + activity + "'"
+    result = db.fetchSQL(sql)
+    activity_id = None
+    if len(result) != 0:
+        activity_id = result[0][0]
+
+    if slot == -1:
+        slot = None
+
+
     sql_update = f'''
     UPDATE resources SET
         name = '{name}',
@@ -1913,7 +1970,10 @@ def update_resource():
         quantity = {quantity},
         type_id = {type_id},
         auto_accept = {auto_accept},
-        overbooking = {over_booking}
+        overbooking = {over_booking},
+        place_id = {'null' if place_id is None else place_id},
+        activity_id = {'null' if activity_id is None else activity_id},
+        slot = {'null' if slot is None else slot}
     WHERE id = {resource_id}
     '''
 
@@ -1945,6 +2005,29 @@ def update_resource():
             )
             '''
             db.executeSQL(sql_insert)
+
+        
+        sql_delete = f'''
+        DELETE FROM referents WHERE resource_id = {resource_id}
+        '''
+        db.executeSQL(sql_delete)
+
+
+        for referent in referents.keys():
+
+            referent_id = getIdFromEmail(referent)
+
+            sql_insert = f'''
+            INSERT INTO referents
+            VALUES (
+                0,
+                {referents[referent]}, 
+                {referent_id},
+                {resource_id}
+            )
+            '''
+            db.executeSQL(sql_insert)
+
         return jsonify(
             {
                 "token": token_for(user_id)

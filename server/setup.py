@@ -138,6 +138,18 @@ class setupDB():
                     );
             ''')
 
+            # CREATE TABLE   - - -   referents   - - -
+            mycursor.execute('''
+                    CREATE TABLE IF NOT EXISTS referents (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        notify BOOLEAN DEFAULT TRUE,
+                        user_id INT,
+                        resource_id INT,
+                        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                        FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE
+                    );
+            ''')
+
             # CREATE TABLE   - - -   permissions   - - -
             mycursor.execute('''
                     CREATE TABLE IF NOT EXISTS permissions (

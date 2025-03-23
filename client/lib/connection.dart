@@ -792,7 +792,7 @@ class Connection {
     required String place,
     required String activity,
     required int slot,
-    required List<String> referents,
+    required Map referents,
     required AppProvider appProvider,
     required Map resource_permissions
   }) async {
@@ -849,7 +849,7 @@ class Connection {
     }
   }
 
-  static Future<bool> updateResource(AppProvider appProvider, {required int resource_id, required String name, required String description, required int quantity, required bool auto_accept, required bool over_booking, required String type, required Map resource_permissions}) async {
+  static Future<bool> updateResource(AppProvider appProvider, {required int resource_id, required String name, required String description, required int quantity, required bool auto_accept, required bool over_booking, required String type, required String place, required String activity, required int slot, required Map referents, required Map resource_permissions}) async {
     final url = Uri.parse('http://' + serverAddr + '/update-resource');
     final response = await http.post(
       url,
@@ -864,6 +864,10 @@ class Connection {
             'auto_accept': auto_accept,
             'over_booking': over_booking,
             'type': type,
+            'place': place,
+            'activity': activity,
+            'slot': slot,
+            'referents': referents,
             'resource_permissions': resource_permissions
           }
       ),
