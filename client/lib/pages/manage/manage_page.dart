@@ -27,19 +27,23 @@ class _ManagePageState extends State<ManagePage> {
     var accountProvider = context.watch<ManageProvider>();
     var appProvider = context.watch<AppProvider>();
 
-    return Expanded(
-      child: ListView(
-        children:
-        [
-          SizedBox(height: 25,),
-          if (appProvider.view_user) ManageUserWidget(),
-          if (appProvider.view_roles) ManageRolesWidget(),
-          if (appProvider.view_resources) ManageTypesWidget(),
-          if (appProvider.view_resources) ManagePlacesWidget(),
-          if (appProvider.view_resources) ManageActivitiesWidget(),
-          if (appProvider.view_resources) ManageResourcesWidget(),
-          if (appProvider.view_resources) ManageRequestsPage(),
-        ]
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView(
+          shrinkWrap: true,
+            children:
+            [
+              SizedBox(height: 25,),
+              if (appProvider.view_user) ManageUserWidget(),
+              if (appProvider.view_roles) ManageRolesWidget(),
+              if (appProvider.view_resources) ManageTypesWidget(),
+              if (appProvider.view_resources) ManagePlacesWidget(),
+              if (appProvider.view_resources) ManageActivitiesWidget(),
+              if (appProvider.view_resources) ManageResourcesWidget(),
+              if (appProvider.view_resources) ManageRequestsWidget(),
+            ]
+        ),
       ),
     );
   }
@@ -55,6 +59,7 @@ class ManageUserWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -94,6 +99,7 @@ class ManageRolesWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -133,6 +139,7 @@ class ManageTypesWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -172,6 +179,7 @@ class ManagePlacesWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -211,6 +219,7 @@ class ManageActivitiesWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -250,6 +259,7 @@ class ManageResourcesWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
@@ -290,6 +300,7 @@ class ManageRequestsWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [

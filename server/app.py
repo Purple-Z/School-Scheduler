@@ -3007,6 +3007,130 @@ def get_pending_bookings():
     ), 200
 
 
+@app.route('/accept-pending-bookings', methods=['POST'])
+def accept_pending_bookings():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    request_id = data.get('request_id')
+    
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'edit_booking'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    user_id = getIdFromEmail(email)
+
+    bookings_content = db.fetchSQL(
+        f'''
+            SELECT * FROM bookings WHERE id = {request_id}
+        '''
+    )
+
+    roles_id = db.fetchSQL(
+        f'''
+            SELECT role_id FROM users_roles WHERE user_id = {user_id}
+        '''
+    )
+
+
+    resource_id = bookings_content[0][5]
+    permission = getResourcesPermissions(roles_id)[resource_id]
+    if permission[4] != 1:
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 402
+
+    sql_update = f'''
+        UPDATE bookings SET
+            accepted = 1
+        WHERE id = {request_id}
+        '''
+
+    db.executeSQL(sql_update)
+    
+
+    return jsonify(
+        {
+            "token": token_for(user_id)
+        }
+    ), 200
+
+@app.route('/refuse-pending-bookings', methods=['POST'])
+def refuse_pending_bookings():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    request_id = data.get('request_id')
+    
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'delete_booking'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    user_id = getIdFromEmail(email)
+
+    bookings_content = db.fetchSQL(
+        f'''
+            SELECT * FROM bookings WHERE id = {request_id}
+        '''
+    )
+
+    roles_id = db.fetchSQL(
+        f'''
+            SELECT role_id FROM users_roles WHERE user_id = {user_id}
+        '''
+    )
+
+
+    resource_id = bookings_content[0][5]
+    permission = getResourcesPermissions(roles_id)[resource_id]
+    if permission[4] != 1:
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 402
+
+    sql_delete = f'''
+        DELETE FROM bookings
+        WHERE id = {request_id}
+        '''
+
+    db.executeSQL(sql_delete)
+    
+
+    return jsonify(
+        {
+            "token": token_for(user_id)
+        }
+    ), 200
+
+
+
+
 
 
 

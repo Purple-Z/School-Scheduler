@@ -1188,4 +1188,42 @@ class Connection {
     }
   }
 
+  static Future<bool> acceptPendingBookings(AppProvider appProvider, {required int request_id}) async {
+    final url = Uri.parse('http://' + serverAddr + '/accept-pending-bookings');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token, 'request_id': request_id}),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> refusePendingBookings(AppProvider appProvider, {required int request_id}) async {
+    final url = Uri.parse('http://' + serverAddr + '/refuse-pending-bookings');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token, 'request_id': request_id}),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 }

@@ -15,6 +15,9 @@ import 'package:client/pages/manage/places/managePlaces_provider.dart';
 import 'package:client/pages/manage/places/placeDetails/placeDetails_page.dart';
 import 'package:client/pages/manage/places/placeDetails/placeDetails_provider.dart';
 import 'package:client/pages/manage/requests/manageRequests_page.dart';
+import 'package:client/pages/manage/requests/manageRequests_provider.dart';
+import 'package:client/pages/manage/requests/requestDetails/requestDetails_page.dart';
+import 'package:client/pages/manage/requests/requestDetails/requestDetails_provider.dart';
 import 'package:client/pages/manage/roles/addRole/addRole_page.dart';
 import 'package:client/pages/manage/roles/manageRoles_page.dart';
 import 'package:client/pages/manage/roles/manageRoles_provider.dart';
@@ -427,21 +430,34 @@ final router = GoRouter(
                     routes: [
                       GoRoute(
                         path: Routes.requestDetails,
-                        builder: (context, state) => RoleDetailsPage(),
+                        builder: (context, state) => RequestDetailsPage(),
                         redirect: (context, state) async {
                           final extraData = state.extra as Map<String, dynamic>?;
-                          final roleId = extraData?['roleId'];
-                          print("role id: " + roleId.toString());
+                          final requestId = extraData?['requestId'];
+                          print("request id: " + requestId.toString());
 
                           var appProvider = Provider.of<AppProvider>(context, listen: false);
-                          List role = await Connection.getRole(roleId, appProvider);
-                          var userDetailsProvider = Provider.of<RoleDetailsProvider>(context, listen: false);
-                          userDetailsProvider.setRole(role);
+                          var requestDetailsProvider = Provider.of<RequestDetailsProvider>(context, listen: false);
+                          var manageRequestsProvider = Provider.of<ManageRequestsProvider>(context, listen: false);
+                          List request = [];
+
+                          for (List r in manageRequestsProvider.requests){
+                            if (r[0] == requestId){
+                              request = r;
+                              break;
+                            }
+                          }
+
+                          if (request.isEmpty){
+                            return null;
+                          }
+
+                          requestDetailsProvider.setRequest(request);
                           return null;
                         },
                         onExit: (context) {
-                          var manageRolesProvider = Provider.of<ManageRolesProvider>(context, listen: false);
-                          manageRolesProvider.loadManageRolesPage(context);
+                          var manageRequestsProvider = Provider.of<ManageRequestsProvider>(context, listen: false);
+                          manageRequestsProvider.loadManageRequestsPage(context);
                           return true;
                         },
                       ),
