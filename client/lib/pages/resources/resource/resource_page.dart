@@ -7,6 +7,8 @@ import 'package:client/pages/resources/resource/resource_provider.dart';
 import 'package:client/pages/resources/resources_provider.dart';
 import 'package:client/router/layout_scaffold.dart';
 import 'package:client/router/routes.dart';
+import 'package:drop_down_list/drop_down_list.dart';
+import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -75,7 +77,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
         continue;
       }
 
-      List newItem = [item.startTime, item.endTime, item.availability];
+      List newItem = [item.startTime, item.endTime, item.availability, item.startTime, item.endTime];
 
       for (int i in [0, 1]) {
         DateTime dateTime = newItem[i];
@@ -249,6 +251,67 @@ class _ResourceDetailsState extends State<ResourceDetails> {
             SizedBox(
               height: 15,
             ),
+            resourceProvider.slot_logic ?
+            Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.4,
+              ),
+              child: (listItems.length == 0)
+                  ? Center(
+                  child:
+                  Text(AppLocalizations.of(context)!.book_no_quantity))
+                  : ListView(
+                shrinkWrap: true,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(child: Center(child: Text('Start'))),
+                      Expanded(child: Center(child: Text('End'))),
+                      Expanded(child: Center(child: Text('Quantity')))
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  for (List item in listItems)
+                    Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              resourceProvider.setStartBooking(item[3]);
+                              resourceProvider.setEndBooking(item[4]);
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  child: Center(
+                                      child: Text(item[0].toString()))),
+                              Expanded(
+                                  child: Center(
+                                      child: Text(item[1].toString()))),
+                              Expanded(
+                                  child: Center(
+                                      child: Text(item[2].toString())))
+                            ],
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size(0, 0),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        )
+                      ],
+                    )
+                ],
+              ),
+            ) :
             Container(
               constraints: BoxConstraints(
                 maxHeight: MediaQuery.of(context).size.height * 0.4,
@@ -302,20 +365,20 @@ class _ResourceDetailsState extends State<ResourceDetails> {
             if ((listItems.length != 0))
               Container(
                 constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height*0.5
+                  maxHeight: MediaQuery.of(context).size.height*0.8
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Text(
+                      'Book',
+                      style: TextStyle(
+                          fontSize: 25
+                      ),
+                    ),
                     if (!resourceProvider.resource[8])
                       Column(
                         children: [
-                          Text(
-                            'Book',
-                            style: TextStyle(
-                              fontSize: 25
-                            ),
-                          ),
                           Row(
                             children: [
                               SizedBox(
@@ -342,7 +405,12 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                         Expanded(
                           child: SizedBox(),
                         ),
-                        ElevatedButton(
+                        resourceProvider.slot_logic ? Text(
+                          '${resourceProvider.start_booking.year}/${resourceProvider.start_booking.month}/${resourceProvider.start_booking.day}',
+                          style: TextStyle(
+                              fontSize: fontSize2,
+                              color: Theme.of(context).colorScheme.onPrimary),
+                        ) : ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.zero,
                             minimumSize: Size(0, 0),
@@ -372,7 +440,12 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                         SizedBox(
                           width: rowSpacing2,
                         ),
-                        ElevatedButton(
+                        resourceProvider.slot_logic ? Text(
+                          getTimePrintable(resourceProvider.start_booking),
+                          style: TextStyle(
+                              fontSize: fontSize2,
+                              color: Theme.of(context).colorScheme.onPrimary),
+                        ) : ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
                               minimumSize: Size(0, 0),
@@ -418,7 +491,12 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                         Expanded(
                           child: SizedBox(),
                         ),
-                        ElevatedButton(
+                        resourceProvider.slot_logic ? Text(
+                          '${resourceProvider.end_booking.year}/${resourceProvider.end_booking.month}/${resourceProvider.end_booking.day}',
+                          style: TextStyle(
+                              fontSize: fontSize2,
+                              color: Theme.of(context).colorScheme.onPrimary),
+                        ) : ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
                               minimumSize: Size(0, 0),
@@ -447,7 +525,12 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                         SizedBox(
                           width: rowSpacing2,
                         ),
-                        ElevatedButton(
+                        resourceProvider.slot_logic ?Text(
+                          getTimePrintable(resourceProvider.end_booking),
+                          style: TextStyle(
+                              fontSize: fontSize2,
+                              color: Theme.of(context).colorScheme.onPrimary),
+                        ) : ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
                               minimumSize: Size(0, 0),
@@ -481,6 +564,107 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                     SizedBox(
                       height: 10,
                     ),
+
+                    Row(
+                      children: [
+                        Expanded(child: SizedBox()),
+                        Column(
+                          children: [
+                            Text(AppLocalizations.of(context)!.resource_place, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+
+
+                            resourceProvider.can_edit_place ? ElevatedButton(
+                              onPressed: () async {
+                                List<SelectedListItem<String>> selections = [];
+                                for (var data in resourceProvider.places){
+                                  selections.add(SelectedListItem<String>(data: data[0]));
+                                }
+                                DropDownState<String>(
+                                  dropDown: DropDown<String>(
+                                    data: selections,
+                                    onSelected: (selectedItems) {
+                                      List<String> list = [];
+                                      for (var item in selectedItems) {
+                                        list.add(item.data);
+                                      }
+
+                                      resourceProvider.changePlaceValue(list.first);
+                                    },
+                                  ),
+                                ).showModal(context);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  resourceProvider.place,
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  minimumSize: Size(0, 0),
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  shadowColor: Colors.transparent),
+                            ) : Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                resourceProvider.place,
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Expanded(child: SizedBox()),
+                        Column(
+                          children: [
+                            Text(AppLocalizations.of(context)!.resource_activity, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+
+
+                            resourceProvider.can_edit_activity ? ElevatedButton(
+                              onPressed: () async {
+                                List<SelectedListItem<String>> selections = [];
+                                for (var data in resourceProvider.activities){
+                                  selections.add(SelectedListItem<String>(data: data[0]));
+                                }
+                                DropDownState<String>(
+                                  dropDown: DropDown<String>(
+                                    data: selections,
+                                    onSelected: (selectedItems) {
+                                      List<String> list = [];
+                                      for (var item in selectedItems) {
+                                        list.add(item.data);
+                                      }
+
+                                      resourceProvider.changeActivityValue(list.first);
+                                    },
+                                  ),
+                                ).showModal(context);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  resourceProvider.activity,
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  minimumSize: Size(0, 0),
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  shadowColor: Colors.transparent),
+                            ) : Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                resourceProvider.activity,
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Expanded(child: SizedBox())
+                      ],
+                    ),
+
                     if (maxAvailabilityShow)
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 7),
@@ -575,27 +759,23 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                               ),
                             )),
                         Expanded(child: SizedBox()),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(child: SizedBox()),
                         ElevatedButton(
                             onPressed: () async {
                               await showSimpleLoadingDialog(
                                 context: context,
                                 future: () async {
-                                  if (await Connection.addBooking(
+                                  if (
+                                    await Connection.addBooking(
                                       start: resourceProvider.start_booking,
                                       end: resourceProvider.end_booking,
                                       quantity:
-                                          int.tryParse(quantityController.text) ??
-                                              0,
+                                      int.tryParse(quantityController.text) ?? 0,
                                       resource_id: resourceProvider.resource[0],
-                                      appProvider: appProvider)) {
+                                      appProvider: appProvider,
+                                      place: resourceProvider.place,
+                                      activity: resourceProvider.activity
+                                    )
+                                  ) {
                                     showTopMessage(
                                         context,
                                         AppLocalizations.of(context)!
@@ -616,7 +796,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                                 minimumSize: Size(0, 0),
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 backgroundColor:
-                                    Theme.of(context).colorScheme.primary,
+                                Theme.of(context).colorScheme.primary,
                                 shadowColor: Colors.transparent),
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(17, 8, 17, 8),
@@ -626,8 +806,9 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                                   color: Theme.of(context).colorScheme.surface,
                                 ),
                               ),
-                            )),
-                        Expanded(child: SizedBox()),
+                            )
+                        ),
+                        Expanded(child: SizedBox())
                       ],
                     ),
                     SizedBox(height: 15,)

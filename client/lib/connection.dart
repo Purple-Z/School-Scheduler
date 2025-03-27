@@ -1138,7 +1138,7 @@ class Connection {
     }
   }
 
-  static Future<bool> addBooking({required DateTime start, required DateTime end, required int quantity, required int resource_id, required AppProvider appProvider}) async {
+  static Future<bool> addBooking({required DateTime start, required DateTime end, required int quantity, required int resource_id, required String place, required String activity, required AppProvider appProvider}) async {
     final url = Uri.parse('http://' + serverAddr + '/add-booking');
     final response = await http.post(
       url,
@@ -1150,6 +1150,8 @@ class Connection {
         'end': end.toIso8601String(),
         'quantity': quantity,
         'resource_id': resource_id,
+        'place': place,
+        'activity': activity
       }),
     );
 

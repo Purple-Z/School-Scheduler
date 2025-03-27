@@ -85,11 +85,16 @@ final router = GoRouter(
                       final end = extraData?['end'];
                       print("resource id: " + resource_Id.toString());
 
+                      var appProvider = Provider.of<AppProvider>(context, listen: false);
                       var resourceProvider = Provider.of<ResourceProvider>(context, listen: false);
+                      List places = await Connection.getPlaceList(appProvider);
+                      List activities = await Connection.getActivityList(appProvider);
 
                       resourceProvider.setResourceId(resource_Id);
                       resourceProvider.setStart(start);
                       resourceProvider.setEnd(end);
+                      resourceProvider.setPlaces(places, context);
+                      resourceProvider.setActivities(activities, context);
 
                       await resourceProvider.loadResourcePage(context);
                       return null;

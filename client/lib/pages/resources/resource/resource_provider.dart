@@ -4,11 +4,21 @@ import 'package:provider/provider.dart';
 import '../../../app_provider.dart';
 import '../../../connection.dart';
 import '../../manage/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 
 class ResourceProvider extends ChangeNotifier {
   List resource = [];
   List<AvailabilitySlot> shifts = [];
+  int slot = 0;
+  bool slot_logic = false;
+  List places = [];
+  var place;
+  bool can_edit_place = true;
+  List activities = [];
+  var activity;
+  bool can_edit_activity = true;
 
   DateTime start = DateTime.now();
   DateTime end = DateTime.now();
@@ -22,24 +32,71 @@ class ResourceProvider extends ChangeNotifier {
     var appProvider = Provider.of<AppProvider>(context, listen: false);
     Map content = await Connection.getResourceForBooking(appProvider, resource_id: resource_Id, start: start, end: end);
 
-    var resourceProvider = Provider.of<ResourceProvider>(context, listen: false);
-    resourceProvider.setResource(content['resource']);
-    resourceProvider.setStart(DateTime.tryParse(content['start']) ?? DateTime.now());
-    resourceProvider.setEnd(DateTime.tryParse(content['end']) ?? DateTime.now());
-    resourceProvider.setShifts(content['shifts']);
+    setResource(content['resource'], context);
+    setStart(DateTime.tryParse(content['start']) ?? DateTime.now());
+    setEnd(DateTime.tryParse(content['end']) ?? DateTime.now());
+    setShifts(content['shifts']);
   }
 
   notify(){
     notifyListeners();
   }
 
-  setResource(List c_resource) {
+  setResource(List c_resource, BuildContext context) {
     resource = c_resource;
+
+
+    if (resource[5] != ''){
+      place = resource[5];
+      can_edit_place = false;
+    } else {
+      can_edit_place = true;
+    }
+
+
+    if (resource[6] != ''){
+      activity = resource[6];
+      can_edit_activity = false;
+    } else {
+      can_edit_activity = true;
+    }
+
+    if (resource[7] != null){
+      slot = resource[7];
+      slot_logic = true;
+    } else {
+      slot_logic = false;
+    }
+
     notifyListeners();
   }
 
   setResourceId(int id) {
     resource_Id = id;
+    notifyListeners();
+  }
+
+  changePlaceValue(var value){
+    place = value;
+    notifyListeners();
+  }
+
+  setPlaces (List c_places, BuildContext context) {
+    //c_places.insert(0, [AppLocalizations.of(context)!.resource_not_specified, '']);
+    places = c_places;
+    place = c_places.first[0];
+    notifyListeners();
+  }
+
+  changeActivityValue(var value){
+    activity = value;
+    notifyListeners();
+  }
+
+  setActivities (List c_activities, BuildContext context) {
+    //c_activities.insert(0, [AppLocalizations.of(context)!.resource_not_specified, '']);
+    activities = c_activities;
+    activity = c_activities.first[0];
     notifyListeners();
   }
 
@@ -66,6 +123,16 @@ class ResourceProvider extends ChangeNotifier {
 
   setEnd(DateTime c_end) {
     end = c_end;
+    notifyListeners();
+  }
+
+  setStartBooking(DateTime c_start) {
+    start_booking = c_start;
+    notifyListeners();
+  }
+
+  setEndBooking(DateTime c_end) {
+    end_booking = c_end;
     notifyListeners();
   }
 }

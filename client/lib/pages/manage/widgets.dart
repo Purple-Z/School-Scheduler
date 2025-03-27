@@ -108,21 +108,14 @@ List<FlSpot> convertAvailabilityToSpots(List<AvailabilitySlot> data) {
   for (int i = 0; i < data.length; i++) {
     var slot = data[i];
 
-    spots.add(FlSpot(
-      slot.startTime.difference(startOfDay).inMinutes.toDouble(),
-      slot.availability.toDouble(),
-    ));
-
-    spots.add(FlSpot(
-      (slot.startTime.difference(startOfDay).inMinutes.toDouble() + slot.endTime.difference(startOfDay).inMinutes.toDouble())/2,
-      slot.availability.toDouble(),
-    ));
-
-    spots.add(FlSpot(
-      slot.endTime.difference(startOfDay).inMinutes.toDouble(),
-      slot.availability.toDouble(),
-    ));
-
+    for (int t = slot.startTime.difference(startOfDay).inMinutes.toInt(); t < slot.endTime.difference(startOfDay).inMinutes.toInt(); t++){
+      spots.add(
+          FlSpot(
+            t.toDouble(),
+            slot.availability.toDouble(),
+          )
+      );
+    }
   }
   return spots;
 }
