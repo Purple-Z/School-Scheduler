@@ -1228,4 +1228,26 @@ class Connection {
     }
   }
 
+  static Future<List> getBookings(AppProvider appProvider) async {
+    final url = Uri.parse('http://' + serverAddr + '/get-bookings');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token}),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      List bookings = data['bookings'];
+      print(bookings);
+      return bookings;
+    } else {
+      return [];
+    }
+  }
+
+
 }

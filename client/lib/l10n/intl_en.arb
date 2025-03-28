@@ -5,11 +5,11 @@
 
 
 
-  "account_hello": "Hello, ",
-  "account_your_profile": "Your Profile",
+  "account_hello": "Hello ",
+  "account_your_profile": "Profile",
   "account_settings": "Settings",
-  "account_your_bookings": "Your Bookings",
-  "account_your_activity": "Your Activity",
+  "account_your_bookings": "Bookings",
+  "account_your_activity": "Activity",
   "account_logout": "Logout",
   "account_not_logged": "Not Logged",
   "account_login": "Login",

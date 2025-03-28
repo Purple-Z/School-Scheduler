@@ -9,6 +9,7 @@ import 'package:client/pages/manage/activities/activityDetails/activityDetails_p
 import 'package:client/pages/manage/activities/addActivity/addActivity_page.dart';
 import 'package:client/pages/manage/activities/manageActivities_page.dart';
 import 'package:client/pages/manage/activities/manageActivities_provider.dart';
+import 'package:client/pages/manage/bookings/manageBookings_page.dart';
 import 'package:client/pages/manage/manage_page.dart';
 import 'package:client/pages/manage/places/addPlace/addPlace_page.dart';
 import 'package:client/pages/manage/places/managePlaces_provider.dart';
@@ -467,6 +468,10 @@ final router = GoRouter(
                         },
                       ),
                     ]
+                ),
+                GoRoute(
+                    path: Routes.bookings,
+                    builder: (context, state) => ManageBookingsPage(),
                 ),
               ]
             ),

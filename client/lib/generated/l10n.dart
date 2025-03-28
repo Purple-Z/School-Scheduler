@@ -65,15 +65,15 @@ class S {
     );
   }
 
-  /// `Hello, `
+  /// `Hello `
   String get account_hello {
-    return Intl.message('Hello, ', name: 'account_hello', desc: '', args: []);
+    return Intl.message('Hello ', name: 'account_hello', desc: '', args: []);
   }
 
-  /// `Your Profile`
+  /// `Profile`
   String get account_your_profile {
     return Intl.message(
-      'Your Profile',
+      'Profile',
       name: 'account_your_profile',
       desc: '',
       args: [],
@@ -90,20 +90,20 @@ class S {
     );
   }
 
-  /// `Your Bookings`
+  /// `Bookings`
   String get account_your_bookings {
     return Intl.message(
-      'Your Bookings',
+      'Bookings',
       name: 'account_your_bookings',
       desc: '',
       args: [],
     );
   }
 
-  /// `Your Activity`
+  /// `Activity`
   String get account_your_activity {
     return Intl.message(
-      'Your Activity',
+      'Activity',
       name: 'account_your_activity',
       desc: '',
       args: [],

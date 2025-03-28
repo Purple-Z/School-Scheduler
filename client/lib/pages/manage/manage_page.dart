@@ -1,6 +1,8 @@
 import 'package:client/app_provider.dart';
 import 'package:client/pages/manage/activities/manageActivities_provider.dart';
 import 'package:client/pages/manage/activities/manageActivities_provider.dart';
+import 'package:client/pages/manage/bookings/manageBookings_provider.dart';
+import 'package:client/pages/manage/bookings/manageBookings_provider.dart';
 import 'package:client/pages/manage/manage_provider.dart';
 import 'package:client/pages/manage/requests/manageRequests_page.dart';
 import 'package:client/pages/manage/requests/manageRequests_page.dart';
@@ -42,6 +44,7 @@ class _ManagePageState extends State<ManagePage> {
               if (appProvider.view_resources) ManageActivitiesWidget(),
               if (appProvider.view_resources) ManageResourcesWidget(),
               if (appProvider.view_resources) ManageRequestsWidget(),
+              if (appProvider.view_booking) ManageBookingsWidget()
             ]
         ),
       ),
@@ -315,6 +318,46 @@ class ManageRequestsWidget extends StatelessWidget {
           ElevatedButton(
               onPressed: () {
                 context.push(Routes.manage_Requests);
+              },
+              child: Row(
+                children: [
+                  Text(AppLocalizations.of(context)!.manage_go_to_page),
+                  SizedBox(width: 10,),
+                  Icon(Icons.account_balance_rounded)
+                ],
+              )
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ManageBookingsWidget extends StatelessWidget {
+  const ManageBookingsWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Text(
+                'Manage Bookings',
+                style: TextStyle(fontSize: 20),
+              ),
+              Expanded(child: SizedBox())
+            ],
+          ),
+          SizedBox(height: 15,),
+          ElevatedButton(
+              onPressed: () {
+                context.push(Routes.manage_Bookings);
               },
               child: Row(
                 children: [

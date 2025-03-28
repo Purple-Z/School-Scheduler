@@ -13,9 +13,11 @@ dependencies:
   flutter:
     sdk: flutter
 
+
   flutter_localizations:
     sdk: flutter
   intl: any
+
 
   provider: ^6.1.2
   cupertino_icons: ^1.0.8
@@ -31,6 +33,8 @@ dependencies:
   dark_light_button: ^0.0.2
   drop_down_list: ^2.0.0
   duration_picker: ^1.2.0
+  table_calendar: ^3.1.3
+  wave: ^0.2.2
 
 dev_dependencies:
   flutter_test:
@@ -41,5 +45,51 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  fonts:
+    - family: Lexend
+      fonts:
+        - asset: assets/fonts/Lexend-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Lexend-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Lexend-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Lexend-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Lexend-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Lexend-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Lexend-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Lexend-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Lexend-Black.ttf
+          weight: 900
+        - asset: assets/fonts/Lexend-VariableFont_wght.ttf
+
+    - family: Outfit
+      fonts:
+        - asset: assets/fonts/Outfit-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Outfit-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Outfit-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Outfit-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Outfit-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Outfit-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Outfit-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Outfit-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Outfit-Black.ttf
+          weight: 900
+        - asset: assets/fonts/Outfit-VariableFont_wght.ttf
+
+
 flutter_intl:
   enabled: true

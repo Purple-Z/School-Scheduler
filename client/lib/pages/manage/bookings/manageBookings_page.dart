@@ -1,0 +1,195 @@
+import 'package:client/app_provider.dart';
+import 'package:client/pages/manage/bookings/manageBookings_provider.dart';
+import 'package:client/router/layout_scaffold.dart';
+import 'package:client/router/routes.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:table_calendar/table_calendar.dart';
+
+import '../../../connection.dart';
+import '../../functions.dart';
+import '../requests/manageRequests_provider.dart';
+import '../widgets.dart';
+
+class ManageBookingsPage extends StatefulWidget {
+  const ManageBookingsPage({super.key});
+
+  @override
+  State<ManageBookingsPage> createState() => _ManageBookingsPageState();
+}
+
+class _ManageBookingsPageState extends State<ManageBookingsPage> {
+  @override
+  Widget build(BuildContext context) {
+    var manageBookingsProvider = context.watch<ManageBookingsProvider>();
+    var appProvider = context.watch<AppProvider>();
+
+    return appProvider.view_booking
+        ? ManageBookingsAdmin()
+        : Text(AppLocalizations.of(context)!.access_denied);
+  }
+}
+
+class ManageBookingsAdmin extends StatefulWidget {
+  const ManageBookingsAdmin({super.key});
+
+  @override
+  _ManageBookingsAdminState createState() => _ManageBookingsAdminState();
+}
+
+class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
+  final RefreshController refreshController = RefreshController(initialRefresh: true);
+  DateTime? _selectedDay;
+  DateTime _focusedDay = DateTime.now();
+
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectedDay = _focusedDay;
+    _loadEvents();
+  }
+
+
+  void _loadEvents() async {
+    var appProvider = Provider.of<AppProvider>(context, listen: false);
+    var manageBookingProvider = Provider.of<ManageBookingsProvider>(context, listen: false);
+    List bookings = await Connection.getBookings(appProvider);
+    manageBookingProvider.events.clear();
+    Map<DateTime, List<Booking>> events = {};
+
+    for (List booking in bookings){
+      DateTime time = DateTime.tryParse(booking[1]) ?? DateTime.now();
+      events[DateTime(time.year, time.month, time.day)] = [];
+    }
+
+    for (List booking in bookings){
+      Booking b = Booking(
+          booking[0].toString(),
+          DateTime.tryParse(booking[1]) ?? DateTime.now(),
+          DateTime.tryParse(booking[2]) ?? DateTime.now(),
+          booking[3],
+          booking[4],
+          booking[5],
+          booking[6],
+          booking[7],
+          booking[8],
+          booking[9]
+      );
+      print('nuovo evento ' + events.toString());
+      DateTime time = DateTime.tryParse(booking[1]) ?? DateTime.now();
+      events[DateTime(time.year, time.month, time.day)]?.add(b);
+    }
+
+    manageBookingProvider.setBookings(events);
+  }
+
+  List<Booking> _getEventsForDay(DateTime day) {
+    var manageBookingProvider = Provider.of<ManageBookingsProvider>(context, listen: false);
+    final normalizedDay = DateTime(day.year, day.month, day.day);
+    return manageBookingProvider.events[normalizedDay] ?? [];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var manageBookingsProvider = context.watch<ManageBookingsProvider>();
+    var appProvider = context.watch<AppProvider>();
+    List pending_bookings = manageBookingsProvider.requests;
+
+    return Scaffold(
+      body: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
+          child: ListView(
+            children: [
+              TableCalendar<Booking>(
+                firstDay: DateTime(2010, 10, 16),
+                lastDay: DateTime(2030, 3, 14),
+                focusedDay: _focusedDay,
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay;
+                  });
+                },
+                locale: appProvider.locale.toLanguageTag(),
+                eventLoader: (day) {
+                  return _getEventsForDay(day);
+                },
+                calendarBuilders: CalendarBuilders(
+                  markerBuilder: (context, day, events) {
+                    if (events.isNotEmpty) {
+                      return Positioned(
+                        bottom: 1,
+                        child: Container(
+                          width: 16.0,
+                          height: 16.0,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '${events.length}',
+                              style:
+                              TextStyle(color: Colors.white, fontSize: 10),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Bookings for ${_selectedDay != null ? DateFormat('dd/MM/yyyy', appProvider.locale.toString()).format(_selectedDay!) : ""}',
+              ),
+              Container(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height*0.5
+                ),
+                child: ListView.builder(
+                  itemCount:
+                  _getEventsForDay(_selectedDay ?? DateTime.now()).length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(_getEventsForDay(
+                          _selectedDay ?? DateTime.now())[index].title),
+                    );
+                  },
+                ),
+              ),
+            ],
+          )),
+    );
+  }
+}
+
+class Booking {
+  final String title;
+  final DateTime start;
+  final DateTime end;
+  final int quantity;
+  final String user_email;
+  final String resource_name;
+  final int status;
+  final String place_name;
+  final String activity_name;
+  final String validator_email;
+
+  Booking(this.title, this.start, this.end, this.quantity, this.user_email, this.resource_name, this.status, this.place_name, this.activity_name, this.validator_email);
+
+  @override
+  String toString() => title;
+}

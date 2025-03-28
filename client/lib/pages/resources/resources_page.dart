@@ -12,6 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wave/config.dart';
+import 'package:wave/wave.dart';
 
 
 import '../../../connection.dart';
@@ -83,7 +85,7 @@ class _ResourceFeedState extends State<ResourceFeed> {
 
     return Scaffold(
       body: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 1, 10, 0),
+          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Column(
             children: [
               Expanded(
@@ -94,18 +96,24 @@ class _ResourceFeedState extends State<ResourceFeed> {
                   child: ListView(
                     children: resourcesProvider.resources.entries.map((entry) {
                       return Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
+                        padding: const EdgeInsets.fromLTRB(10, 15, 10,05),
                         child: Card(
-                          color: Theme.of(context).colorScheme.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          color: Color.lerp(Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.surface, 0.1),
                           child: Padding(
-                            padding: const EdgeInsets.all(12.0),
+                            padding: const EdgeInsets.all(15.0),
                             child: Column(
                               children: [
                                 Row(
                                   children: [
                                     Text(
                                       entry.key,
-                                      style: TextStyle(fontSize: 20),
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Theme.of(context).colorScheme.surface
+                                      ),
                                     ),
                                     Expanded(child: SizedBox())
                                   ],
@@ -118,6 +126,10 @@ class _ResourceFeedState extends State<ResourceFeed> {
                                   children: [
                                     for (var resource in entry.value)
                                       Card(
+                                        color: Theme.of(context).colorScheme.surface,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(30),
+                                        ),
                                         child: InkWell(
                                           onTap: () {
                                             context.push(Routes.resources_Resource, extra: {
@@ -127,24 +139,27 @@ class _ResourceFeedState extends State<ResourceFeed> {
                                             });
                                           },
                                           child: Center(
-                                            child: Column(
-                                              children: [
-                                                Expanded(child: SizedBox()),
-                                                Expanded(child: Center(child: Text(resource[1].toString()))),
-                                                Expanded(child: Column(
-                                                  children: [
-                                                    Expanded(child: SizedBox()),
-                                                    Row(
-                                                      children: [
-                                                        Expanded(child: SizedBox()),
-                                                        if (resource[3] != 1) Text(resource[3].toString()),
-                                                        SizedBox(width: 10,)
-                                                      ],
-                                                    ),
-                                                    SizedBox(height: 10,)
-                                                  ],
-                                                ))
-                                              ],
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                children: [
+                                                  Expanded(child: SizedBox()),
+                                                  Expanded(child: Center(child: Text(resource[1].toString()))),
+                                                  Expanded(child: Column(
+                                                    children: [
+                                                      Expanded(child: SizedBox()),
+                                                      Row(
+                                                        children: [
+                                                          Expanded(child: SizedBox()),
+                                                          if (resource[3] != 1) Text(resource[3].toString()),
+                                                          SizedBox(width: 10,)
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 10,)
+                                                    ],
+                                                  ))
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),

@@ -2694,11 +2694,30 @@ def get_resource_for_booking():
         result = db.fetchSQL(sql)
         type_name = result[0][0]
 
+        place_name = resource_content[5] if resource_content[5] != None else ''
+        if resource_content[5] != None:
+            sql = f'''
+                SELECT name FROM places WHERE id = '{resource_content[5]}'
+            '''    
+            result = db.fetchSQL(sql)
+            place_name = result[0][0]
+
+
+        activity_name = resource_content[6] if resource_content[6] != None else ''
+        if resource_content[6] != None:
+            sql = f'''
+                SELECT name FROM activities WHERE id = '{resource_content[6]}'
+            '''    
+            result = db.fetchSQL(sql)
+            activity_name = result[0][0]
+
         resource = []
         for quality in resource_content:
             resource.append(quality)
 
         resource[4] = type_name
+        resource[5] = place_name
+        resource[6] = activity_name
         resource[8] = resource[8]==1
         resource[9] = resource[9]==1
         
@@ -2726,7 +2745,7 @@ def get_resource_for_booking():
         if len(shifts_content) == 0:
             shifts = [[start, end, 0]]
         else:
-            shifts = getShiftValue(shifts_content, start, end)
+            shifts = getShiftValue(shifts_content, start, end, slot=resource[7])
 
 
         for shift in shifts:
@@ -2748,6 +2767,7 @@ def get_resource_for_booking():
             }
         ), 200
     except Exception as e:
+        print(e)
         return jsonify(
         {
             #"token": token_for(user_id)
@@ -2833,6 +2853,8 @@ def add_booking():
     end = data.get('end')
     quantity = data.get('quantity')
     resource_id = data.get('resource_id')
+    place = data.get('place')
+    activity = data.get('activity')
     
     if not checkUserToken(email, token):
         return jsonify(
@@ -2880,6 +2902,26 @@ def add_booking():
             }
         ), 500
     
+    print(result[0][5])
+    
+
+    place = '' if place == None else place
+    place_name = '' if result[0][5] != None else place
+    sql = "SELECT id FROM places WHERE name = '" + place_name + "'"
+    place_result = db.fetchSQL(sql)
+    place_id = None
+    if len(place_result) != 0:
+        place_id = place_result[0][0]
+
+    print('activity:' , activity)
+    activity = '' if activity == None else activity
+    activity_name = '' if result[0][6] != None else activity
+    sql = "SELECT id FROM activities WHERE name = '" + activity_name + "'"
+    activity_result = db.fetchSQL(sql)
+    activity_id = None
+    if len(activity_result) != 0:
+        activity_id = activity_result[0][0]
+    
     slot = result[0][7]
     auto_accept = result[0][8]==1
     over_booking = result[0][9]==1
@@ -2909,7 +2951,7 @@ def add_booking():
 
         sql_insert = f'''
         INSERT INTO bookings
-        (id, start, end, quantity, resource_id, user_id, accepted)
+        (id, start, end, quantity, resource_id, user_id, status, place_id, activity_id)
         VALUES (
             0,
             '{start}', 
@@ -2917,7 +2959,9 @@ def add_booking():
             {quantity}, 
             {resource_id},
             {user_id},
-            {auto_accept}
+            {1 if auto_accept is True else 0},
+            {'null' if place_id is None else place_id},
+            {'null' if activity_id is None else activity_id}
         )
         '''
         db.executeSQL(sql_insert)
@@ -2959,7 +3003,7 @@ def get_pending_bookings():
 
     bookings_content = db.fetchSQL(
         f'''
-            SELECT * FROM bookings WHERE accepted = 0
+            SELECT * FROM bookings WHERE status = 0
         '''
     )
 
@@ -3005,7 +3049,6 @@ def get_pending_bookings():
             "token": token_for(user_id)
         }
     ), 200
-
 
 @app.route('/accept-pending-bookings', methods=['POST'])
 def accept_pending_bookings():
@@ -3055,7 +3098,8 @@ def accept_pending_bookings():
 
     sql_update = f'''
         UPDATE bookings SET
-            accepted = 1
+            status = 1,
+            validator_id = {user_id}
         WHERE id = {request_id}
         '''
 
@@ -3114,12 +3158,14 @@ def refuse_pending_bookings():
             }
             ), 402
 
-    sql_delete = f'''
-        DELETE FROM bookings
+    sql_update = f'''
+        UPDATE bookings SET
+            status = 2,
+            validator_id = {user_id}
         WHERE id = {request_id}
         '''
 
-    db.executeSQL(sql_delete)
+    db.executeSQL(sql_update)
     
 
     return jsonify(
@@ -3128,10 +3174,89 @@ def refuse_pending_bookings():
         }
     ), 200
 
+@app.route('/get-bookings', methods=['POST'])
+def get_bookings():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'view_booking'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    user_id = getIdFromEmail(email)
 
+    bookings_content = db.fetchSQL(
+        '''
+            SELECT * FROM bookings
+        '''
+    )
+    bookings = []
+    for booking in bookings_content:
+        booking = list(booking)
+        sql = f'''
+            SELECT email FROM users WHERE id = '{booking[4]}'
+        '''    
+        result = db.fetchSQL(sql)
+        user_mail = result[0][0]
 
+        sql = f'''
+            SELECT name FROM resources WHERE id = '{booking[5]}'
+        '''    
+        result = db.fetchSQL(sql)
+        resource_name = result[0][0]
 
+        place_name = ''
+        if booking[7] != None:
+            sql = f'''
+                SELECT name FROM places WHERE id = '{booking[7]}'
+            '''    
+            result = db.fetchSQL(sql)
+            place_name = result[0][0]
 
+        activity_name = ''
+        if booking[8] != None:
+            sql = f'''
+                SELECT name FROM activities WHERE id = '{booking[8]}'
+            '''    
+            result = db.fetchSQL(sql)
+            activity_name = result[0][0]
+
+        validator_email = ''
+        if booking[9] != None:
+            sql = f'''
+                SELECT email FROM users WHERE id = '{booking[9]}'
+            '''    
+            result = db.fetchSQL(sql)
+            validator_email = result[0][0]
+
+        booking[1] = booking[1].isoformat()
+        booking[2] = booking[2].isoformat()
+
+        booking[4] = user_mail
+        booking[5] = resource_name
+        booking[7] = place_name
+        booking[8] = activity_name
+        booking[9] = validator_email
+
+        bookings.append(booking)
+
+    return jsonify(
+        {
+            "bookings": bookings,
+            "token": token_for(user_id)
+        }
+    ), 200
 
 
 def checkUserToken(email, token):
@@ -3338,15 +3463,14 @@ def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1):
             AND
             (NOT(start < '{start}' AND end < '{start}'))
         ) AND (
-            (accepted = 1 OR {1 if over_booking is True else 0} = 0) AND ({1 if auto_accept is True else 0} = 0)
+            (status = 1 OR {1 if over_booking is True else 0} = 0) AND ({1 if auto_accept is True else 0} = 0)
             OR 
             ({1 if auto_accept is True else 0} = 1)
-        )
+        ) AND (status != 2)
     )
     AND
     resource_id = {resource_id}
     '''
-    print('here ok', resource_id)
     result = db.fetchSQL(sql)
 
     for record in result:
@@ -3407,7 +3531,7 @@ def getMaxBookability(resource_id, start, end, remove_booking_id):
 
     shifts = []
     if len(shifts_content) > 0:
-        shifts = getShiftValue(shifts_content, start=start, end=end)
+        shifts = getShiftValue(shifts_content, start=start, end=end, slot=slot)
     
     minVal = 0
     if len(shifts) > 0:
@@ -3420,7 +3544,7 @@ def getMaxBookability(resource_id, start, end, remove_booking_id):
 
     return minVal
 
-def getShiftValue(shifts, start=False, end=False):
+def getShiftValue(shifts, start=False, end=False, slot=None):
     #finding mix and max for function
     minValue = shifts[0][0]
     maxValue = shifts[0][1]
@@ -3468,7 +3592,19 @@ def getShiftValue(shifts, start=False, end=False):
 
     #create shifts    
     numeric_shifts = [[key, len(list(group))] for key, group in groupby(values)]
+    if slot != None:
+        new_numeric_shifts = []
+        for numeric_shift in numeric_shifts:
+            if numeric_shift[0] != 0:
+                for _ in range(numeric_shift[1]//slot):
+                    new_numeric_shifts.append([numeric_shift[0], slot])
 
+                if numeric_shift[1]%slot != 0:
+                    new_numeric_shifts.append([0, numeric_shift[1]%slot])
+            else:
+                new_numeric_shifts.append(numeric_shift)
+        numeric_shifts = new_numeric_shifts
+    #print('numeric_shifts', numeric_shifts)
 
     start_minutes = 0
     shifts = []

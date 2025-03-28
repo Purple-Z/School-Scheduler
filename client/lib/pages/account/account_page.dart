@@ -3,11 +3,12 @@ import 'package:client/connection.dart';
 import 'package:client/router/layout_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:wave/config.dart';
+import 'package:wave/wave.dart';
 import '../../router/routes.dart';
 import 'account_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -24,9 +25,7 @@ class _AccountPageState extends State<AccountPage> {
     var appProvider = context.watch<AppProvider>();
 
     return Center(
-      child: appProvider.logged ?
-      LoggedPage():
-      NotLoggedPage(),
+      child: appProvider.logged ? LoggedPage() : NotLoggedPage(),
     );
   }
 }
@@ -41,18 +40,28 @@ class NotLoggedPage extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(AppLocalizations.of(context)!.account_not_logged, style: TextStyle(fontSize: 30),),
-        SizedBox(height: 10,),
+        Text(
+          AppLocalizations.of(context)!.account_not_logged,
+          style: TextStyle(fontSize: 30),
+        ),
+        SizedBox(
+          height: 10,
+        ),
         ElevatedButton(
-          onPressed: (){
+          onPressed: () {
             context.push(Routes.account_Login);
           },
           child: Padding(
             padding: const EdgeInsets.all(5.0),
-            child: Text(AppLocalizations.of(context)!.account_login, style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontSize: 20),),
+            child: Text(
+              AppLocalizations.of(context)!.account_login,
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary, fontSize: 20),
+            ),
           ),
           style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.primary),
+            backgroundColor:
+                WidgetStateProperty.all(Theme.of(context).colorScheme.primary),
           ),
         )
       ],
@@ -72,69 +81,122 @@ class LoggedPage extends StatelessWidget {
 
     return Column(
       children: [
-        SizedBox(height: 10,),
+        SizedBox(
+          height: 10,
+        ),
         Row(
           children: [
             Expanded(child: SizedBox()),
             ElevatedButton(
-                onPressed: () {
-                  appProvider.logout();
-                },
-                child: Row(
-                  children: [
-                    Text(AppLocalizations.of(context)!.account_logout),
-                    SizedBox(width: 10,),
-                    Icon(Icons.logout)
-                  ],
-                )
+              onPressed: () {
+                appProvider.logout();
+              },
+              child: Row(
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.account_logout,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Icon(
+                    Icons.logout,
+                    color: Theme.of(context).colorScheme.secondary,
+                  )
+                ],
+              )
             ),
           ],
         ),
-
-        SizedBox(height: 30,),
-
+        SizedBox(
+          height: 30,
+        ),
         Row(
           children: [
-            SizedBox(width: 15,),
-            Text(AppLocalizations.of(context)!.account_hello, style: TextStyle(fontSize: 25),),
-            SizedBox(width: 5,),
-            Text(appProvider.name, style: TextStyle(fontSize: 25),),
+            SizedBox(
+              width: 30,
+            ),
+            Text(
+              AppLocalizations.of(context)!.account_hello,
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w200),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              appProvider.name,
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w200),
+            ),
           ],
         ),
-
-        SizedBox(height: 30,),
-
-        Container(
-          width: MediaQuery.of(context).size.width*0.8,
-          child: GridView.count(
-            physics: NeverScrollableScrollPhysics(),
-            childAspectRatio: 2,
-            shrinkWrap: true,
-            crossAxisCount: 2,
-            children: [
-              AccountOptionButton(
-                label: AppLocalizations.of(context)!.account_your_profile,
-                onTap: () {
-                  context.push(Routes.account_Profile);
-                },
-              ),
-              AccountOptionButton(
-                label: AppLocalizations.of(context)!.account_settings,
-                onTap: () {
-                  context.push(Routes.account_Settings);
-                },
-              ),
-              AccountOptionButton(
-                label: AppLocalizations.of(context)!.account_your_bookings,
-                onTap: () {},
-              ),
-              AccountOptionButton(
-                label: AppLocalizations.of(context)!.account_your_activity,
-                onTap: () {
-                  Connection.getPendingBookings(appProvider);
-                },
-              ),
-            ],
+        Row(
+          children: [
+            SizedBox(
+              width: 30,
+            ),
+            Text(
+              "Your Account",
+              style: TextStyle(fontSize: 35,),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 40,
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height*0.3
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: AccountOptionButton(
+                        label: AppLocalizations.of(context)!.account_your_bookings,
+                        color: Theme.of(context).colorScheme.secondary,
+                        onTap: () {},
+                      ),
+                    ),
+                    AccountOptionButton(
+                      label: AppLocalizations.of(context)!.account_your_profile,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      onTap: () {
+                        context.push(Routes.account_Profile);
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  children: [
+                    AccountOptionButton(
+                      label: AppLocalizations.of(context)!.account_settings,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      onTap: () {
+                        context.push(Routes.account_Settings);
+                      },
+                    ),
+                    Expanded(
+                      child: AccountOptionButton(
+                        label: AppLocalizations.of(context)!.account_your_activity,
+                        color: Theme.of(context).colorScheme.tertiary,
+                        onTap: () {
+                          Connection.getPendingBookings(appProvider);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
         Expanded(child: SizedBox()),
@@ -148,26 +210,35 @@ class AccountOptionButton extends StatelessWidget {
     super.key,
     required this.label,
     required this.onTap,
+    required this.color
   });
 
   final String label;
   final VoidCallback onTap;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 3.5,
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(25),
         ),
-        color: Theme.of(context).colorScheme.primary,
+        color: color,
         child: InkWell(
           onTap: onTap,
           child: Center(
-            child: Text(
-              label,
-              style: TextStyle(color: Colors.white),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(25,30, 25,30),
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.surface,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600
+                ),
+              ),
             ),
           ),
         ),
