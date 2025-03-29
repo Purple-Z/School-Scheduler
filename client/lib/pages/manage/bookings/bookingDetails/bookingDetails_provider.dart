@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../manageBookings_page.dart';
 
-class RequestDetailsProvider extends ChangeNotifier {
-  List request = [];
 
-  loadRequestDetailsPage() async {
+class BookingDetailsProvider extends ChangeNotifier {
+  late Booking booking;
+
+  loadBookingDetailsPage() async {
     notifyListeners();
   }
 
-  setRequest (List c_request) {
-    request = c_request;
+  setBooking (Booking c_booking) {
+    booking = c_booking;
     notifyListeners();
   }
 }

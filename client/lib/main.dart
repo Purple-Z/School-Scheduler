@@ -5,6 +5,7 @@ import 'package:client/pages/account/settings/settings_provider.dart';
 import 'package:client/pages/manage/activities/activityDetails/activityDetails_provider.dart';
 import 'package:client/pages/manage/activities/addActivity/addActivity_provider.dart';
 import 'package:client/pages/manage/activities/manageActivities_provider.dart';
+import 'package:client/pages/manage/bookings/bookingDetails/bookingDetails_provider.dart';
 import 'package:client/pages/manage/bookings/manageBookings_provider.dart';
 import 'package:client/pages/manage/manage_provider.dart';
 import 'package:client/pages/manage/places/addPlace/addPlace_provider.dart';
@@ -81,6 +82,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ManageRequestsProvider()),
         ChangeNotifierProvider(create: (_) => RequestDetailsProvider()),
         ChangeNotifierProvider(create: (_) => ManageBookingsProvider()),
+        ChangeNotifierProvider(create: (_) => BookingDetailsProvider()),
       ],
       child: Consumer<AppProvider>(
         builder: (context, dataProvider, child) {

@@ -101,7 +101,7 @@ class _ResourceFeedState extends State<ResourceFeed> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
-                          color: Color.lerp(Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.surface, 0.1),
+                          color: Theme.of(context).colorScheme.primary,
                           child: Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: Column(

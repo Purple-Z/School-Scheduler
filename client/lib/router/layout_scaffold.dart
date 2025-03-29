@@ -52,19 +52,30 @@ class LayoutScaffold extends StatelessWidget {
             size: Size(double.infinity, 10),
             waveAmplitude: 0,
           ),
-          NavigationBar(
-            selectedIndex: navigationShell.currentIndex,
-            onDestinationSelected: navigationShell.goBranch,
-            indicatorColor: Theme.of(context).colorScheme.primary,
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            destinations: destinations
-                .map((destination) =>
-                NavigationDestination(
-                  icon: Icon(destination.icon),
-                  label: destination.label,
-                  selectedIcon: Icon(destination.icon, color: Colors.white),
-                ))
-                .toList(),
+          NavigationBarTheme(
+            data: NavigationBarThemeData(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              indicatorColor: Theme.of(context).colorScheme.secondary,
+
+              labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
+              (Set<WidgetState> states) => states.contains(WidgetState.selected)
+              ? TextStyle(color: Theme.of(context).colorScheme.surface)
+                  : TextStyle(color: Theme.of(context).colorScheme.surface),
+              ),
+            ),
+
+            child: NavigationBar(
+              selectedIndex: navigationShell.currentIndex,
+              onDestinationSelected: navigationShell.goBranch,
+              destinations: destinations
+                  .map((destination) =>
+                  NavigationDestination(
+                    icon: Icon(destination.icon, color: Theme.of(context).colorScheme.surface,),
+                    label: destination.label,
+                    selectedIcon: Icon(destination.icon, color: Theme.of(context).colorScheme.surface),
+                  ))
+                  .toList(),
+            ),
           ),
         ],
       ),

@@ -105,7 +105,7 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
 
     return Scaffold(
       body: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
+          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: ListView(
             children: [
               TableCalendar<Booking>(
@@ -134,7 +134,7 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
                           width: 16.0,
                           height: 16.0,
                           decoration: BoxDecoration(
-                            color: Colors.red,
+                            color: Theme.of(context).colorScheme.secondary,
                             shape: BoxShape.circle,
                           ),
                           child: Center(
@@ -149,6 +149,40 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
                     }
                     return null;
                   },
+                  selectedBuilder: (context, day, focusedDay) {
+                    return Container(
+                      margin: const EdgeInsets.all(6.0),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary, // Colore per il giorno selezionato
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        day.day.toString(),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    );
+                  },
+
+                  todayBuilder: (context, day, focusedDay) {
+                    return Container(
+                      margin: const EdgeInsets.all(8.0),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.tertiary,
+                          width: 2.0,
+                        ),
+                      ),
+                      child: Text(
+                        day.day.toString(),
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    );
+                  }
+
                 ),
               ),
               SizedBox(height: 10),
@@ -156,22 +190,169 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
                 'Bookings for ${_selectedDay != null ? DateFormat('dd/MM/yyyy', appProvider.locale.toString()).format(_selectedDay!) : ""}',
               ),
               Container(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height*0.5
-                ),
-                child: ListView.builder(
-                  itemCount:
-                  _getEventsForDay(_selectedDay ?? DateTime.now()).length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(_getEventsForDay(
-                          _selectedDay ?? DateTime.now())[index].title),
-                    );
-                  },
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 25),
+                child: Column(
+                  children: _getEventsForDay(_selectedDay ?? DateTime.now()).map((event) =>
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  if (event.status == 0) Text(
+                                    'Pending',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Theme.of(context).colorScheme.primary
+                                    ),
+                                  ),
+                                  if (event.status == 1) Text(
+                                    'Accepted',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Theme.of(context).colorScheme.tertiary
+                                    ),
+                                  ),
+                                  if (event.status == 2) Text(
+                                    'Refuzed',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Theme.of(context).colorScheme.secondary
+                                    ),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    event.resource_name,
+                                    style: TextStyle(fontSize: 25),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  Text(
+                                    event.user_email,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w200
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 15,),
+                              Row(
+                                children: [
+                                  Text(
+                                    'From',
+                                    style: TextStyle(fontSize: 15,),
+                                  ),
+                                  SizedBox(width: 5,),
+                                  Text(
+                                    '${event.start.day}/${event.start.month}/${event.start.year}',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w200
+                                    ),
+                                  ),
+                                  SizedBox(width: 5,),
+                                  Text(
+                                    getTimePrintable(event.start),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w200
+                                    ),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  Text(
+                                    event.quantity.toString(),
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    'To',
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                  SizedBox(width: 5,),
+                                  Text(
+                                    '${event.end.day}/${event.end.month}/${event.end.year}',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w200
+                                    ),
+                                  ),
+                                  SizedBox(width: 5,),
+                                  Text(
+                                    getTimePrintable(event.end),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w200
+                                    ),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                ],
+                              ),
+                              SizedBox(height: 15,),
+                              Row(
+                                children: [
+                                  Text(
+                                    event.activity_name,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w200
+                                    ),
+                                  ),
+                                  SizedBox(width: 15,),
+                                  Text(
+                                    event.place_name,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w200
+                                    ),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      context.push(Routes.manage_Bookings_BookingsDetails, extra: {
+                                        'booking': event,
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          'View',
+                                          style: TextStyle(
+                                              color: Theme.of(context).colorScheme.surface
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_outward,
+                                          color: Theme.of(context).colorScheme.surface,
+                                        )
+                                      ],
+                                    ),
+                                    style: ButtonStyle(
+                                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary)
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        Divider()
+                      ],
+                    )
+                  ).toList(),
                 ),
               ),
             ],
-          )),
+          )
+        ),
     );
   }
 }

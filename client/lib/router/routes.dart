@@ -79,6 +79,9 @@ class Routes {
   static const String bookings = 'bookings';
   static const String manage_Bookings = '/manage/bookings';
 
+  static const String bookingsDetails = 'bookingsDetails';
+  static const String manage_Bookings_BookingsDetails = '/manage/bookings/bookingsDetails';
+
   static const String requestDetails = 'requestDetails';
   static const String manage_Requests_RequestDetails = '/manage/requests/requestDetails';
 

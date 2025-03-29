@@ -9,7 +9,10 @@ import 'package:client/pages/manage/activities/activityDetails/activityDetails_p
 import 'package:client/pages/manage/activities/addActivity/addActivity_page.dart';
 import 'package:client/pages/manage/activities/manageActivities_page.dart';
 import 'package:client/pages/manage/activities/manageActivities_provider.dart';
+import 'package:client/pages/manage/bookings/bookingDetails/bookingDetails_page.dart';
+import 'package:client/pages/manage/bookings/bookingDetails/bookingDetails_provider.dart';
 import 'package:client/pages/manage/bookings/manageBookings_page.dart';
+import 'package:client/pages/manage/bookings/manageBookings_provider.dart';
 import 'package:client/pages/manage/manage_page.dart';
 import 'package:client/pages/manage/places/addPlace/addPlace_page.dart';
 import 'package:client/pages/manage/places/managePlaces_provider.dart';
@@ -472,6 +475,27 @@ final router = GoRouter(
                 GoRoute(
                     path: Routes.bookings,
                     builder: (context, state) => ManageBookingsPage(),
+                    routes: [
+                      GoRoute(
+                        path: Routes.bookingsDetails,
+                        builder: (context, state) => BookingDetailsPage(),
+                        redirect: (context, state) async {
+                          final extraData = state.extra as Map<String, dynamic>?;
+                          final Booking booking = extraData?['booking'];
+                          print("booking: " + booking.toString());
+
+                          var bookingDetailsProvider = Provider.of<BookingDetailsProvider>(context, listen: false);
+
+                          bookingDetailsProvider.setBooking(booking);
+                          return null;
+                        },
+                        onExit: (context) {
+                          var manageRequestsProvider = Provider.of<ManageRequestsProvider>(context, listen: false);
+                          manageRequestsProvider.loadManageRequestsPage(context);
+                          return true;
+                        },
+                      ),
+                    ]
                 ),
               ]
             ),

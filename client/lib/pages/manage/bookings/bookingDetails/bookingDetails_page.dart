@@ -1,5 +1,7 @@
 import 'package:client/app_provider.dart';
 import 'package:client/connection.dart';
+import 'package:client/pages/manage/bookings/bookingDetails/bookingDetails_provider.dart';
+import 'package:client/pages/manage/bookings/manageBookings_page.dart';
 import 'package:client/pages/manage/manage_provider.dart';
 import 'package:client/pages/manage/requests/requestDetails/requestDetails_provider.dart';
 import 'package:client/pages/manage/types/typeDetails/typeDetails_provider.dart';
@@ -22,253 +24,313 @@ import '../../../functions.dart';
 
 
 
-class RequestDetailsPage extends StatefulWidget {
-  const RequestDetailsPage({super.key});
+class BookingDetailsPage extends StatefulWidget {
+  const BookingDetailsPage({super.key});
 
   @override
-  State<RequestDetailsPage> createState() => _RequestDetailsPageState();
+  State<BookingDetailsPage> createState() => _BookingDetailsPageState();
 }
 
-class _RequestDetailsPageState extends State<RequestDetailsPage> {
+class _BookingDetailsPageState extends State<BookingDetailsPage> {
   @override
   Widget build(BuildContext context) {
     //var appState = context.watch<DataProvider>();
-    var requestDetailsProvider = context.watch<RequestDetailsProvider>();
+    var bookingDetailsProvider = context.watch<BookingDetailsProvider>();
     var appProvider = context.watch<AppProvider>();
 
     return appProvider.view_resources && appProvider.view_booking ?
-    RequestDetails(request: requestDetailsProvider.request,):
+    BookingDetails(booking: bookingDetailsProvider.booking,):
     Text(AppLocalizations.of(context)!.access_denied);
   }
 }
 
-class RequestDetails extends StatefulWidget {
-  final List request;
-  const RequestDetails({
+class BookingDetails extends StatefulWidget {
+  final Booking booking;
+  const BookingDetails({
     super.key,
-    required this.request
+    required this.booking
   });
 
   @override
-  State<RequestDetails> createState() => _RequestDetailsState(request: request);
+  State<BookingDetails> createState() => _BookingDetailsState(booking: booking);
 }
 
-class _RequestDetailsState extends State<RequestDetails> {
-  List request = [];
+class _BookingDetailsState extends State<BookingDetails> {
+  late Booking booking;
 
 
-  _RequestDetailsState({required this.request});
+  _BookingDetailsState({required this.booking});
 
 
   @override
   Widget build(BuildContext context) {
-    var requestDetailsProvider = context.watch<RequestDetailsProvider>();
+    var bookingDetailsProvider = context.watch<BookingDetailsProvider>();
     var appProvider = context.watch<AppProvider>();
     double fieldsSpacing = 15;
 
-    DateTime start = DateTime.tryParse(requestDetailsProvider.request[1]) ?? DateTime.now();
+    DateTime start = bookingDetailsProvider.booking.start;
     String start_str = '${start.year}/${start.month}/${start.day}\n';
     start_str += getTimePrintable(start);
 
-    DateTime end = DateTime.tryParse(requestDetailsProvider.request[2]) ?? DateTime.now();
+    DateTime end = bookingDetailsProvider.booking.end;
     String end_str = '${end.year}/${end.month}/${end.day}\n';
     end_str += getTimePrintable(end);
+    double margin = 7;
 
     return Padding(
-      padding: const EdgeInsets.all(15),
-      child: Column(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+      child: ListView(
         children: [
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Text(
+            bookingDetailsProvider.booking.resource_name,
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
+
+          const SizedBox(height: 30),
+
+          Text(
+            'User Email',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
+          ),
+
+          Text(
+            bookingDetailsProvider.booking.user_email,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.onPrimary),
+          ),
+
+          SizedBox(height: 20,),
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+            child: Row(
               children: [
-                Text(
-                  "Request Details From",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  requestDetailsProvider.request[4],
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 30),
-
-                Row(
-                  children: [
-
-                    Expanded(child: SizedBox()),
-
-                    Column(
+                Card(
+                  margin: EdgeInsets.all(margin),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  color: (bookingDetailsProvider.booking.status == 0) ? Theme.of(context).colorScheme.primary:
+                  (bookingDetailsProvider.booking.status == 1) ? Theme.of(context).colorScheme.tertiary:
+                  Theme.of(context).colorScheme.secondary,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
                       children: [
                         Text(
-                          "From",
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                          "Status",
+                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
                         ),
 
-                        Text(
-                          start_str,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 17),
+                        if (bookingDetailsProvider.booking.status == 0) Text(
+                          'Pending',
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Theme.of(context).colorScheme.surface
+                          ),
+                        ),
+                        if (bookingDetailsProvider.booking.status == 1) Text(
+                          'Accepted',
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Theme.of(context).colorScheme.surface
+                          ),
+                        ),
+                        if (bookingDetailsProvider.booking.status == 2) Text(
+                          'Refuzed',
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Theme.of(context).colorScheme.surface
+                          ),
                         ),
                       ],
                     ),
+                  ),
+                ),
+                Expanded(
+                  child: Card(
+                    margin: EdgeInsets.all(margin),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Quantity',
+                            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
+                          ),
 
-                    Expanded(child: SizedBox()),
+                          Text(
+                            bookingDetailsProvider.booking.quantity.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.surface),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
 
-                    Column(
+          if (bookingDetailsProvider.booking.validator_email != '') Padding(
+            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Card(
+                    margin: EdgeInsets.all(margin),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    color: Theme.of(context).colorScheme.secondary,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Validator Email',
+                            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
+                          ),
+
+                          Text(
+                            bookingDetailsProvider.booking.validator_email,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.surface),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Card(
+                    margin: EdgeInsets.all(margin),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            "From",
+                            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
+                          ),
+
+                          Text(
+                            start_str,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.surface),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  margin: EdgeInsets.all(margin),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
                       children: [
                         Text(
                           "To",
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
                         ),
 
                         Text(
                           end_str,
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 17),
+                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.surface),
                         ),
                       ],
                     ),
-
-                    Expanded(child: SizedBox()),
-
-                  ],
+                  ),
                 ),
-
-
-
-
-                SizedBox(height: 30,),
-
-
-
-
-                Row(
-                  children: [
-
-                    Expanded(child: SizedBox()),
-
-                    Column(
-                      children: [
-                        Text(
-                          "Quantity",
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                        ),
-
-                        Text(
-                          requestDetailsProvider.request[3].toString(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 17),
-                        ),
-                      ],
-                    ),
-
-                    Expanded(child: SizedBox()),
-
-                    Column(
-                      children: [
-                        Text(
-                          "Type",
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                        ),
-
-                        Text(
-                          requestDetailsProvider.request[5],
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 17),
-                        ),
-                      ],
-                    ),
-
-                    Expanded(child: SizedBox()),
-
-                  ],
-                ),
-
-
-
               ],
             ),
           ),
-          const Expanded(child: SizedBox()),
-          Column(
-            children: [
-              if (appProvider.edit_resources) Column(
-                children: [
-                  Center(
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
-                          backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),
-                          textStyle: WidgetStatePropertyAll(
-                              TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimary
-                              )
-                          )
-                      ),
-                      onPressed: () async {
 
-                        if (
-                        await Connection.acceptPendingBookings(appProvider, request_id: requestDetailsProvider.request[0])
-                        ){
-                          showTopMessage(context, "Request Accepted");
-                          context.pop();
-                        } else {
-                          showTopMessage(context, AppLocalizations.of(context)!.type_error_occurred);
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text(
-                          "Accept",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              fontSize: 20
-                          ),
-                        ),
-                      ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Card(
+                    margin: EdgeInsets.all(margin),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
                     ),
-                  ),
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Activity",
+                            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
+                          ),
 
-                  const SizedBox(height: 10,),
-                ],
-              ),
-
-              if (appProvider.delete_resources) Center(
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                      minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
-                      backgroundColor: WidgetStatePropertyAll(Color(0xFFB00020)),
-                      textStyle: WidgetStatePropertyAll(
-                          TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary
-                          )
-                      )
-                  ),
-                  onPressed: () async {
-                    if(await confirm(context, content: Text("Refuse?"))){
-                      if (await Connection.refusePendingBookings(appProvider, request_id: requestDetailsProvider.request[0])){
-                        showTopMessage(context, "Request Refused");
-                        context.pop();
-                      } else {
-                        showTopMessage(context, AppLocalizations.of(context)!.type_error_occurred);
-                      }
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Text(
-                      "Refuse",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          fontSize: 20
+                          Text(
+                            bookingDetailsProvider.booking.activity_name,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.surface),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+                Card(
+                  margin: EdgeInsets.all(margin),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  color: Theme.of(context).colorScheme.primary,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Place",
+                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
+                        ),
+
+                        Text(
+                          bookingDetailsProvider.booking.place_name,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.surface),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
+
+
+
+          SizedBox(height: 30,),
         ],
       ),
     );
