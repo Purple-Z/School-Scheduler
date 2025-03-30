@@ -43,9 +43,9 @@ class LayoutScaffold extends StatelessWidget {
                 30000
               ],
               heightPercentages: [
-                0,
-                0,
-                0,
+                -0.5,
+                -0.5,
+                -0.5,
               ],
             ),
             backgroundColor: Colors.transparent,

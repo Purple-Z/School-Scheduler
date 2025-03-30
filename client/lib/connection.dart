@@ -30,6 +30,82 @@ class Connection {
     }
   }
 
+  static Future<bool> reload(AppProvider appProvider) async {
+    final url = Uri.parse('http://' + serverAddr + '/reload');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token}),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      appProvider.setName(data['name']);
+      appProvider.setSurname(data['surname']);
+      appProvider.setEmail(data['email']);
+      appProvider.setRoles(data["roles"]);
+      appProvider.loadPreferences();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> updateOwnUser(AppProvider appProvider, {required String new_name, required String new_surname}) async {
+    final url = Uri.parse('http://' + serverAddr + '/update-own-user');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(
+          {
+            'email': appProvider.email,
+            'token': appProvider.token,
+            'new_name': new_name,
+            'new_surname': new_surname,
+          }
+      ),
+    );
+
+    final data = jsonDecode(response.body);
+    appProvider.setLogged(true);
+    appProvider.setToken(data['token']);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> changePassword(AppProvider appProvider, {required String current_password, required String new_password}) async {
+    final url = Uri.parse('http://' + serverAddr + '/change-password');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(
+          {
+            'email': appProvider.email,
+            'token': appProvider.token,
+            'password': current_password,
+            'new_password': new_password,
+          }
+      ),
+    );
+
+    final data = jsonDecode(response.body);
+    appProvider.setLogged(true);
+    appProvider.setToken(data['token']);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // - - -   ROLES - - -
 
   static Future<List> getRoleList(AppProvider appProvider) async {
@@ -1249,5 +1325,25 @@ class Connection {
     }
   }
 
+  static Future<List> getUserBookings(AppProvider appProvider) async {
+    final url = Uri.parse('http://' + serverAddr + '/get-user-bookings');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token}),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      List bookings = data['bookings'];
+      print(bookings);
+      return bookings;
+    } else {
+      return [];
+    }
+  }
 
 }

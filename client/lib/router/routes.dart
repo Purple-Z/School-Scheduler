@@ -96,6 +96,12 @@ class Routes {
   static const String profile = 'profile';
   static const String account_Profile = '/account/profile';
 
+  static const String userBookings = 'userBookings';
+  static const String account_UserBookings = '/account/userBookings';
+
+  static const String changePassword = 'changePassword';
+  static const String account_Profile_ChangePassword = '/account/profile/changePassword';
+
   static const String settings = 'settings';
   static const String account_Settings = '/account/settings';
 }

@@ -2,6 +2,7 @@ import 'package:client/app_provider.dart';
 import 'package:client/connection.dart';
 import 'package:client/pages/account/settings/settings_provider.dart';
 import 'package:client/router/layout_scaffold.dart';
+import 'package:client/router/routes.dart';
 import 'package:dark_light_button/dark_light_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,21 +10,21 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 
-import '../../../graphics/graphics_methods.dart';
-import '../../../router/routes.dart';
+import '../../../../graphics/graphics_methods.dart';
 
 
 
 
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+
+class ChangePasswordPage extends StatefulWidget {
+  const ChangePasswordPage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<ChangePasswordPage> createState() => _ChangePasswordPageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   Widget build(BuildContext context) {
     //var appState = context.watch<DataProvider>();
@@ -49,17 +50,17 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController surnameController = TextEditingController();
+  final TextEditingController currentPassword = TextEditingController();
+  final TextEditingController newPassword = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     var appProvider = Provider.of<AppProvider>(context, listen: false);
-    nameController.text = appProvider.name;
-    surnameController.text = appProvider.surname;
+    currentPassword.text = '';
+    newPassword.text = '';
   }
-  
+
   @override
   Widget build(BuildContext context) {
     var appProvider = context.watch<AppProvider>();
@@ -74,7 +75,7 @@ class _SettingsState extends State<Settings> {
             shrinkWrap: true,
             children: [
               Text(
-                "Profile",
+                "Change Password",
                 style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
               ),
               Text(
@@ -82,28 +83,28 @@ class _SettingsState extends State<Settings> {
                 style: TextStyle(fontSize: fontSize1),
               ),
 
-              if (appProvider.view_own_user) SizedBox(height: 30,),
+              SizedBox(height: 30,),
 
-              if (appProvider.view_own_user) buildTextField(nameController, 'Name', Icons.abc, editable: appProvider.edit_own_user),
-
-              if (appProvider.view_own_user) SizedBox(height: 20,),
-
-              if (appProvider.view_own_user) buildTextField(surnameController, 'Surname', Icons.abc, editable: appProvider.edit_own_user),
+              buildTextField(currentPassword, 'Current Password', Icons.abc, obscureText: true),
 
               SizedBox(height: 20,),
 
-              if (appProvider.edit_own_user & appProvider.view_own_user) ElevatedButton(
+              buildTextField(newPassword, 'New Password', Icons.abc, obscureText: true),
+
+              SizedBox(height: 20,),
+
+              ElevatedButton(
                   style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.tertiary)
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.secondary)
                   ),
                   onPressed: () async {
                     bool r = await showSimpleLoadingDialog<bool>(
                       context: context,
                       future: () async {
-                        bool r = await Connection.updateOwnUser(
+                        bool r = await Connection.changePassword(
                             appProvider,
-                            new_name: nameController.text,
-                            new_surname: surnameController.text
+                            current_password: currentPassword.text,
+                            new_password: newPassword.text
                         );
                         await Connection.reload(appProvider);
                         return r;
@@ -111,34 +112,18 @@ class _SettingsState extends State<Settings> {
                     );
 
                     if (r){
-                      showTopMessage(context, 'Profile Updated');
+                      showTopMessage(context, 'Password Changed');
                     } else {
                       showTopMessage(context, 'Error Occurred');
                     }
                   },
                   child: Text(
-                    'Update Profile',
+                    'Change Password',
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.surface,
                         fontSize: 20
                     ),
                   )
-              ),
-
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary)
-                ),
-                onPressed: () {
-                  context.push(Routes.account_Profile_ChangePassword);
-                }, 
-                child: Text(
-                  'Change Password',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.surface,
-                    fontSize: 20
-                  ),
-                )
               )
             ],
           ),

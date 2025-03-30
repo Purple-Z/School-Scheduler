@@ -59,7 +59,6 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
   }
 
   getItem(List items){
-    print(items.toString());
     List newItems = [];
     for (List item in items){
       List newItem = [];
@@ -123,7 +122,8 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
               true,  //3
               false,  //4
               false, //5
-              true, //6
+              false, //6
+              true, //7
             ],
             refreshController: refreshController
         )

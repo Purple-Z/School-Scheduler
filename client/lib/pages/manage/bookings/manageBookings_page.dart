@@ -13,6 +13,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../../connection.dart';
 import '../../functions.dart';
+import '../classes.dart';
 import '../requests/manageRequests_provider.dart';
 import '../widgets.dart';
 
@@ -81,7 +82,9 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
           booking[6],
           booking[7],
           booking[8],
-          booking[9]
+          booking[9],
+          booking[10],
+          booking[11]
       );
       print('nuovo evento ' + events.toString());
       DateTime time = DateTime.tryParse(booking[1]) ?? DateTime.now();
@@ -185,16 +188,14 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
 
                 ),
               ),
-              SizedBox(height: 10),
-              Text(
-                'Bookings for ${_selectedDay != null ? DateFormat('dd/MM/yyyy', appProvider.locale.toString()).format(_selectedDay!) : ""}',
-              ),
+              SizedBox(height: 30),
               Container(
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 25),
                 child: Column(
                   children: _getEventsForDay(_selectedDay ?? DateTime.now()).map((event) =>
                     Column(
                       children: [
+                        Divider(thickness: 0.5,),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
@@ -344,7 +345,6 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
                             ],
                           ),
                         ),
-                        Divider()
                       ],
                     )
                   ).toList(),
@@ -357,20 +357,3 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
   }
 }
 
-class Booking {
-  final String title;
-  final DateTime start;
-  final DateTime end;
-  final int quantity;
-  final String user_email;
-  final String resource_name;
-  final int status;
-  final String place_name;
-  final String activity_name;
-  final String validator_email;
-
-  Booking(this.title, this.start, this.end, this.quantity, this.user_email, this.resource_name, this.status, this.place_name, this.activity_name, this.validator_email);
-
-  @override
-  String toString() => title;
-}

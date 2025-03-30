@@ -13,6 +13,8 @@ import '../../router/routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../account/account_page.dart';
+
 
 
 class ManagePage extends StatefulWidget {
@@ -34,17 +36,243 @@ class _ManagePageState extends State<ManagePage> {
         padding: const EdgeInsets.all(8.0),
         child: ListView(
           shrinkWrap: true,
-            children:
-            [
-              SizedBox(height: 25,),
-              if (appProvider.view_user) ManageUserWidget(),
-              if (appProvider.view_roles) ManageRolesWidget(),
-              if (appProvider.view_resources) ManageTypesWidget(),
-              if (appProvider.view_resources) ManagePlacesWidget(),
-              if (appProvider.view_resources) ManageActivitiesWidget(),
-              if (appProvider.view_resources) ManageResourcesWidget(),
-              if (appProvider.view_resources) ManageRequestsWidget(),
-              if (appProvider.view_booking) ManageBookingsWidget()
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: Container(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            "Users",
+                            style: TextStyle(fontSize: 35,),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OptionButton(
+                              child: Text(
+                                "Users",
+                                style: TextStyle(
+                                    color: Theme.of(context).colorScheme.surface,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w600
+                                ),
+                              ),
+                              color: Theme.of(context).colorScheme.secondary,
+                              onTap: () {
+                                context.push(Routes.manage_Users);
+                              },
+                            ),
+                          ),
+                          OptionButton(
+                            child: Column(
+                              children: [
+                                Icon(Icons.more_vert, color: Theme.of(context).colorScheme.surface, size: 35,),
+                              ],
+                            ),
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            onTap: () {
+                              context.push(Routes.account_Profile);
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 30,),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            "Roles",
+                            style: TextStyle(fontSize: 35,),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          OptionButton(
+                            child: Column(
+                              children: [
+                                Icon(Icons.more_vert, color: Theme.of(context).colorScheme.surface, size: 35,),
+                              ],
+                            ),
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            onTap: () {},
+                          ),
+                          Expanded(
+                            child: OptionButton(
+                              child: Text(
+                                "Roles",
+                                style: TextStyle(
+                                    color: Theme.of(context).colorScheme.surface,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w600
+                                ),
+                              ),
+                              color: Theme.of(context).colorScheme.tertiary,
+                              onTap: () {
+                                context.push(Routes.manage_Roles);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 30,),
+
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            "Resources",
+                            style: TextStyle(fontSize: 35,),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OptionButton(
+                              child: Text(
+                                "Resources",
+                                style: TextStyle(
+                                    color: Theme.of(context).colorScheme.surface,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w600
+                                ),
+                              ),
+                              color: Theme.of(context).colorScheme.primary,
+                              onTap: () {
+                                context.push(Routes.manage_ManageResources);
+                              },
+                            ),
+                          ),
+                          OptionButton(
+                            child: Column(
+                              children: [
+                                Icon(Icons.more_vert, color: Theme.of(context).colorScheme.surface, size: 35,),
+                              ],
+                            ),
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            onTap: () {},
+                          ),
+                        ],
+                      ),
+                      OptionButton(
+                        child: Text(
+                          "Types",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.surface,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        onTap: () {
+                          context.push(Routes.manage_Types);
+                        },
+                      ),
+                      OptionButton(
+                        child: Text(
+                          "Places",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.surface,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        onTap: () {
+                          context.push(Routes.manage_Places);
+                        },
+                      ),
+                      OptionButton(
+                        child: Text(
+                          "Activities",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.surface,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        onTap: () {
+                          context.push(Routes.manage_Activities);
+                        },
+                      ),
+
+                      SizedBox(height: 30,),
+
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            "Bookings",
+                            style: TextStyle(fontSize: 35,),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OptionButton(
+                              child: Text(
+                                "Bookings",
+                                style: TextStyle(
+                                    color: Theme.of(context).colorScheme.surface,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w600
+                                ),
+                              ),
+                              color: Theme.of(context).colorScheme.primary,
+                              onTap: () {
+                                context.push(Routes.manage_Bookings);
+                              },
+                            ),
+                          ),
+                          OptionButton(
+                            child: Column(
+                              children: [
+                                Icon(Icons.more_vert, color: Theme.of(context).colorScheme.surface, size: 35,),
+                              ],
+                            ),
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            onTap: () {},
+                          ),
+                        ],
+                      ),
+                      OptionButton(
+                        child: Text(
+                          "Requests",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.surface,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        onTap: () {
+                          context.push(Routes.manage_Requests);
+                        },
+                      ),
+
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 30,)
             ]
         ),
       ),
@@ -52,322 +280,36 @@ class _ManagePageState extends State<ManagePage> {
   }
 }
 
-class ManageUserWidget extends StatelessWidget {
-  const ManageUserWidget({
+class OptionButton extends StatelessWidget {
+  const OptionButton({
     super.key,
+    required this.child,
+    required this.onTap,
+    required this.color
   });
+
+  final Widget child;
+  final VoidCallback onTap;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Text(
-                AppLocalizations.of(context)!.manage_users,
-                style: TextStyle(fontSize: 20),
-              ),
-              Expanded(child: SizedBox())
-            ],
+      padding: const EdgeInsets.all(2.0),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25),
+        ),
+        color: color,
+        child: InkWell(
+          onTap: onTap,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+              child: child,
+            ),
           ),
-          SizedBox(height: 15,),
-          ElevatedButton(
-              onPressed: () {
-                context.push(Routes.manage_Users);
-              },
-              child: Row(
-                children: [
-                  Text(AppLocalizations.of(context)!.manage_go_to_page),
-                  SizedBox(width: 10,),
-                  Icon(Icons.manage_accounts_rounded)
-                ],
-              )
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ManageRolesWidget extends StatelessWidget {
-  const ManageRolesWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Text(
-                AppLocalizations.of(context)!.manage_roles,
-                style: TextStyle(fontSize: 20),
-              ),
-              Expanded(child: SizedBox())
-            ],
-          ),
-          SizedBox(height: 15,),
-          ElevatedButton(
-              onPressed: () {
-                context.push(Routes.manage_Roles);
-              },
-              child: Row(
-                children: [
-                  Text(AppLocalizations.of(context)!.manage_go_to_page),
-                  SizedBox(width: 10,),
-                  Icon(Icons.security)
-                ],
-              )
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ManageTypesWidget extends StatelessWidget {
-  const ManageTypesWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Text(
-                AppLocalizations.of(context)!.manage_types,
-                style: TextStyle(fontSize: 20),
-              ),
-              Expanded(child: SizedBox())
-            ],
-          ),
-          SizedBox(height: 15,),
-          ElevatedButton(
-              onPressed: () {
-                context.push(Routes.manage_Types);
-              },
-              child: Row(
-                children: [
-                  Text(AppLocalizations.of(context)!.manage_go_to_page),
-                  SizedBox(width: 10,),
-                  Icon(Icons.type_specimen)
-                ],
-              )
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ManagePlacesWidget extends StatelessWidget {
-  const ManagePlacesWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Text(
-                AppLocalizations.of(context)!.manage_places,
-                style: TextStyle(fontSize: 20),
-              ),
-              Expanded(child: SizedBox())
-            ],
-          ),
-          SizedBox(height: 15,),
-          ElevatedButton(
-              onPressed: () {
-                context.push(Routes.manage_Places);
-              },
-              child: Row(
-                children: [
-                  Text(AppLocalizations.of(context)!.manage_go_to_page),
-                  SizedBox(width: 10,),
-                  Icon(Icons.place)
-                ],
-              )
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ManageActivitiesWidget extends StatelessWidget {
-  const ManageActivitiesWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Text(
-                AppLocalizations.of(context)!.manage_activities,
-                style: TextStyle(fontSize: 20),
-              ),
-              Expanded(child: SizedBox())
-            ],
-          ),
-          SizedBox(height: 15,),
-          ElevatedButton(
-              onPressed: () {
-                context.push(Routes.manage_Activities);
-              },
-              child: Row(
-                children: [
-                  Text(AppLocalizations.of(context)!.manage_go_to_page),
-                  SizedBox(width: 10,),
-                  Icon(Icons.directions_run)
-                ],
-              )
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ManageResourcesWidget extends StatelessWidget {
-  const ManageResourcesWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Text(
-                AppLocalizations.of(context)!.manage_resources,
-                style: TextStyle(fontSize: 20),
-              ),
-              Expanded(child: SizedBox())
-            ],
-          ),
-          SizedBox(height: 15,),
-          ElevatedButton(
-              onPressed: () {
-                context.push(Routes.manage_ManageResources);
-              },
-              child: Row(
-                children: [
-                  Text(AppLocalizations.of(context)!.manage_go_to_page),
-                  SizedBox(width: 10,),
-                  Icon(Icons.account_balance_rounded)
-                ],
-              )
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
-class ManageRequestsWidget extends StatelessWidget {
-  const ManageRequestsWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Text(
-                'Manage Requests',
-                style: TextStyle(fontSize: 20),
-              ),
-              Expanded(child: SizedBox())
-            ],
-          ),
-          SizedBox(height: 15,),
-          ElevatedButton(
-              onPressed: () {
-                context.push(Routes.manage_Requests);
-              },
-              child: Row(
-                children: [
-                  Text(AppLocalizations.of(context)!.manage_go_to_page),
-                  SizedBox(width: 10,),
-                  Icon(Icons.account_balance_rounded)
-                ],
-              )
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ManageBookingsWidget extends StatelessWidget {
-  const ManageBookingsWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Text(
-                'Manage Bookings',
-                style: TextStyle(fontSize: 20),
-              ),
-              Expanded(child: SizedBox())
-            ],
-          ),
-          SizedBox(height: 15,),
-          ElevatedButton(
-              onPressed: () {
-                context.push(Routes.manage_Bookings);
-              },
-              child: Row(
-                children: [
-                  Text(AppLocalizations.of(context)!.manage_go_to_page),
-                  SizedBox(width: 10,),
-                  Icon(Icons.account_balance_rounded)
-                ],
-              )
-          ),
-        ],
+        ),
       ),
     );
   }

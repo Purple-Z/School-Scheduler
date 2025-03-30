@@ -2,8 +2,10 @@ import 'package:client/app_provider.dart';
 import 'package:client/connection.dart';
 import 'package:client/pages/account/account_page.dart';
 import 'package:client/pages/account/login/login_page.dart';
+import 'package:client/pages/account/profile/chagePassword/changePassword_page.dart';
 import 'package:client/pages/account/profile/profile_page.dart';
 import 'package:client/pages/account/settings/settings_page.dart';
+import 'package:client/pages/account/userBookings/userBookings_page.dart';
 import 'package:client/pages/manage/activities/activityDetails/activityDetails_page.dart';
 import 'package:client/pages/manage/activities/activityDetails/activityDetails_provider.dart';
 import 'package:client/pages/manage/activities/addActivity/addActivity_page.dart';
@@ -58,6 +60,7 @@ import 'package:provider/provider.dart';
 
 import 'package:client/router/routes.dart';
 
+import '../pages/manage/classes.dart';
 import '../pages/manage/places/managePlaces_page.dart';
 import '../pages/resources/resource/resource_page.dart';
 import 'layout_scaffold.dart';
@@ -518,6 +521,16 @@ final router = GoRouter(
                 GoRoute(
                   path: Routes.profile,
                   builder: (context, state) => const ProfilePage(),
+                  routes: [
+                    GoRoute(
+                      path: Routes.changePassword,
+                      builder: (context, state) => const ChangePasswordPage(),
+                    ),
+                  ]
+                ),
+                GoRoute(
+                  path: Routes.userBookings,
+                  builder: (context, state) => const UserBookingsPage(),
                 ),
               ]
             ),

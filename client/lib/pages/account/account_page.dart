@@ -3,9 +3,11 @@ import 'package:client/connection.dart';
 import 'package:client/router/layout_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 import '../../router/routes.dart';
+import '../manage/manage_page.dart';
 import 'account_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -160,7 +162,9 @@ class LoggedPage extends StatelessWidget {
                       child: AccountOptionButton(
                         label: AppLocalizations.of(context)!.account_your_bookings,
                         color: Theme.of(context).colorScheme.secondary,
-                        onTap: () {},
+                        onTap: () {
+                          context.push(Routes.account_UserBookings);
+                        },
                       ),
                     ),
                     AccountOptionButton(
@@ -177,19 +181,28 @@ class LoggedPage extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    AccountOptionButton(
-                      label: AppLocalizations.of(context)!.account_settings,
+                    OptionButton(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.sync, color: Theme.of(context).colorScheme.surface, size: 35),
+                      ),
                       color: Theme.of(context).colorScheme.onPrimary,
-                      onTap: () {
-                        context.push(Routes.account_Settings);
+                      onTap: () async {
+                        await showSimpleLoadingDialog(
+                        context: context,
+                        future: () async {
+                          await Connection.reload(appProvider);
+                          return;
+                        },
+                        );
                       },
                     ),
                     Expanded(
                       child: AccountOptionButton(
-                        label: AppLocalizations.of(context)!.account_your_activity,
+                        label: AppLocalizations.of(context)!.account_settings,
                         color: Theme.of(context).colorScheme.tertiary,
                         onTap: () {
-                          Connection.getPendingBookings(appProvider);
+                          context.push(Routes.account_Settings);
                         },
                       ),
                     ),
@@ -230,7 +243,7 @@ class AccountOptionButton extends StatelessWidget {
           onTap: onTap,
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(25,30, 25,30),
+              padding: const EdgeInsets.fromLTRB(20,30, 20,30),
               child: Text(
                 label,
                 style: TextStyle(

@@ -53,6 +53,167 @@ def login():
     else:
         return jsonify(), 401
 
+@app.route('/reload', methods=['POST'])
+def reload():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+
+    
+    sql = "SELECT * FROM users WHERE email = '" + email + "'"
+    result = db.fetchSQL(sql)
+    if len(result) != 1:
+        return jsonify(), 400
+
+    user = result[0]
+
+    user_id = user[0]
+    user_name = user[1]
+    user_surname = user[2]
+    user_email = user[3]
+    roles = []
+
+
+    sql = "SELECT role_id FROM users_roles WHERE user_id = " + str(user_id)
+
+    result = db.fetchSQL(sql)
+    if result:
+        roles_ids = result[0]
+        for role_id in roles_ids:
+            roles.append(getRoleInformation(role_id))
+    #print("roles: " + str(roles))
+
+    return jsonify(
+        {
+            "name": user_name,
+            "surname": user_surname,
+            "email": user_email,
+            "roles": roles,
+            "token": token_for(user_id)
+        }
+    ), 200
+
+@app.route('/update-own-user', methods=['POST'])
+def update_own_user():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    new_name = data.get('new_name')
+    new_surname = data.get('new_surname')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'edit_own_user'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+
+    user_id = getIdFromEmail(email)
+
+    sql_update = f'''
+    UPDATE users SET
+        name = '{new_name}',
+        surname = '{new_surname}'
+    WHERE email = '{email}'
+    '''
+
+
+    try:
+        db.executeSQL(sql_update)
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 200
+    except:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 402
+
+@app.route('/change-password', methods=['POST'])
+def change_password():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    password = data.get('password')
+    new_password = data.get('new_password')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    sql = "SELECT * FROM users WHERE email = '" + email + "'"
+    result = db.fetchSQL(sql)
+    if len(result) != 1:
+        return jsonify(), 400
+
+    user_id = getIdFromEmail(email)
+
+
+    if result[0][4] != password:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 401
+    
+    
+
+
+
+    sql_update = f'''
+    UPDATE users SET
+        password_hash = '{new_password}'
+    WHERE email = '{email}'
+    '''
+
+    sql_fetch = f'''
+        SELECT * FROM users WHERE email = '{email}'
+    '''    
+
+
+    result = db.fetchSQL(sql_fetch)
+    if len(result) == 0:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 401
+
+
+    try:
+        db.executeSQL(sql_update)
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 200
+    except:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 401
+
 # - - -   roles   - - -
 
 @app.route('/get-roles', methods=['POST'])
@@ -3201,55 +3362,46 @@ def get_bookings():
             SELECT * FROM bookings
         '''
     )
-    bookings = []
-    for booking in bookings_content:
-        booking = list(booking)
-        sql = f'''
-            SELECT email FROM users WHERE id = '{booking[4]}'
-        '''    
-        result = db.fetchSQL(sql)
-        user_mail = result[0][0]
+    
+    bookings = elaborateBookings(bookings_content)
 
-        sql = f'''
-            SELECT name FROM resources WHERE id = '{booking[5]}'
-        '''    
-        result = db.fetchSQL(sql)
-        resource_name = result[0][0]
+    return jsonify(
+        {
+            "bookings": bookings,
+            "token": token_for(user_id)
+        }
+    ), 200
 
-        place_name = ''
-        if booking[7] != None:
-            sql = f'''
-                SELECT name FROM places WHERE id = '{booking[7]}'
-            '''    
-            result = db.fetchSQL(sql)
-            place_name = result[0][0]
 
-        activity_name = ''
-        if booking[8] != None:
-            sql = f'''
-                SELECT name FROM activities WHERE id = '{booking[8]}'
-            '''    
-            result = db.fetchSQL(sql)
-            activity_name = result[0][0]
+@app.route('/get-user-bookings', methods=['POST'])
+def get_user_bookings():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'view_own_booking'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    user_id = getIdFromEmail(email)
 
-        validator_email = ''
-        if booking[9] != None:
-            sql = f'''
-                SELECT email FROM users WHERE id = '{booking[9]}'
-            '''    
-            result = db.fetchSQL(sql)
-            validator_email = result[0][0]
-
-        booking[1] = booking[1].isoformat()
-        booking[2] = booking[2].isoformat()
-
-        booking[4] = user_mail
-        booking[5] = resource_name
-        booking[7] = place_name
-        booking[8] = activity_name
-        booking[9] = validator_email
-
-        bookings.append(booking)
+    bookings_content = db.fetchSQL(
+        f'''
+            SELECT * FROM bookings where user_id = {user_id}
+        '''
+    )
+    bookings = elaborateBookings(bookings_content)
+    
 
     return jsonify(
         {
@@ -3392,6 +3544,78 @@ def getResourcesPermissions(roles_id):
         permission[key] = [c[1], c[2], c[3], c[4], c[5]]
 
     return permission
+
+def elaborateBookings(bookings_content):
+    bookings = []
+    for booking in bookings_content:
+        booking = list(booking)
+        sql = f'''
+            SELECT email FROM users WHERE id = '{booking[4]}'
+        '''    
+        result = db.fetchSQL(sql)
+        user_mail = result[0][0]
+
+        sql = f'''
+            SELECT name FROM resources WHERE id = '{booking[5]}'
+        '''    
+        result = db.fetchSQL(sql)
+        resource_name = result[0][0]
+
+        place_name = ''
+        resource_place = False
+        if booking[7] == None:
+            resource_place = True
+            sql = f'''
+            SELECT place_id FROM resources WHERE id = '{booking[5]}'
+            '''    
+            result = db.fetchSQL(sql)
+            booking[7] = result[0][0]
+        sql = f'''
+            SELECT name FROM places WHERE id = '{booking[7]}'
+        '''    
+        result = db.fetchSQL(sql)
+        place_name = result[0][0]
+
+
+
+        activity_name = ''
+        resource_activity = False
+        if booking[8] == None:
+            resource_activity = True
+            sql = f'''
+            SELECT activity_id FROM resources WHERE id = '{booking[5]}'
+            '''    
+            result = db.fetchSQL(sql)
+            booking[8] = result[0][0]
+
+        sql = f'''
+            SELECT name FROM activities WHERE id = '{booking[8]}'
+        '''    
+        result = db.fetchSQL(sql)
+        activity_name = result[0][0]
+
+        validator_email = ''
+        if booking[9] != None:
+            sql = f'''
+                SELECT email FROM users WHERE id = '{booking[9]}'
+            '''    
+            result = db.fetchSQL(sql)
+            validator_email = result[0][0]
+
+        booking[1] = booking[1].isoformat()
+        booking[2] = booking[2].isoformat()
+
+        booking[4] = user_mail
+        booking[5] = resource_name
+        booking[7] = place_name
+        booking[8] = activity_name
+        booking[9] = validator_email
+        booking.append(resource_place)
+        booking.append(resource_activity)
+
+        bookings.append(booking)
+
+    return bookings
 
 def selectAvailabilityRecordsFromShift(start, end, resource_id, remove_availability_id=-1):
     sql = f'''

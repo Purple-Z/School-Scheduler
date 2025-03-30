@@ -1,7 +1,9 @@
 import 'package:client/pages/account/account_provider.dart';
 import 'package:client/pages/account/login/login_provider.dart';
+import 'package:client/pages/account/profile/chagePassword/changePassword_provider.dart';
 import 'package:client/pages/account/profile/profile_provider.dart';
 import 'package:client/pages/account/settings/settings_provider.dart';
+import 'package:client/pages/account/userBookings/userBookings_provider.dart';
 import 'package:client/pages/manage/activities/activityDetails/activityDetails_provider.dart';
 import 'package:client/pages/manage/activities/addActivity/addActivity_provider.dart';
 import 'package:client/pages/manage/activities/manageActivities_provider.dart';
@@ -83,6 +85,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => RequestDetailsProvider()),
         ChangeNotifierProvider(create: (_) => ManageBookingsProvider()),
         ChangeNotifierProvider(create: (_) => BookingDetailsProvider()),
+        ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
+        ChangeNotifierProvider(create: (_) => UserBookingsProvider()),
       ],
       child: Consumer<AppProvider>(
         builder: (context, dataProvider, child) {

@@ -20,6 +20,7 @@ import 'package:client/graphics/graphics_methods.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../functions.dart';
+import '../../classes.dart';
 
 
 
@@ -285,6 +286,11 @@ class _BookingDetailsState extends State<BookingDetails> {
                       padding: const EdgeInsets.all(12.0),
                       child: Column(
                         children: [
+                          if (bookingDetailsProvider.booking.is_resource_activity) Text(
+                            "*From Resource",
+                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
+                          ),
+
                           Text(
                             "Activity",
                             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
@@ -310,6 +316,11 @@ class _BookingDetailsState extends State<BookingDetails> {
                     padding: const EdgeInsets.all(12.0),
                     child: Column(
                       children: [
+                        if (bookingDetailsProvider.booking.is_resource_place) Text(
+                          "*From Resource",
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
+                        ),
+
                         Text(
                           "Place",
                           style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
