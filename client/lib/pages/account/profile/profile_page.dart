@@ -82,64 +82,33 @@ class _SettingsState extends State<Settings> {
                 style: TextStyle(fontSize: fontSize1),
               ),
 
-              if (appProvider.view_own_user) SizedBox(height: 30,),
-
-              if (appProvider.view_own_user) buildTextField(nameController, 'Name', Icons.abc, editable: appProvider.edit_own_user),
-
-              if (appProvider.view_own_user) SizedBox(height: 20,),
-
-              if (appProvider.view_own_user) buildTextField(surnameController, 'Surname', Icons.abc, editable: appProvider.edit_own_user),
-
-              SizedBox(height: 20,),
-
-              if (appProvider.edit_own_user & appProvider.view_own_user) ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.tertiary)
-                  ),
-                  onPressed: () async {
-                    bool r = await showSimpleLoadingDialog<bool>(
-                      context: context,
-                      future: () async {
-                        bool r = await Connection.updateOwnUser(
-                            appProvider,
-                            new_name: nameController.text,
-                            new_surname: surnameController.text
-                        );
-                        await Connection.reload(appProvider);
-                        return r;
-                      },
+              LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints)
+                {
+                  if (constraints.maxWidth < appProvider.maxWidth) {
+                    return Column(
+                      children: [
+                        ProfileFieldWidget(appProvider: appProvider, nameController: nameController, surnameController: surnameController),
+                        SizedBox(height: 20,),
+                        ProfileButtonsWidget(appProvider: appProvider, nameController: nameController, surnameController: surnameController)
+                      ],
                     );
-
-                    if (r){
-                      showTopMessage(context, 'Profile Updated');
-                    } else {
-                      showTopMessage(context, 'Error Occurred');
-                    }
-                  },
-                  child: Text(
-                    'Update Profile',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.surface,
-                        fontSize: 20
-                    ),
-                  )
+                  } else {
+                    return Row(
+                      children: [
+                        Expanded(child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: ProfileButtonsWidget(appProvider: appProvider, nameController: nameController, surnameController: surnameController),
+                        )),
+                        SizedBox(width: 20,),
+                        Expanded(child: ProfileFieldWidget(appProvider: appProvider, nameController: nameController, surnameController: surnameController)),
+                      ],
+                    );
+                  }
+                },
               ),
 
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary)
-                ),
-                onPressed: () {
-                  context.push(Routes.account_Profile_ChangePassword);
-                }, 
-                child: Text(
-                  'Change Password',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.surface,
-                    fontSize: 20
-                  ),
-                )
-              )
+
             ],
           ),
 
@@ -147,6 +116,109 @@ class _SettingsState extends State<Settings> {
           Expanded(child: SizedBox()),
         ],
       ),
+    );
+  }
+}
+
+class ProfileButtonsWidget extends StatelessWidget {
+  const ProfileButtonsWidget({
+    super.key,
+    required this.appProvider,
+    required this.nameController,
+    required this.surnameController,
+  });
+
+  final AppProvider appProvider;
+  final TextEditingController nameController;
+  final TextEditingController surnameController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (appProvider.edit_own_user & appProvider.view_own_user) SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.tertiary)
+              ),
+              onPressed: () async {
+                bool r = await showSimpleLoadingDialog<bool>(
+                  context: context,
+                  future: () async {
+                    bool r = await Connection.updateOwnUser(
+                        appProvider,
+                        new_name: nameController.text,
+                        new_surname: surnameController.text
+                    );
+                    await Connection.reload(appProvider);
+                    return r;
+                  },
+                );
+    
+                if (r){
+                  showTopMessage(context, 'Profile Updated');
+                } else {
+                  showTopMessage(context, 'Error Occurred');
+                }
+              },
+              child: Text(
+                'Update Profile',
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.surface,
+                    fontSize: 20
+                ),
+              )
+          ),
+        ),
+    
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary)
+              ),
+              onPressed: () {
+                context.push(Routes.account_Profile_ChangePassword);
+              },
+              child: Text(
+                'Change Password',
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.surface,
+                    fontSize: 20
+                ),
+              )
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class ProfileFieldWidget extends StatelessWidget {
+  const ProfileFieldWidget({
+    super.key,
+    required this.appProvider,
+    required this.nameController,
+    required this.surnameController,
+  });
+
+  final AppProvider appProvider;
+  final TextEditingController nameController;
+  final TextEditingController surnameController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (appProvider.view_own_user) SizedBox(height: 30,),
+    
+        if (appProvider.view_own_user) buildTextField(nameController, 'Name', Icons.abc, editable: appProvider.edit_own_user),
+    
+        if (appProvider.view_own_user) SizedBox(height: 20,),
+    
+        if (appProvider.view_own_user) buildTextField(surnameController, 'Surname', Icons.abc, editable: appProvider.edit_own_user),
+      ],
     );
   }
 }

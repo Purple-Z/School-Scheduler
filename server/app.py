@@ -1,14 +1,62 @@
 from flask import Flask, request, jsonify
+import threading, time
 import secrets, string, threading
 from datetime import datetime, timedelta
 from itertools import groupby
 from setup import setupDB
 from mail import sendMail
-
+import json
 
 db = setupDB()
 app = Flask(__name__)
 
+notification_times_delta = [1, 5, 10, 30, 60]
+
+mail_content = {}
+
+nome_file_json = 'mail_content.json'
+
+try:
+    with open(nome_file_json, 'r') as file_json:
+        dati_json = json.load(file_json)
+
+    mail_content.update(dati_json)
+
+
+except FileNotFoundError:
+    print(f"Error: file '{nome_file_json}' not found")
+except json.JSONDecodeError as e:
+    print(f"Error: {e}")
+except Exception as e:
+    print(f"Error: {e}")
+
+def schedule_function():
+    while True:
+        now = datetime.now()
+        if now.second == 30:
+            send_notification_thread = threading.Thread(target=check_and_send_notifications, daemon=True)
+            send_notification_thread.start()
+            time.sleep(1.5)
+        time.sleep(0.2)
+
+thread = None
+thread_lock = threading.Lock()
+
+
+with thread_lock:
+    if thread is None:
+        print("Avvio thread per il monitoraggio del tempo...")
+        thread = threading.Thread(target=schedule_function, daemon=True)
+        thread.start()
+
+
+@app.after_request
+def add_headers(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+
+
+    return response
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -2038,10 +2086,10 @@ def get_resource():
             referent_id = record[2]
 
             sql = "SELECT email FROM users WHERE id = " + str(referent_id)
-            result = db.fetchSQL(sql)
-            if len(result) == 0:
+            referent_result = db.fetchSQL(sql)
+            if len(referent_result) == 0:
                 continue
-            user_email = result[0][0]
+            user_email = referent_result[0][0]
             referents[user_email] = record[1]
 
         resource.append(referents)
@@ -3372,7 +3420,6 @@ def get_bookings():
         }
     ), 200
 
-
 @app.route('/get-user-bookings', methods=['POST'])
 def get_user_bookings():
     data = request.get_json()
@@ -3505,6 +3552,20 @@ def getIdFromEmail(email):
 
 
     return user_id
+
+def getEmailFromId(id):
+    #collecting data...
+    sql = "SELECT * FROM users WHERE id = " + str(id)
+    result = db.fetchSQL(sql)
+    if len(result) != 1:
+        return None
+
+    user = result[0]
+
+    user_email = user[3]
+
+
+    return user_email
 
 def getResourcesPermissions(roles_id):
     permission = {}
@@ -3865,5 +3926,137 @@ def generate_password(length=12):
     password = ''.join(secrets.choice(characters) for _ in range(length))
     return password
 
+def check_and_send_notifications():
+    #with app.app_context():
+
+    now = datetime.now()
+
+
+    for notification_time_delta in notification_times_delta:
+        time_delta = timedelta(minutes=notification_time_delta)
+
+        notification_time = now + time_delta
+        print('\n'+str(notification_time_delta))
+        print(notification_time)
+
+        sql = f'''SELECT * FROM bookings
+        WHERE 
+        DATE(start) = '{notification_time.date()}'
+        AND HOUR(start) = {notification_time.hour} 
+        AND MINUTE(start) = {notification_time.minute} 
+        AND status = 1
+        '''
+        result = db.fetchSQL(sql)
+        if len(result) == 0:
+            continue
+
+
+        for record in result:
+            #for every booking
+            resource_id = record[5]
+            referents = {}
+            
+
+            user_id = record[4]
+            user_email = getEmailFromId(user_id)
+
+            sql = "SELECT * FROM users WHERE id = " + str(user_id)
+            user_content = db.fetchSQL(sql)
+            if len(user_content) == 0:
+                continue
+            user_email = user_content[0][3]
+            user_language = user_content[0][6]
+
+            sql = f'''
+                SELECT name FROM resources WHERE id = '{resource_id}'
+            '''    
+            resource_name = db.fetchSQL(sql)[0][0]
+
+
+
+            sql = f'''
+                SELECT * FROM referents WHERE resource_id = '{resource_id}'
+            '''    
+            referents_content = db.fetchSQL(sql)
+
+
+            for referent in referents_content:
+                referent_id = referent[2]
+
+                sql = "SELECT * FROM users WHERE id = " + str(referent_id)
+                user_content = db.fetchSQL(sql)
+                if len(user_content) == 0:
+                    continue
+                referent_email = user_content[0][3]
+                referents[referent_email] = user_content[0][6]
+
+            print('mail to user: ', user_email)
+            print('mail to referents: ', referents)
+
+            #   - - -   user part   - - -   #
+
+            user_mail_content = mail_content[user_language]['bookings_user_reminder']
+
+
+            subject = user_mail_content['subject']
+            body = user_mail_content['content'] % (
+                str(record[3]), 
+                resource_name, 
+                str(record[1].date()),
+                str(record[1].hour)+':'+str(record[1].minute),
+                str(record[2].date()),
+                str(record[2].hour)+':'+str(record[2].minute)
+                )
+
+            emailSenderThread = threading.Thread(
+                target=sendEmail, 
+                args=(
+                    user_email, 
+                    subject, 
+                    body
+                    )
+                )
+            
+            emailSenderThread.start()
+            print('\n')
+            print('user mail: ', subject, '\n', body)
+            print('\n')
+
+            #   - - -   referents part   - - -   #
+
+            for referent_email in referents.keys():
+                referent_language = referents[referent_email]
+                referent_mail_content = mail_content[referent_language]['bookings_referent_reminder']
+
+
+                subject = referent_mail_content['subject']
+                body = referent_mail_content['content'] % (
+                    user_email,
+                    str(record[3]), 
+                    resource_name, 
+                    str(record[1].date()),
+                    str(record[1].hour)+':'+str(record[1].minute),
+                    str(record[2].date()),
+                    str(record[2].hour)+':'+str(record[2].minute)
+                )
+
+                emailSenderThread = threading.Thread(
+                    target=sendEmail, 
+                    args=(
+                        referent_email, 
+                        subject, 
+                        body
+                        )
+                    )
+                
+                print('referent mail: ', referent_email, '\n', subject, '\n', body)
+                print('\n')
+                emailSenderThread.start()
+
+
+            print(now.minute, record)
+
+    return
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)

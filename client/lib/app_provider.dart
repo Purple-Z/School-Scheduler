@@ -46,7 +46,9 @@ class AppProvider extends ChangeNotifier {
 
   bool provisoryFlag = false;
 
-  Locale _locale = Locale('it');
+  int maxWidth = 600;
+
+  Locale _locale = Locale('en');
   Locale get locale => _locale;
 
   late SharedPreferences prefs;

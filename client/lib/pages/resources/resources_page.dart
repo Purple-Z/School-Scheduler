@@ -93,85 +93,34 @@ class _ResourceFeedState extends State<ResourceFeed> {
                   controller: refreshController,
                   onRefresh: refreshFeed,
                   header: MaterialClassicHeader(),
-                  child: ListView(
-                    children: resourcesProvider.resources.entries.map((entry) {
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 15, 10,05),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                  child: LayoutBuilder(
+                    builder: (BuildContext context, BoxConstraints constraints)
+                    {
+                      if (constraints.maxWidth < appProvider.maxWidth) {
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: buildFeedContent(resourcesProvider, context, now),
                           ),
-                          color: Theme.of(context).colorScheme.primary,
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Column(
-                              children: [
+                        );
+                      } else {
+                        List<Widget> l = buildFeedContent(resourcesProvider, context, now, oriz: true);
+
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              for (int i = 0; i < l.length; i=i+2)
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      entry.key,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Theme.of(context).colorScheme.surface
-                                      ),
-                                    ),
-                                    Expanded(child: SizedBox())
+                                    Expanded(child: l[i]),
+                                    ((i+1) < l.length) ? Expanded(child: l[i+1]) : Expanded(child: SizedBox())
                                   ],
-                                ),
-                                SizedBox(height: 10,),
-                                GridView.count(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  crossAxisCount: 2,
-                                  children: [
-                                    for (var resource in entry.value)
-                                      Card(
-                                        color: Theme.of(context).colorScheme.surface,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(30),
-                                        ),
-                                        child: InkWell(
-                                          onTap: () {
-                                            context.push(Routes.resources_Resource, extra: {
-                                              'resourceId': resource[0],
-                                              'start': DateTime(now.year, now.month, now.day, 0, 0),
-                                              'end': DateTime(now.year, now.month, now.day, 23, 59)
-                                            });
-                                          },
-                                          child: Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Column(
-                                                children: [
-                                                  Expanded(child: SizedBox()),
-                                                  Expanded(child: Center(child: Text(resource[1].toString()))),
-                                                  Expanded(child: Column(
-                                                    children: [
-                                                      Expanded(child: SizedBox()),
-                                                      Row(
-                                                        children: [
-                                                          Expanded(child: SizedBox()),
-                                                          if (resource[3] != 1) Text(resource[3].toString()),
-                                                          SizedBox(width: 10,)
-                                                        ],
-                                                      ),
-                                                      SizedBox(height: 10,)
-                                                    ],
-                                                  ))
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                  ],
-                                ),
-                              ],
-                            ),
+                                )
+                            ],
                           ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      }
+                    },
                   ),
                 ),
               ),
@@ -179,5 +128,87 @@ class _ResourceFeedState extends State<ResourceFeed> {
           )
       ),
     );
+  }
+
+  List<Padding> buildFeedContent(ResourcesProvider resourcesProvider, BuildContext context, DateTime now, {bool oriz = false}) {
+    return resourcesProvider.resources.entries.map((entry) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 15, 10,05),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        color: Theme.of(context).colorScheme.primary,
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    entry.key,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Theme.of(context).colorScheme.surface
+                                    ),
+                                  ),
+                                  Expanded(child: SizedBox())
+                                ],
+                              ),
+                              if (!oriz) SizedBox(height: 10,),
+                              GridView.count(
+                                childAspectRatio: oriz ? 1 : 1,
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                crossAxisCount: 2,
+                                children: [
+                                  for (var resource in entry.value)
+                                    Card(
+                                      color: Theme.of(context).colorScheme.surface,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: InkWell(
+                                        onTap: () {
+                                          context.push(Routes.resources_Resource, extra: {
+                                            'resourceId': resource[0],
+                                            'start': DateTime(now.year, now.month, now.day, 0, 0),
+                                            'end': DateTime(now.year, now.month, now.day, 23, 59)
+                                          });
+                                        },
+                                        child: Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              children: [
+                                                Expanded(child: SizedBox()),
+                                                Expanded(child: Center(child: Text(resource[1].toString()))),
+                                                Expanded(child: Column(
+                                                  children: [
+                                                    Expanded(child: SizedBox()),
+                                                    Row(
+                                                      children: [
+                                                        Expanded(child: SizedBox()),
+                                                        if (resource[3] != 1) Text(resource[3].toString()),
+                                                        SizedBox(width: 10,)
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 10,)
+                                                  ],
+                                                ))
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList();
   }
 }

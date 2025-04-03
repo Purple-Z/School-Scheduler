@@ -77,7 +77,8 @@ class setupDB():
                         surname VARCHAR(255) NOT NULL,
                         email VARCHAR(255) UNIQUE NOT NULL,
                         password_hash VARCHAR(255) NOT NULL,
-                        token VARCHAR(255)
+                        token VARCHAR(255),
+                        language VARCHAR(5) DEFAULT 'it'
                     );
             ''')
 
@@ -166,7 +167,6 @@ class setupDB():
                     );
             ''')
 
-
             # CREATE TABLE   - - -   availability   - - -
             mycursor.execute('''
                     CREATE TABLE IF NOT EXISTS availability (
@@ -200,6 +200,19 @@ class setupDB():
                     );
             ''')
 
+            ## CREATE TABLE   - - -   notifications   - - -
+            #mycursor.execute('''
+            #        CREATE TABLE IF NOT EXISTS notifications (
+            #            id INT AUTO_INCREMENT PRIMARY KEY,
+            #            notificated BOOLEAN DEFAULT TRUE,
+            #            user_id INT,
+            #            booking_id INT,
+            #            time_anticipation INT,
+            #            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            #            FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
+            #        );
+            #''')
+        
 
 
 

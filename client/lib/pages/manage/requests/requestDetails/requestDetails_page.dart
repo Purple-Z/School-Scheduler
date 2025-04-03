@@ -76,169 +76,123 @@ class _RequestDetailsState extends State<RequestDetails> {
 
     return Padding(
       padding: const EdgeInsets.all(15),
-      child: Column(
+      child: ListView(
         children: [
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Request Details From",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  requestDetailsProvider.request[4],
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 30),
-
-                Row(
-                  children: [
-
-                    Expanded(child: SizedBox()),
-
-                    Column(
-                      children: [
-                        Text(
-                          "From",
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                        ),
-
-                        Text(
-                          start_str,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 17),
-                        ),
-                      ],
-                    ),
-
-                    Expanded(child: SizedBox()),
-
-                    Column(
-                      children: [
-                        Text(
-                          "To",
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                        ),
-
-                        Text(
-                          end_str,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 17),
-                        ),
-                      ],
-                    ),
-
-                    Expanded(child: SizedBox()),
-
-                  ],
-                ),
-
-
-
-
-                SizedBox(height: 30,),
-
-
-
-
-                Row(
-                  children: [
-
-                    Expanded(child: SizedBox()),
-
-                    Column(
-                      children: [
-                        Text(
-                          "Quantity",
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                        ),
-
-                        Text(
-                          requestDetailsProvider.request[3].toString(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 17),
-                        ),
-                      ],
-                    ),
-
-                    Expanded(child: SizedBox()),
-
-                    Column(
-                      children: [
-                        Text(
-                          "Type",
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                        ),
-
-                        Text(
-                          requestDetailsProvider.request[5],
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 17),
-                        ),
-                      ],
-                    ),
-
-                    Expanded(child: SizedBox()),
-
-                  ],
-                ),
-
-
-
-              ],
-            ),
+          Text(
+            "Request Details From",
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
-          const Expanded(child: SizedBox()),
-          Column(
-            children: [
-              if (appProvider.edit_resources) Column(
-                children: [
-                  Center(
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
-                          backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),
-                          textStyle: WidgetStatePropertyAll(
-                              TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimary
-                              )
-                          )
-                      ),
-                      onPressed: () async {
+          Text(
+            requestDetailsProvider.request[4],
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+          ),
 
-                        if (
-                        await Connection.acceptPendingBookings(appProvider, request_id: requestDetailsProvider.request[0])
-                        ){
-                          showTopMessage(context, "Request Accepted");
-                          context.pop();
-                        } else {
-                          showTopMessage(context, AppLocalizations.of(context)!.type_error_occurred);
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text(
-                          "Accept",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              fontSize: 20
-                          ),
-                        ),
-                      ),
-                    ),
+          const SizedBox(height: 30),
+
+          Row(
+            children: [
+
+              Expanded(child: SizedBox()),
+
+              Column(
+                children: [
+                  Text(
+                    "From",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
 
-                  const SizedBox(height: 10,),
+                  Text(
+                    start_str,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 17),
+                  ),
                 ],
               ),
 
-              if (appProvider.delete_resources) Center(
+              Expanded(child: SizedBox()),
+
+              Column(
+                children: [
+                  Text(
+                    "To",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+
+                  Text(
+                    end_str,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 17),
+                  ),
+                ],
+              ),
+
+              Expanded(child: SizedBox()),
+
+            ],
+          ),
+
+
+
+
+          SizedBox(height: 30,),
+
+
+
+
+          Row(
+            children: [
+
+              Expanded(child: SizedBox()),
+
+              Column(
+                children: [
+                  Text(
+                    "Quantity",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+
+                  Text(
+                    requestDetailsProvider.request[3].toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 17),
+                  ),
+                ],
+              ),
+
+              Expanded(child: SizedBox()),
+
+              Column(
+                children: [
+                  Text(
+                    "Type",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+
+                  Text(
+                    requestDetailsProvider.request[5],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 17),
+                  ),
+                ],
+              ),
+
+              Expanded(child: SizedBox()),
+
+            ],
+          ),
+
+
+          SizedBox(height: 25),
+
+
+
+          if (appProvider.edit_resources) Column(
+            children: [
+              Center(
                 child: ElevatedButton(
                   style: ButtonStyle(
                       minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
-                      backgroundColor: WidgetStatePropertyAll(Color(0xFFB00020)),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),
                       textStyle: WidgetStatePropertyAll(
                           TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary
@@ -246,19 +200,20 @@ class _RequestDetailsState extends State<RequestDetails> {
                       )
                   ),
                   onPressed: () async {
-                    if(await confirm(context, content: Text("Refuse?"))){
-                      if (await Connection.refusePendingBookings(appProvider, request_id: requestDetailsProvider.request[0])){
-                        showTopMessage(context, "Request Refused");
-                        context.pop();
-                      } else {
-                        showTopMessage(context, AppLocalizations.of(context)!.type_error_occurred);
-                      }
+
+                    if (
+                    await Connection.acceptPendingBookings(appProvider, request_id: requestDetailsProvider.request[0])
+                    ){
+                      showTopMessage(context, "Request Accepted");
+                      context.pop();
+                    } else {
+                      showTopMessage(context, AppLocalizations.of(context)!.type_error_occurred);
                     }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      "Refuse",
+                      "Accept",
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary,
                           fontSize: 20
@@ -267,7 +222,43 @@ class _RequestDetailsState extends State<RequestDetails> {
                   ),
                 ),
               ),
+
+              const SizedBox(height: 10,),
             ],
+          ),
+
+          if (appProvider.delete_resources) Center(
+            child: ElevatedButton(
+              style: ButtonStyle(
+                  minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
+                  backgroundColor: WidgetStatePropertyAll(Color(0xFFB00020)),
+                  textStyle: WidgetStatePropertyAll(
+                      TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary
+                      )
+                  )
+              ),
+              onPressed: () async {
+                if(await confirm(context, content: Text("Refuse?"))){
+                  if (await Connection.refusePendingBookings(appProvider, request_id: requestDetailsProvider.request[0])){
+                    showTopMessage(context, "Request Refused");
+                    context.pop();
+                  } else {
+                    showTopMessage(context, AppLocalizations.of(context)!.type_error_occurred);
+                  }
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  "Refuse",
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: 20
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),

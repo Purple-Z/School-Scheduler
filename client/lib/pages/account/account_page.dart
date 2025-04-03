@@ -81,7 +81,7 @@ class LoggedPage extends StatelessWidget {
     var appProvider = context.watch<AppProvider>();
     String x = '';
 
-    return Column(
+    return ListView(
       children: [
         SizedBox(
           height: 10,
@@ -113,108 +113,114 @@ class LoggedPage extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(
-          height: 30,
+        LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints)
+          {
+            if (constraints.maxWidth < appProvider.maxWidth) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                child: AccountButtonsWidget(context, appProvider),
+              );
+            } else {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(150, 0, 150, 0),
+                child: AccountButtonsWidget(context, appProvider),
+              );
+            }
+          },          
         ),
-        Row(
-          children: [
-            SizedBox(
-              width: 30,
-            ),
-            Text(
-              AppLocalizations.of(context)!.account_hello,
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w200),
-            ),
-            SizedBox(
-              width: 5,
-            ),
-            Text(
-              appProvider.name,
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w200),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            SizedBox(
-              width: 30,
-            ),
-            Text(
-              "Your Account",
-              style: TextStyle(fontSize: 35,),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 40,
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height*0.3
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: AccountOptionButton(
-                        label: AppLocalizations.of(context)!.account_your_bookings,
-                        color: Theme.of(context).colorScheme.secondary,
-                        onTap: () {
-                          context.push(Routes.account_UserBookings);
-                        },
-                      ),
-                    ),
-                    AccountOptionButton(
-                      label: AppLocalizations.of(context)!.account_your_profile,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      onTap: () {
-                        context.push(Routes.account_Profile);
-                      },
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  children: [
-                    OptionButton(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(Icons.sync, color: Theme.of(context).colorScheme.surface, size: 35),
-                      ),
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      onTap: () async {
-                        await showSimpleLoadingDialog(
-                        context: context,
-                        future: () async {
-                          await Connection.reload(appProvider);
-                          return;
-                        },
-                        );
-                      },
-                    ),
-                    Expanded(
-                      child: AccountOptionButton(
-                        label: AppLocalizations.of(context)!.account_settings,
-                        color: Theme.of(context).colorScheme.tertiary,
-                        onTap: () {
-                          context.push(Routes.account_Settings);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        Expanded(child: SizedBox()),
       ],
     );
+  }
+
+  Column AccountButtonsWidget(BuildContext context, AppProvider appProvider) {
+    return Column(
+            children: [
+              SizedBox(
+                height: 30,
+              ),
+              Row(
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.account_hello,
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w200),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    appProvider.name,
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w200),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text(
+                    "Your Account",
+                    style: TextStyle(fontSize: 35,),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 40,
+              ),
+
+
+              Row(
+                children: [
+                  Expanded(
+                    child: AccountOptionButton(
+                      label: AppLocalizations.of(context)!.account_your_bookings,
+                      color: Theme.of(context).colorScheme.secondary,
+                      onTap: () {
+                        context.push(Routes.account_UserBookings);
+                      },
+                    ),
+                  ),
+                  AccountOptionButton(
+                    label: AppLocalizations.of(context)!.account_your_profile,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    onTap: () {
+                      context.push(Routes.account_Profile);
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Row(
+                children: [
+                  OptionButton(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(Icons.sync, color: Theme.of(context).colorScheme.surface, size: 35),
+                    ),
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    onTap: () async {
+                      await showSimpleLoadingDialog(
+                      context: context,
+                      future: () async {
+                        await Connection.reload(appProvider);
+                        return;
+                      },
+                      );
+                    },
+                  ),
+                  Expanded(
+                    child: AccountOptionButton(
+                      label: AppLocalizations.of(context)!.account_settings,
+                      color: Theme.of(context).colorScheme.tertiary,
+                      onTap: () {
+                        context.push(Routes.account_Settings);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
   }
 }
 

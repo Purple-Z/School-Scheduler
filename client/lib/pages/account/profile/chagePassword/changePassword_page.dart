@@ -85,46 +85,31 @@ class _SettingsState extends State<Settings> {
 
               SizedBox(height: 30,),
 
-              buildTextField(currentPassword, 'Current Password', Icons.abc, obscureText: true),
-
-              SizedBox(height: 20,),
-
-              buildTextField(newPassword, 'New Password', Icons.abc, obscureText: true),
-
-              SizedBox(height: 20,),
-
-              ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.secondary)
-                  ),
-                  onPressed: () async {
-                    bool r = await showSimpleLoadingDialog<bool>(
-                      context: context,
-                      future: () async {
-                        bool r = await Connection.changePassword(
-                            appProvider,
-                            current_password: currentPassword.text,
-                            new_password: newPassword.text
-                        );
-                        await Connection.reload(appProvider);
-                        return r;
-                      },
+              LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints)
+                {
+                  if (constraints.maxWidth < appProvider.maxWidth) {
+                    return Column(
+                      children: [
+                        ChangePasswordFieldsWidget(currentPassword: currentPassword, newPassword: newPassword),
+                        SizedBox(height: 20,),
+                        ChangePasswordButtonWidget(appProvider: appProvider, currentPassword: currentPassword, newPassword: newPassword)
+                      ],
                     );
-
-                    if (r){
-                      showTopMessage(context, 'Password Changed');
-                    } else {
-                      showTopMessage(context, 'Error Occurred');
-                    }
-                  },
-                  child: Text(
-                    'Change Password',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.surface,
-                        fontSize: 20
-                    ),
-                  )
-              )
+                  } else {
+                    return Row(
+                      children: [
+                        Expanded(child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: ChangePasswordButtonWidget(appProvider: appProvider, currentPassword: currentPassword, newPassword: newPassword),
+                        )),
+                        SizedBox(width: 20,),
+                        Expanded(child: ChangePasswordFieldsWidget(currentPassword: currentPassword, newPassword: newPassword)),
+                      ],
+                    );
+                  }
+                },
+              ),
             ],
           ),
 
@@ -132,6 +117,81 @@ class _SettingsState extends State<Settings> {
           Expanded(child: SizedBox()),
         ],
       ),
+    );
+  }
+}
+
+class ChangePasswordButtonWidget extends StatelessWidget {
+  const ChangePasswordButtonWidget({
+    super.key,
+    required this.appProvider,
+    required this.currentPassword,
+    required this.newPassword,
+  });
+
+  final AppProvider appProvider;
+  final TextEditingController currentPassword;
+  final TextEditingController newPassword;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        style: ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.secondary)
+        ),
+        onPressed: () async {
+          bool r = await showSimpleLoadingDialog<bool>(
+            context: context,
+            future: () async {
+              bool r = await Connection.changePassword(
+                  appProvider,
+                  current_password: currentPassword.text,
+                  new_password: newPassword.text
+              );
+              await Connection.reload(appProvider);
+              return r;
+            },
+          );
+    
+          if (r){
+            showTopMessage(context, 'Password Changed');
+          } else {
+            showTopMessage(context, 'Error Occurred');
+          }
+        },
+        child: Text(
+          'Change Password',
+          style: TextStyle(
+              color: Theme.of(context).colorScheme.surface,
+              fontSize: 20
+          ),
+        )
+    );
+  }
+}
+
+class ChangePasswordFieldsWidget extends StatelessWidget {
+  const ChangePasswordFieldsWidget({
+    super.key,
+    required this.currentPassword,
+    required this.newPassword,
+  });
+
+  final TextEditingController currentPassword;
+  final TextEditingController newPassword;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        buildTextField(currentPassword, 'Current Password', Icons.abc, obscureText: true),
+    
+        SizedBox(height: 20,),
+    
+        buildTextField(newPassword, 'New Password', Icons.abc, obscureText: true),
+    
+        SizedBox(height: 20,),
+      ],
     );
   }
 }

@@ -4,28 +4,37 @@ import 'dart:convert';
 import 'app_provider.dart';
 
 class Connection {
-  static String serverAddr = "192.168.178.32:5000";
+  static String serverAddr = "bbruno.pythonanywhere.com";
 
   static Future<bool> login(String email, String password, AppProvider appProvider) async {
     final url = Uri.parse('http://' + serverAddr + '/login');
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'email': email, 'password': password}),
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode({'email': email, 'password': password}),
+      );
+      print('Status code: ${response.statusCode}');
+      print('Body: ${response.body}');
 
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      appProvider.setLogged(true);
-      appProvider.setToken(data['token']);
-      appProvider.setName(data['name']);
-      appProvider.setSurname(data['surname']);
-      appProvider.setEmail(data['email']);
-      appProvider.setRoles(data["roles"]);
-      appProvider.loadPreferences();
-      return true;
-    } else {
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        appProvider.setLogged(true);
+        appProvider.setToken(data['token']);
+        appProvider.setName(data['name']);
+        appProvider.setSurname(data['surname']);
+        appProvider.setEmail(data['email']);
+        appProvider.setRoles(data["roles"]);
+        appProvider.loadPreferences();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('Errore: $e');
       return false;
     }
   }

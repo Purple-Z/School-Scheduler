@@ -71,85 +71,32 @@ class _PlaceDetailsState extends State<PlaceDetails> {
 
     return Padding(
       padding: const EdgeInsets.all(15),
-      child: Column(
+      child: ListView(
         children: [
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.place_details_for,
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  placeDetailsProvider.place[1],
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 30),
-
-                buildTextField(nameController, AppLocalizations.of(context)!.place_name, Icons.person, editable: appProvider.edit_resources),
-                SizedBox(height: fieldsSpacing),
-                buildTextField(descriptionController, AppLocalizations.of(context)!.place_description, Icons.person, editable: appProvider.edit_resources),
-                SizedBox(height: fieldsSpacing),
-
-
-              ],
-            ),
+          Text(
+            AppLocalizations.of(context)!.place_details_for,
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
-          const Expanded(child: SizedBox()),
-          Column(
+          Text(
+            placeDetailsProvider.place[1],
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+          ),
+
+          const SizedBox(height: 30),
+
+          buildTextField(nameController, AppLocalizations.of(context)!.place_name, Icons.person, editable: appProvider.edit_resources),
+          SizedBox(height: fieldsSpacing),
+          buildTextField(descriptionController, AppLocalizations.of(context)!.place_description, Icons.person, editable: appProvider.edit_resources),
+          SizedBox(height: fieldsSpacing),
+
+
+          if (appProvider.edit_resources) Column(
             children: [
-              if (appProvider.edit_resources) Column(
-                children: [
-                  Center(
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
-                          backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),
-                          textStyle: WidgetStatePropertyAll(
-                              TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimary
-                              )
-                          )
-                      ),
-                      onPressed: () async {
-
-                        if (
-                        await Connection.updatePlace(
-                          appProvider,
-                          place_id: placeDetailsProvider.place[0],
-                          name: nameController.text,
-                          description: descriptionController.text,
-                        )
-                        ){
-                          showTopMessage(context, AppLocalizations.of(context)!.place_update_success);
-                        } else {
-                          showTopMessage(context, AppLocalizations.of(context)!.place_error_occurred);
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text(
-                          AppLocalizations.of(context)!.place_update_place,
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              fontSize: 20
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 10,),
-                ],
-              ),
-
-              if (appProvider.delete_resources) Center(
+              Center(
                 child: ElevatedButton(
                   style: ButtonStyle(
                       minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
-                      backgroundColor: WidgetStatePropertyAll(Color(0xFFB00020)),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),
                       textStyle: WidgetStatePropertyAll(
                           TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary
@@ -157,19 +104,24 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                       )
                   ),
                   onPressed: () async {
-                    if(await confirm(context, content: Text(AppLocalizations.of(context)!.place_delete_confirmation + " " + placeDetailsProvider.place[1] + "?"))){
-                      if (await Connection.deletePlace(placeDetailsProvider.place[0], appProvider)){
-                        showTopMessage(context, AppLocalizations.of(context)!.place_delete_success);
-                        context.pop();
-                      } else {
-                        showTopMessage(context, AppLocalizations.of(context)!.place_error_occurred);
-                      }
+
+                    if (
+                    await Connection.updatePlace(
+                      appProvider,
+                      place_id: placeDetailsProvider.place[0],
+                      name: nameController.text,
+                      description: descriptionController.text,
+                    )
+                    ){
+                      showTopMessage(context, AppLocalizations.of(context)!.place_update_success);
+                    } else {
+                      showTopMessage(context, AppLocalizations.of(context)!.place_error_occurred);
                     }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      AppLocalizations.of(context)!.place_delete_place,
+                      AppLocalizations.of(context)!.place_update_place,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary,
                           fontSize: 20
@@ -178,7 +130,43 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                   ),
                 ),
               ),
+
+              const SizedBox(height: 10,),
             ],
+          ),
+
+          if (appProvider.delete_resources) Center(
+            child: ElevatedButton(
+              style: ButtonStyle(
+                  minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
+                  backgroundColor: WidgetStatePropertyAll(Color(0xFFB00020)),
+                  textStyle: WidgetStatePropertyAll(
+                      TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary
+                      )
+                  )
+              ),
+              onPressed: () async {
+                if(await confirm(context, content: Text(AppLocalizations.of(context)!.place_delete_confirmation + " " + placeDetailsProvider.place[1] + "?"))){
+                  if (await Connection.deletePlace(placeDetailsProvider.place[0], appProvider)){
+                    showTopMessage(context, AppLocalizations.of(context)!.place_delete_success);
+                    context.pop();
+                  } else {
+                    showTopMessage(context, AppLocalizations.of(context)!.place_error_occurred);
+                  }
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  AppLocalizations.of(context)!.place_delete_place,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: 20
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),

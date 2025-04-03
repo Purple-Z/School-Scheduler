@@ -124,6 +124,7 @@ class ResourceDetailsProvider extends ChangeNotifier {
       slot_duration = Duration();
     }
 
+    changeTypeValue(resource[4]);
 
     //restore referents
     Map referents = c_resource[c_resource.length-1];
