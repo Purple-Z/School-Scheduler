@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'app_provider.dart';
 
 class Connection {
-  static String serverAddr = "bbruno.pythonanywhere.com";
+  //static String serverAddr = "bbruno.pythonanywhere.com";
+  static String serverAddr = "192.168.178.32:5000";
 
   static Future<bool> login(String email, String password, AppProvider appProvider) async {
     final url = Uri.parse('http://' + serverAddr + '/login');

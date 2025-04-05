@@ -1,0 +1,22 @@
+{
+    "it": {
+        "bookings_user_reminder": {
+            "subject": "Promemoria prenotazione",
+            "content": "Ti abbiamo inviato questa mail per ricordarti della tua prenotazione di %s %s\ndal %s ore %s\nal %s ore %s. Buona Giornata."
+        },
+        "bookings_referent_reminder": {
+            "subject": "Promemoria prenotazione",
+            "content": "Ti abbiamo inviato questa mail per ricordarti della prenotazione dell'utente %s di %s %s\ndal %s ore %s\nal %s ore %s. Buona Giornata."
+        }
+    },
+    "en": {
+        "bookings_user_reminder": {
+            "subject": "Booking Reminder",
+            "content": "We are sending you this email to remind you of your booking of %s %s\nfrom %s at %s\nto %s at %s. Have a nice day."
+        },
+        "bookings_referent_reminder": {
+            "subject": "Booking Reminder",
+            "content": "We are sending you this email to remind you of the booking of user %s of %s %s\nfrom %s at %s\nto %s at %s. Have a nice day."
+        }
+    }
+}
