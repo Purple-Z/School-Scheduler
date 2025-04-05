@@ -4,11 +4,11 @@ import 'dart:convert';
 import 'app_provider.dart';
 
 class Connection {
-  //static String serverAddr = "bbruno.pythonanywhere.com";
-  static String serverAddr = "192.168.178.32:5000";
+  static String serverAddr = "https://bbruno.pythonanywhere.com";
+  //static String serverAddr = "http://192.168.178.32:5000";
 
   static Future<bool> login(String email, String password, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/login');
+    final url = Uri.parse(serverAddr + '/login');
     try {
       final response = await http.post(
         url,
@@ -41,7 +41,7 @@ class Connection {
   }
 
   static Future<bool> reload(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/reload');
+    final url = Uri.parse(serverAddr + '/reload');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -65,7 +65,7 @@ class Connection {
   }
 
   static Future<bool> updateOwnUser(AppProvider appProvider, {required String new_name, required String new_surname}) async {
-    final url = Uri.parse('http://' + serverAddr + '/update-own-user');
+    final url = Uri.parse(serverAddr + '/update-own-user');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -91,7 +91,7 @@ class Connection {
   }
 
   static Future<bool> changePassword(AppProvider appProvider, {required String current_password, required String new_password}) async {
-    final url = Uri.parse('http://' + serverAddr + '/change-password');
+    final url = Uri.parse(serverAddr + '/change-password');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -119,7 +119,7 @@ class Connection {
   // - - -   ROLES - - -
 
   static Future<List> getRoleList(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-role-list');
+    final url = Uri.parse(serverAddr + '/get-role-list');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -140,7 +140,7 @@ class Connection {
   }
 
   static Future<List> getRoles(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-roles');
+    final url = Uri.parse(serverAddr + '/get-roles');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -162,7 +162,7 @@ class Connection {
   }
 
   static Future<bool> addRole({required String email, required String token, required String name, required bool view_users, required bool edit_users, required bool create_users, required bool delete_users, required bool view_own_user, required bool edit_own_user, required bool create_own_user, required bool delete_own_user, required bool view_roles, required bool edit_roles, required bool create_roles, required bool delete_roles, required bool view_availability, required bool edit_availability, required bool create_availability, required bool delete_availability, required bool view_resources, required bool edit_resources, required bool create_resources, required bool delete_resources, required bool view_booking, required bool edit_booking, required bool create_booking, required bool delete_booking, required bool view_own_booking, required bool edit_own_booking, required bool create_own_booking, required bool delete_own_booking, required String description, required AppProvider appProvider}) async {
-    final url = Uri.parse('http://' + serverAddr + '/add-role');
+    final url = Uri.parse(serverAddr + '/add-role');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -214,7 +214,7 @@ class Connection {
   }
 
   static Future<List> getRole(var role_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-role');
+    final url = Uri.parse(serverAddr + '/get-role');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -235,7 +235,7 @@ class Connection {
   }
 
   static Future<bool> updateRole(AppProvider appProvider, {required int role_id, required String name, required String description, required bool view_users, required bool edit_users, required bool create_users, required bool delete_users, required bool view_own_user, required bool edit_own_user, required bool create_own_user, required bool delete_own_user, required bool view_roles, required bool edit_roles, required bool create_roles, required bool delete_roles, required bool view_availability, required bool edit_availability, required bool create_availability, required bool delete_availability, required bool view_resources, required bool edit_resources, required bool create_resources, required bool delete_resources, required bool view_booking, required bool edit_booking, required bool create_booking, required bool delete_booking, required bool view_own_booking, required bool edit_own_booking, required bool create_own_booking, required bool delete_own_booking,}) async {
-    final url = Uri.parse('http://' + serverAddr + '/update-role');
+    final url = Uri.parse(serverAddr + '/update-role');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -289,7 +289,7 @@ class Connection {
   }
 
   static Future<bool> deleteRole(int role_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/delete-role');
+    final url = Uri.parse(serverAddr + '/delete-role');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -310,7 +310,7 @@ class Connection {
   // - - -   USERS - - -
 
   static Future<List> getUsers(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-users');
+    final url = Uri.parse(serverAddr + '/get-users');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -331,7 +331,7 @@ class Connection {
   }
 
   static Future<bool> addUser({required String new_email, required String new_name, required String new_surname, required List<String> new_roles, required AppProvider appProvider}) async {
-    final url = Uri.parse('http://' + serverAddr + '/add-user');
+    final url = Uri.parse(serverAddr + '/add-user');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -357,7 +357,7 @@ class Connection {
   }
 
   static Future<List> getUser(int user_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-user');
+    final url = Uri.parse(serverAddr + '/get-user');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -378,7 +378,7 @@ class Connection {
   }
 
   static Future<bool> updateUser(AppProvider appProvider, {required int user_id, required String new_name, required String new_surname, required List<String> roles}) async {
-    final url = Uri.parse('http://' + serverAddr + '/update-user');
+    final url = Uri.parse(serverAddr + '/update-user');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -405,7 +405,7 @@ class Connection {
   }
 
   static Future<bool> resetPassword(int user_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/reset-password');
+    final url = Uri.parse(serverAddr + '/reset-password');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -424,7 +424,7 @@ class Connection {
   }
 
   static Future<bool> deleteUser(int user_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/delete-user');
+    final url = Uri.parse(serverAddr + '/delete-user');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -445,7 +445,7 @@ class Connection {
   // - - -   TYPES - - -
 
   static Future<List> getTypes(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-types');
+    final url = Uri.parse(serverAddr + '/get-types');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -466,7 +466,7 @@ class Connection {
   }
 
   static Future<bool> addType({required String name, required String description, required AppProvider appProvider}) async {
-    final url = Uri.parse('http://' + serverAddr + '/add-type');
+    final url = Uri.parse(serverAddr + '/add-type');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -490,7 +490,7 @@ class Connection {
   }
 
   static Future<bool> updateType(AppProvider appProvider, {required int type_id, required String name, required String description}) async {
-    final url = Uri.parse('http://' + serverAddr + '/update-type');
+    final url = Uri.parse(serverAddr + '/update-type');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -516,7 +516,7 @@ class Connection {
   }
 
   static Future<List> getType(int type_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-type');
+    final url = Uri.parse(serverAddr + '/get-type');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -537,7 +537,7 @@ class Connection {
   }
 
   static Future<bool> deleteType(int type_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/delete-type');
+    final url = Uri.parse(serverAddr + '/delete-type');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -556,7 +556,7 @@ class Connection {
   }
 
   static Future<List> getTypeList(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-type-list');
+    final url = Uri.parse(serverAddr + '/get-type-list');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -579,7 +579,7 @@ class Connection {
   // - - -   PLACES - - -
 
   static Future<List> getPlaces(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-places');
+    final url = Uri.parse(serverAddr + '/get-places');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -600,7 +600,7 @@ class Connection {
   }
 
   static Future<bool> addPlace({required String name, required String description, required AppProvider appProvider}) async {
-    final url = Uri.parse('http://' + serverAddr + '/add-place');
+    final url = Uri.parse(serverAddr + '/add-place');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -624,7 +624,7 @@ class Connection {
   }
 
   static Future<bool> updatePlace(AppProvider appProvider, {required int place_id, required String name, required String description}) async {
-    final url = Uri.parse('http://' + serverAddr + '/update-place');
+    final url = Uri.parse(serverAddr + '/update-place');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -650,7 +650,7 @@ class Connection {
   }
 
   static Future<List> getPlace(int place_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-place');
+    final url = Uri.parse(serverAddr + '/get-place');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -671,7 +671,7 @@ class Connection {
   }
 
   static Future<bool> deletePlace(int place_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/delete-place');
+    final url = Uri.parse(serverAddr + '/delete-place');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -690,7 +690,7 @@ class Connection {
   }
 
   static Future<List> getPlaceList(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-place-list');
+    final url = Uri.parse(serverAddr + '/get-place-list');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -714,7 +714,7 @@ class Connection {
   // - - -   ACTIVITIES - - -
 
   static Future<List> getActivities(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-activities');
+    final url = Uri.parse(serverAddr + '/get-activities');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -735,7 +735,7 @@ class Connection {
   }
 
   static Future<bool> addActivity({required String name, required String description, required AppProvider appProvider}) async {
-    final url = Uri.parse('http://' + serverAddr + '/add-activity');
+    final url = Uri.parse(serverAddr + '/add-activity');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -759,7 +759,7 @@ class Connection {
   }
 
   static Future<bool> updateActivity(AppProvider appProvider, {required int activity_id, required String name, required String description}) async {
-    final url = Uri.parse('http://' + serverAddr + '/update-activity');
+    final url = Uri.parse(serverAddr + '/update-activity');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -785,7 +785,7 @@ class Connection {
   }
 
   static Future<List> getActivity(int activity_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-activity');
+    final url = Uri.parse(serverAddr + '/get-activity');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -806,7 +806,7 @@ class Connection {
   }
 
   static Future<bool> deleteActivity(int activity_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/delete-activity');
+    final url = Uri.parse(serverAddr + '/delete-activity');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -825,7 +825,7 @@ class Connection {
   }
 
   static Future<List> getActivityList(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-activity-list');
+    final url = Uri.parse(serverAddr + '/get-activity-list');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -848,7 +848,7 @@ class Connection {
   // - - -   RESOURCES   - - -
 
   static Future<List> getResources(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-resources');
+    final url = Uri.parse(serverAddr + '/get-resources');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -869,7 +869,7 @@ class Connection {
   }
 
   static Future<bool> addResource({required String name, required String description, required int quantity, required bool auto_accept, required bool over_booking, required String type, required String place, required String activity, required int slot, required Map referents, required AppProvider appProvider, required Map resource_permissions}) async {
-    final url = Uri.parse('http://' + serverAddr + '/add-resource');
+    final url = Uri.parse(serverAddr + '/add-resource');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -902,7 +902,7 @@ class Connection {
   }
 
   static Future<List> getResource(int resource_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-resource');
+    final url = Uri.parse(serverAddr + '/get-resource');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -923,7 +923,7 @@ class Connection {
   }
 
   static Future<bool> updateResource(AppProvider appProvider, {required int resource_id, required String name, required String description, required int quantity, required bool auto_accept, required bool over_booking, required String type, required String place, required String activity, required int slot, required Map referents, required Map resource_permissions}) async {
-    final url = Uri.parse('http://' + serverAddr + '/update-resource');
+    final url = Uri.parse(serverAddr + '/update-resource');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -958,7 +958,7 @@ class Connection {
   }
 
   static Future<bool> deleteResource(int resource_type, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/delete-resource');
+    final url = Uri.parse(serverAddr + '/delete-resource');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -977,7 +977,7 @@ class Connection {
   }
 
   static Future<Map> getResourcePermission(AppProvider appProvider, {required List<String> roles, int resource_id=-1}) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-resource-permission');
+    final url = Uri.parse(serverAddr + '/get-resource-permission');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1005,7 +1005,7 @@ class Connection {
   // - - -   AVAILABILITY   - - -
 
   static Future<List> getAvailabilities(AppProvider appProvider, {required int resource_id}) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-availabilities');
+    final url = Uri.parse(serverAddr + '/get-availabilities');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1026,7 +1026,7 @@ class Connection {
   }
 
   static Future<int> checkAvailabilityQuantity(AppProvider appProvider, {required int resource_id, required DateTime start, required DateTime end, int remove_availability_id = -1}) async {
-    final url = Uri.parse('http://' + serverAddr + '/check-availabilities-quantity');
+    final url = Uri.parse(serverAddr + '/check-availabilities-quantity');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1054,7 +1054,7 @@ class Connection {
   }
 
   static Future<bool> addAvailability({required DateTime start, required DateTime end, required int quantity, required int resource_id, required AppProvider appProvider}) async {
-    final url = Uri.parse('http://' + serverAddr + '/add-availability');
+    final url = Uri.parse(serverAddr + '/add-availability');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1080,7 +1080,7 @@ class Connection {
   }
 
   static Future<List> getAvailability(int availability_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-availability');
+    final url = Uri.parse(serverAddr + '/get-availability');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1101,7 +1101,7 @@ class Connection {
   }
 
   static Future<bool> updateAvailability(AppProvider appProvider, {required int availability_id, required DateTime start, required DateTime end, required int quantity}) async {
-    final url = Uri.parse('http://' + serverAddr + '/update-availability');
+    final url = Uri.parse(serverAddr + '/update-availability');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1128,7 +1128,7 @@ class Connection {
   }
 
   static Future<bool> deleteAvailability(int availability_id, AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/delete-availability');
+    final url = Uri.parse(serverAddr + '/delete-availability');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1149,7 +1149,7 @@ class Connection {
   // - - -   BOOKINGS   - - -
 
   static Future<List> getResourcesFeed(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-resources-feed');
+    final url = Uri.parse(serverAddr + '/get-resources-feed');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1170,7 +1170,7 @@ class Connection {
   }
 
   static Future<Map> getResourceForBooking(AppProvider appProvider, {required int resource_id, required DateTime start, required DateTime end}) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-resource-for-booking');
+    final url = Uri.parse(serverAddr + '/get-resource-for-booking');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1197,7 +1197,7 @@ class Connection {
   }
 
   static Future<int> checkBookingQuantity(AppProvider appProvider, {required int resource_id, required DateTime start, required DateTime end, int remove_booking_id = -1}) async {
-    final url = Uri.parse('http://' + serverAddr + '/check-bookings-quantity');
+    final url = Uri.parse(serverAddr + '/check-bookings-quantity');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1225,7 +1225,7 @@ class Connection {
   }
 
   static Future<bool> addBooking({required DateTime start, required DateTime end, required int quantity, required int resource_id, required String place, required String activity, required AppProvider appProvider}) async {
-    final url = Uri.parse('http://' + serverAddr + '/add-booking');
+    final url = Uri.parse(serverAddr + '/add-booking');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1253,7 +1253,7 @@ class Connection {
   }
 
   static Future<List> getPendingBookings(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-pending-bookings');
+    final url = Uri.parse(serverAddr + '/get-pending-bookings');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1277,7 +1277,7 @@ class Connection {
   }
 
   static Future<bool> acceptPendingBookings(AppProvider appProvider, {required int request_id}) async {
-    final url = Uri.parse('http://' + serverAddr + '/accept-pending-bookings');
+    final url = Uri.parse(serverAddr + '/accept-pending-bookings');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1296,7 +1296,7 @@ class Connection {
   }
 
   static Future<bool> refusePendingBookings(AppProvider appProvider, {required int request_id}) async {
-    final url = Uri.parse('http://' + serverAddr + '/refuse-pending-bookings');
+    final url = Uri.parse(serverAddr + '/refuse-pending-bookings');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1315,7 +1315,7 @@ class Connection {
   }
 
   static Future<List> getBookings(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-bookings');
+    final url = Uri.parse(serverAddr + '/get-bookings');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -1336,7 +1336,7 @@ class Connection {
   }
 
   static Future<List> getUserBookings(AppProvider appProvider) async {
-    final url = Uri.parse('http://' + serverAddr + '/get-user-bookings');
+    final url = Uri.parse(serverAddr + '/get-user-bookings');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},

@@ -138,6 +138,7 @@ def reload():
             roles.append(getRoleInformation(role_id))
     #print("roles: " + str(roles))
 
+
     return jsonify(
         {
             "name": user_name,
