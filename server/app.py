@@ -10,7 +10,7 @@ import json
 db = setupDB()
 app = Flask(__name__)
 
-notification_times_delta = [1, 5, 10, 30, 60]
+notification_times_delta = [1, 60, 60*24]
 
 mail_content = {}
 
@@ -2145,6 +2145,18 @@ def update_resource():
 
     user_id = getIdFromEmail(email)
 
+    sql = "SELECT * FROM resources WHERE id = " + str(resource_id)
+    result = db.fetchSQL(sql)
+    if len(result) == 0:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 501
+    
+    old_resource = result[0]
+
+
     sql = "SELECT id FROM types WHERE name = '" + type + "'"
     result = db.fetchSQL(sql)
     if len(result) == 0:
@@ -2171,6 +2183,44 @@ def update_resource():
 
     if slot == -1:
         slot = None
+
+    old_activity_id = old_resource[6]
+    old_place_id = old_resource[5]
+    old_auto_accept = old_resource[8] == 1
+
+    if old_auto_accept != auto_accept:
+        #has changed
+        print('changed')
+        sql = f"SELECT * FROM bookings WHERE resource_id = {resource_id} AND status = 0"
+        result = db.fetchSQL(sql)
+        if len(result) != 0:
+            return jsonify(
+                {
+                    "token": token_for(user_id)
+                }
+            ), 502
+
+    if (activity_id != None) != (old_activity_id != None):
+        print('qua dentro propio', str(old_activity_id))
+        sql_update = f'''
+        UPDATE bookings SET
+            activity_id = {'null' if old_activity_id is None else old_activity_id}
+        WHERE resource_id = {resource_id}
+        '''
+        db.executeSQL(sql_update)
+
+    if (place_id != None) != (old_place_id != None):
+        sql_update = f'''
+        UPDATE bookings SET
+            place_id = {'null' if old_place_id is None else old_place_id}
+        WHERE resource_id = {resource_id}
+        '''
+        db.executeSQL(sql_update)
+
+
+
+    print(auto_accept)
+    print(old_resource)
 
 
     sql_update = f'''
@@ -2591,8 +2641,9 @@ def update_availability():
                 'message': 'Access denied'
             }
             ), 401
+    
 
-    sql = "SELECT resource_id FROM availability WHERE id = " + str(availability_id)
+    sql = "SELECT * FROM availability WHERE id = " + str(availability_id)
     result = db.fetchSQL(sql)
     if len(result) == 0:
         return jsonify(
@@ -2601,7 +2652,9 @@ def update_availability():
             }
         ), 501
 
-    resource_id = result[0][0]
+    old_start = result[0][1]
+    old_end = result[0][2]
+    resource_id = result[0][4]
     
 
     user_id = getIdFromEmail(email)
@@ -2640,7 +2693,24 @@ def update_availability():
                 'message': 'Too much quantity',
                 "token": token_for(user_id)
             }
-            ), 403
+            ), 403    
+
+    maxBookability = getMaxBookability(
+        resource_id, 
+        old_start, 
+        old_end,  
+        remove_availability_id=availability_id, 
+        shift_set=[[start, end, quantity]]
+        )
+    
+
+    if maxBookability < 0:
+        return jsonify(
+            {
+                "quantity": 0,
+                "token": token_for(user_id)
+            }
+        ), 502
 
     sql_update = f'''
     UPDATE availability SET
@@ -2686,6 +2756,35 @@ def delete_availability():
             ), 401
     
     user_id = getIdFromEmail(email)
+
+    sql = "SELECT * FROM availability WHERE id = " + str(availability_id)
+    result = db.fetchSQL(sql)
+    if len(result) == 0:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 501
+
+    old_start = result[0][1]
+    old_end = result[0][2]
+    resource_id = result[0][4]
+
+    maxBookability = getMaxBookability(
+        resource_id, 
+        old_start, 
+        old_end,  
+        remove_availability_id=availability_id,
+        )
+    
+
+    if maxBookability < 0:
+        return jsonify(
+            {
+                "quantity": 0,
+                "token": token_for(user_id)
+            }
+        ), 502
 
 
 
@@ -3704,7 +3803,7 @@ def selectAvailabilityRecordsFromShift(start, end, resource_id, remove_availabil
 
     return shifts_content
 
-def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1):
+def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1, remove_availability_id=-1):
 
     sql = f'SELECT * FROM resources WHERE id = {resource_id}'
     result = db.fetchSQL(sql)
@@ -3714,7 +3813,6 @@ def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1):
     slot = result[0][7]
     auto_accept = result[0][8]==1
     over_booking = result[0][9]==1
-
 
 
 
@@ -3733,12 +3831,13 @@ def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1):
 
     shifts_content = []
     for record in result:
-        if record[0] != remove_booking_id:
+        if record[0] != remove_availability_id:
             shift = []
             shift.append(record[1])
             shift.append(record[2])
             shift.append(record[3])
             shifts_content.append(shift)
+
 
     sql = f'''
     SELECT * FROM bookings WHERE
@@ -3799,7 +3898,7 @@ def getMaxAvailability(resource_id, start, end, remove_availability_id):
 
     return maxAvailability
 
-def getMaxBookability(resource_id, start, end, remove_booking_id):
+def getMaxBookability(resource_id, start, end, remove_booking_id=-1, remove_availability_id=-1, shift_set=[]):
     if end < start:
         return -1
     
@@ -3813,12 +3912,17 @@ def getMaxBookability(resource_id, start, end, remove_booking_id):
     over_booking = result[0][9]==1
 
 
-    shifts_content = selectAllRecordsFromShift(start, end, resource_id, remove_booking_id)
+    shifts_content = selectAllRecordsFromShift(start, end, resource_id, remove_booking_id, remove_availability_id)
+
+
+    for shift in shift_set:
+        shifts_content.append(shift)
 
     shifts = []
     if len(shifts_content) > 0:
         shifts = getShiftValue(shifts_content, start=start, end=end, slot=slot)
-    
+
+
     minVal = 0
     if len(shifts) > 0:
         minVal = shifts[0][2]
@@ -3881,7 +3985,7 @@ def getShiftValue(shifts, start=False, end=False, slot=None):
     if slot != None:
         new_numeric_shifts = []
         for numeric_shift in numeric_shifts:
-            if numeric_shift[0] != 0:
+            if numeric_shift[0] > 0:
                 for _ in range(numeric_shift[1]//slot):
                     new_numeric_shifts.append([numeric_shift[0], slot])
 
@@ -3937,8 +4041,8 @@ def check_and_send_notifications():
         time_delta = timedelta(minutes=notification_time_delta)
 
         notification_time = now + time_delta
-        print('\n'+str(notification_time_delta))
-        print(notification_time)
+        #print('\n'+str(notification_time_delta))
+        #print(notification_time)
 
         sql = f'''SELECT * FROM bookings
         WHERE 

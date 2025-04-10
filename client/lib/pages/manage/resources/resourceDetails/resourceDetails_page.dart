@@ -484,8 +484,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                           )
                       ),
                       onPressed: () async {
-                        if (
-                        await Connection.updateResource(
+                        switch (await Connection.updateResource(
                             appProvider,
                             resource_id: resourceDetailsProvider.resource[0],
                             name: nameController.text,
@@ -499,10 +498,18 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                             activity: resourceDetailsProvider.activity,
                             slot: resourceDetailsProvider.getSlotDuration(),
                             referents: resourceDetailsProvider.getUser()
-                        )){
-                          showTopMessage(context, AppLocalizations.of(context)!.resource_update_success);
-                        } else {
-                          showTopMessage(context, AppLocalizations.of(context)!.resource_error_occurred);
+                        )) {
+                          case 0:
+                            showTopMessage(context, AppLocalizations.of(context)!.resource_update_success);
+                            break;
+
+                          case 1:
+                            showTopMessage(context, "Can't Toggle auto accept.\nTry remove pending bookings", isOK: false);
+                            break;
+
+                          case 2:
+                            showTopMessage(context, AppLocalizations.of(context)!.resource_error_occurred, isOK: false);
+                            break;
                         }
                       },
                       child: Padding(

@@ -275,18 +275,24 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                           )
                       ),
                       onPressed: () async {
-                        if (
-                        await Connection.updateAvailability(
+                        switch (await Connection.updateAvailability(
                             appProvider,
                             availability_id: availabilityDetailsProvider.availability[0],
                             start: startDate,
                             end: endDate,
                             quantity: int.tryParse(quantityController.text) ?? 0
-                        )
-                        ){
-                          showTopMessage(context, AppLocalizations.of(context)!.availability_update_success);
-                        } else {
-                          showTopMessage(context, AppLocalizations.of(context)!.availability_error_occurred);
+                        )) {
+                          case 0:
+                            showTopMessage(context, AppLocalizations.of(context)!.availability_update_success);
+                            break;
+
+                          case 1:
+                            showTopMessage(context, "Can't update availability.\nTry remove some bookings", isOK: false);
+                            break;
+
+                          case 2:
+                            showTopMessage(context, AppLocalizations.of(context)!.availability_error_occurred);
+                            break;
                         }
                       },
                       child: Padding(
@@ -320,14 +326,22 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                   ),
                   onPressed: () async {
                     if(await confirm(context, content: Text(AppLocalizations.of(context)!.availability_delete_confirmation))){
-                      if (await Connection.deleteAvailability(
+                      switch (await Connection.deleteAvailability(
                           availabilityDetailsProvider.availability[0],
                           appProvider
-                      )){
-                        showTopMessage(context, AppLocalizations.of(context)!.availability_delete_success);
-                        context.pop();
-                      } else {
-                        showTopMessage(context, AppLocalizations.of(context)!.availability_error_occurred);
+                      )) {
+                        case 0:
+                          showTopMessage(context, AppLocalizations.of(context)!.availability_delete_success);
+                          context.pop();
+                          break;
+
+                        case 1:
+                          showTopMessage(context, "Can't delete availability.\nTry remove some bookings", isOK: false);
+                          break;
+
+                        case 2:
+                          showTopMessage(context, AppLocalizations.of(context)!.availability_error_occurred);
+                          break;
                       }
                     }
                   },

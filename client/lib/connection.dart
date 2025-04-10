@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'app_provider.dart';
 
 class Connection {
-  static String serverAddr = "https://bbruno.pythonanywhere.com";
-  //static String serverAddr = "http://192.168.178.32:5000";
+  //static String serverAddr = "https://bbruno.pythonanywhere.com";
+  static String serverAddr = "http://192.168.178.32:5000";
 
   static Future<bool> login(String email, String password, AppProvider appProvider) async {
     final url = Uri.parse(serverAddr + '/login');
@@ -922,7 +922,7 @@ class Connection {
     }
   }
 
-  static Future<bool> updateResource(AppProvider appProvider, {required int resource_id, required String name, required String description, required int quantity, required bool auto_accept, required bool over_booking, required String type, required String place, required String activity, required int slot, required Map referents, required Map resource_permissions}) async {
+  static Future<int> updateResource(AppProvider appProvider, {required int resource_id, required String name, required String description, required int quantity, required bool auto_accept, required bool over_booking, required String type, required String place, required String activity, required int slot, required Map referents, required Map resource_permissions}) async {
     final url = Uri.parse(serverAddr + '/update-resource');
     final response = await http.post(
       url,
@@ -951,9 +951,11 @@ class Connection {
     appProvider.setToken(data['token']);
 
     if (response.statusCode == 200) {
-      return true;
+      return 0;
+    } else if (response.statusCode == 502){
+      return 1;
     } else {
-      return false;
+      return 2;
     }
   }
 
@@ -1100,7 +1102,7 @@ class Connection {
     }
   }
 
-  static Future<bool> updateAvailability(AppProvider appProvider, {required int availability_id, required DateTime start, required DateTime end, required int quantity}) async {
+  static Future<int> updateAvailability(AppProvider appProvider, {required int availability_id, required DateTime start, required DateTime end, required int quantity}) async {
     final url = Uri.parse(serverAddr + '/update-availability');
     final response = await http.post(
       url,
@@ -1121,13 +1123,15 @@ class Connection {
     appProvider.setToken(data['token']);
 
     if (response.statusCode == 200) {
-      return true;
+      return 0;
+    } else if (response.statusCode == 502) {
+      return 1;
     } else {
-      return false;
+      return 2;
     }
   }
 
-  static Future<bool> deleteAvailability(int availability_id, AppProvider appProvider) async {
+  static Future<int> deleteAvailability(int availability_id, AppProvider appProvider) async {
     final url = Uri.parse(serverAddr + '/delete-availability');
     final response = await http.post(
       url,
@@ -1140,9 +1144,11 @@ class Connection {
     appProvider.setToken(data['token']);
 
     if (response.statusCode == 200) {
-      return true;
+      return 0;
+    } else if (response.statusCode == 502) {
+      return 1;
     } else {
-      return false;
+      return 2;
     }
   }
 
