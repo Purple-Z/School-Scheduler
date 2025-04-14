@@ -366,7 +366,8 @@ class _AddUserAdminState extends State<AddUserAdmin> {
                   child: Text(
                     AppLocalizations.of(context)!.role_add_role,
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: Theme.of(context).colorScheme.surface,
+                        fontWeight: FontWeight.bold,
                         fontSize: 20
                     ),
                   ),

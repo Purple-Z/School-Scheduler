@@ -99,8 +99,16 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
         onPressed: () {
           context.push(Routes.manage_Users_AddUsers);
         },
-        label: Text(AppLocalizations.of(context)!.user_new_user),
-        icon: Icon(Icons.add),
+        label: Text(
+          AppLocalizations.of(context)!.user_new_user,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.surface
+          ),
+        ),
+        icon: Icon(
+          Icons.add,
+          color: Theme.of(context).colorScheme.surface,
+        ),
       ) : null,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),

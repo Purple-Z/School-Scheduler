@@ -109,7 +109,7 @@ class _AddAvailabilityState extends State<AddAvailability> {
                         }
                       },
                       child: Text(
-                        '${startDate.year}/${startDate.month}/${startDate.day}',
+                        getDatePrintable(startDate, context),
                         style: TextStyle(fontSize: 18),
                       ),
                     ),
@@ -164,7 +164,7 @@ class _AddAvailabilityState extends State<AddAvailability> {
                         }
                       },
                       child: Text(
-                        '${endDate.year}/${endDate.month}/${endDate.day}',
+                        getDatePrintable(endDate, context),
                         style: TextStyle(fontSize: 18),
                       ),
                     ),

@@ -82,8 +82,8 @@ class _ManageAvailabilityState extends State<ManageAvailability> {
 
       for (int i in [1, 2]){
         DateTime dateTime = DateTime.tryParse(newItem[i]) ?? DateTime.now();
-        newItem[i] = '${dateTime.year}/${dateTime.month}/${dateTime.day}\n';
-        newItem[i] += getTimePrintable(dateTime);
+        newItem[i] = getTimePrintable(dateTime)+'\n';
+        newItem[i] += getDatePrintable(dateTime, context);
       }
 
       newItems.add(newItem);
@@ -126,7 +126,7 @@ class _ManageAvailabilityState extends State<ManageAvailability> {
                       }
                     },
                     child: Text(
-                      '${dateFor.day}/${dateFor.month}/${dateFor.year}',
+                      getDatePrintable(dateFor, context),
                       style: TextStyle(fontSize: 18),
                     ),
                   ),

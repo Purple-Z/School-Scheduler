@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:overflow_text_animated/overflow_text_animated.dart';
 
 import '../../../connection.dart';
 import '../../functions.dart';
@@ -141,7 +142,13 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
     );
   }
 
-  Container buildBookingList(BuildContext context) {
+  EventListWidget buildBookingList(BuildContext context) {
+    return EventListWidget(
+      events: _getEventsForDay(_selectedDay ?? DateTime.now()),
+    );
+  }
+
+  Container builddBookingList(BuildContext context) {
     return Container(
               padding: EdgeInsets.fromLTRB(0, 0, 0, 25),
               child: Column(
@@ -155,6 +162,7 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
                           children: [
                             Row(
                               children: [
+                                Text(event.title),
                                 if (event.status == 0) Text(
                                   'Pending',
                                   style: TextStyle(
@@ -181,18 +189,35 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
                             ),
                             Row(
                               children: [
-                                Text(
-                                  event.resource_name,
-                                  style: TextStyle(fontSize: 25),
-                                ),
-                                Expanded(child: SizedBox()),
-                                Text(
-                                  event.user_email,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w200
+                                Expanded(
+                                  child: OverflowTextAnimated(
+                                    text: event.resource_name,
+                                    style: TextStyle(fontSize: 25),
+                                    curve: Curves.easeInOut,
+                                    animation: OverFlowTextAnimations.scrollOpposite,
+                                    animateDuration: Duration(milliseconds: 2000),
+                                    delay: Duration(milliseconds: 500),
+                                    loopSpace: 10,
                                   ),
-                                )
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: OverflowTextAnimated(
+                                    text: event.user_email,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w200,
+                                    ),
+                                    curve: Curves.easeInOut,
+                                    animation: OverFlowTextAnimations.scrollOpposite,
+                                    animateDuration: Duration(milliseconds: 2000),
+                                    delay: Duration(milliseconds: 500),
+                                    loopSpace: 10,
+                                  ),
+                                ),
                               ],
                             ),
                             SizedBox(height: 15,),
@@ -204,7 +229,7 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
                                 ),
                                 SizedBox(width: 5,),
                                 Text(
-                                  '${event.start.day}/${event.start.month}/${event.start.year}',
+                                  getDatePrintable(event.start, context),
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w200
@@ -233,7 +258,7 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
                                 ),
                                 SizedBox(width: 5,),
                                 Text(
-                                  '${event.end.day}/${event.end.month}/${event.end.year}',
+                                  getDatePrintable(event.end, context),
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w200
@@ -252,49 +277,71 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
                             ),
                             SizedBox(height: 15,),
                             Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(
-                                  event.activity_name,
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w200
-                                  ),
-                                ),
-                                SizedBox(width: 15,),
-                                Text(
-                                  event.place_name,
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w200
-                                  ),
-                                ),
-                                Expanded(child: SizedBox()),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    context.push(Routes.manage_Bookings_BookingsDetails, extra: {
-                                      'booking': event,
-                                    });
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'View',
-                                        style: TextStyle(
-                                            color: Theme.of(context).colorScheme.surface
-                                        ),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_outward,
-                                        color: Theme.of(context).colorScheme.surface,
-                                      )
-                                    ],
-                                  ),
-                                  style: ButtonStyle(
-                                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary)
+                                Expanded(
+                                  child: OverflowTextAnimated(
+                                    text: event.activity_name,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w200
+                                    ),
+                                    curve: Curves.easeInOut,
+                                    animation: OverFlowTextAnimations.scrollOpposite,
+                                    animateDuration: Duration(milliseconds: 2000),
+                                    delay: Duration(milliseconds: 500),
+                                    loopSpace: 10,
                                   ),
                                 ),
                               ],
-                            )
+                            ),
+                            SizedBox(height: 15,),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  child: OverflowTextAnimated(
+                                    text: event.place_name,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w200
+                                    ),
+                                    curve: Curves.easeInOut,
+                                    animation: OverFlowTextAnimations.scrollOpposite,
+                                    animateDuration: Duration(milliseconds: 2000),
+                                    delay: Duration(milliseconds: 500),
+                                    loopSpace: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 15,),
+                            ElevatedButton(
+                              onPressed: () {
+                                context.push(Routes.manage_Bookings_BookingsDetails, extra: {
+                                  'booking': event,
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Expanded(child: SizedBox()),
+                                  Text(
+                                    'View',
+                                    style: TextStyle(
+                                        color: Theme.of(context).colorScheme.surface
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_outward,
+                                    color: Theme.of(context).colorScheme.surface,
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                ],
+                              ),
+                              style: ButtonStyle(
+                                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary)
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -386,3 +433,217 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
   }
 }
 
+class EventListWidget extends StatelessWidget {
+  final List<Booking> events;
+  final DateTime? selectedDay;
+
+  const EventListWidget({
+    Key? key,
+    required this.events,
+    this.selectedDay,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 25),
+      child: Column(
+        children: events.map((event) =>
+            Column(
+              children: [
+                const Divider(thickness: 0.5,),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text(event.title),
+                          if (event.status == 0) Text(
+                            'Pending',
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: Theme.of(context).colorScheme.primary
+                            ),
+                          ),
+                          if (event.status == 1) Text(
+                            'Accepted',
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: Theme.of(context).colorScheme.tertiary
+                            ),
+                          ),
+                          if (event.status == 2) Text(
+                            'Refuzed',
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: Theme.of(context).colorScheme.secondary
+                            ),
+                          ),
+                          const Expanded(child: SizedBox()),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OverflowTextAnimated(
+                              text: event.resource_name,
+                              style: const TextStyle(fontSize: 25),
+                              curve: Curves.easeInOut,
+                              animation: OverFlowTextAnimations.scrollOpposite,
+                              animateDuration: const Duration(milliseconds: 2000),
+                              delay: const Duration(milliseconds: 500),
+                              loopSpace: 10,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OverflowTextAnimated(
+                              text: event.user_email,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w200,
+                              ),
+                              curve: Curves.easeInOut,
+                              animation: OverFlowTextAnimations.scrollOpposite,
+                              animateDuration: const Duration(milliseconds: 2000),
+                              delay: const Duration(milliseconds: 500),
+                              loopSpace: 10,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15,),
+                      Row(
+                        children: [
+                          const Text(
+                            'From',
+                            style: TextStyle(fontSize: 15,),
+                          ),
+                          const SizedBox(width: 5,),
+                          Text(
+                            getDatePrintable(event.start, context),
+                            style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w200
+                            ),
+                          ),
+                          const SizedBox(width: 5,),
+                          Text(
+                            getTimePrintable(event.start),
+                            style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w200
+                            ),
+                          ),
+                          const Expanded(child: SizedBox()),
+                          Text(
+                            event.quantity.toString(),
+                            style: const TextStyle(fontSize: 15),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text(
+                            'To',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          const SizedBox(width: 5,),
+                          Text(
+                            getDatePrintable(event.end, context),
+                            style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w200
+                            ),
+                          ),
+                          const SizedBox(width: 5,),
+                          Text(
+                            getTimePrintable(event.end),
+                            style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w200
+                            ),
+                          ),
+                          const Expanded(child: SizedBox()),
+                        ],
+                      ),
+                      const SizedBox(height: 15,),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: OverflowTextAnimated(
+                              text: event.activity_name,
+                              style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w200
+                              ),
+                              curve: Curves.easeInOut,
+                              animation: OverFlowTextAnimations.scrollOpposite,
+                              animateDuration: const Duration(milliseconds: 2000),
+                              delay: const Duration(milliseconds: 500),
+                              loopSpace: 10,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15,),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: OverflowTextAnimated(
+                              text: event.place_name,
+                              style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w200
+                              ),
+                              curve: Curves.easeInOut,
+                              animation: OverFlowTextAnimations.scrollOpposite,
+                              animateDuration: const Duration(milliseconds: 2000),
+                              delay: const Duration(milliseconds: 500),
+                              loopSpace: 10,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15,),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Assicurati che 'context' abbia accesso a 'push' (es. tramite 'go_router')
+                          // context.push(Routes.manage_Bookings_BookingsDetails, extra: {
+                          //   'booking': event,
+                          // });
+                          print('Visualizza dettagli per: ${event.title}'); // Placeholder
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: const WidgetStatePropertyAll(Colors.blue),
+                          foregroundColor: const WidgetStatePropertyAll(Colors.white),
+                        ),
+                        child: const Row(
+                          children: [
+                            Expanded(child: SizedBox()),
+                            Text(
+                              'View',
+                            ),
+                            Icon(
+                              Icons.arrow_outward,
+                            ),
+                            Expanded(child: SizedBox()),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )
+        ).toList(),
+      ),
+    );
+  }
+}

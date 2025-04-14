@@ -203,7 +203,7 @@ class _UserBookingsAdminState extends State<UserBookingsAdmin> {
                                   ),
                                   SizedBox(width: 5,),
                                   Text(
-                                    '${event.start.day}/${event.start.month}/${event.start.year}',
+                                    getDatePrintable(event.start, context),
                                     style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w200
@@ -232,7 +232,7 @@ class _UserBookingsAdminState extends State<UserBookingsAdmin> {
                                   ),
                                   SizedBox(width: 5,),
                                   Text(
-                                    '${event.end.day}/${event.end.month}/${event.end.year}',
+                                    getDatePrintable(event.end, context),
                                     style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w200

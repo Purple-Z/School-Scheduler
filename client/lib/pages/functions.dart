@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 Future<DateTime?> selectDate(BuildContext context, DateTime initialDate, {DateTime? firstDate = null, DateTime? lastDate = null}) async {
   if (firstDate == null) {
@@ -59,4 +61,25 @@ String getTimePrintable(DateTime currTime){
   out += currTime.minute.toString();
 
   return out;
+}
+
+String getDatePrintable(DateTime currTime, BuildContext context){
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final currDate = DateTime(currTime.year, currTime.month, currTime.day);
+
+  final difference = currDate.difference(today).inDays;
+
+  if (difference == 0) {
+    return AppLocalizations.of(context)!.today;
+  } else if (difference == -1) {
+    return AppLocalizations.of(context)!.yesterday;
+  } else if (difference == 1) {
+    return AppLocalizations.of(context)!.tomorrow;
+  } else {
+    final day = currTime.day.toString().padLeft(2, '0');
+    final month = currTime.month.toString().padLeft(2, '0');
+    final year = currTime.year.toString();
+    return '$day/$month/$year';
+  }
 }

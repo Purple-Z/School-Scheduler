@@ -88,7 +88,7 @@ class _ResourceDetailsState extends State<ResourceDetails> with SingleTickerProv
 
       for (int i in [0, 1]) {
         DateTime dateTime = newItem[i];
-        newItem[i] = '${dateTime.year}/${dateTime.month}/${dateTime.day}\n';
+        newItem[i] = getDatePrintable(dateTime, context)+'\n';
         newItem[i] += getTimePrintable(dateTime);
       }
 
@@ -161,7 +161,7 @@ class _ResourceDetailsState extends State<ResourceDetails> with SingleTickerProv
                         }
                       },
                       child: Text(
-                        '${resourceProvider.start.day}/${resourceProvider.start.month}/${resourceProvider.start.year}',
+                        getDatePrintable(resourceProvider.start, context),
                         style: TextStyle(fontSize: fontSizeTab1),
                       ),
                     ),
@@ -220,7 +220,7 @@ class _ResourceDetailsState extends State<ResourceDetails> with SingleTickerProv
                         }
                       },
                       child: Text(
-                        '${resourceProvider.end.day}/${resourceProvider.end.month}/${resourceProvider.end.year}',
+                        getDatePrintable(resourceProvider.end, context),
                         style: TextStyle(fontSize: fontSizeTab1),
                       ),
                     ),
@@ -471,7 +471,7 @@ class _ResourceDetailsState extends State<ResourceDetails> with SingleTickerProv
                                 child: SizedBox(),
                               ),
                               resourceProvider.slot_logic ? Text(
-                                '${resourceProvider.start_booking.year}/${resourceProvider.start_booking.month}/${resourceProvider.start_booking.day}',
+                                getDatePrintable(resourceProvider.start_booking, context),
                                 style: TextStyle(
                                     fontSize: fontSize2,
                                     color: Theme.of(context).colorScheme.onPrimary),
@@ -496,7 +496,7 @@ class _ResourceDetailsState extends State<ResourceDetails> with SingleTickerProv
                                   resourceProvider.notify();
                                 },
                                 child: Text(
-                                  '${resourceProvider.start_booking.year}/${resourceProvider.start_booking.month}/${resourceProvider.start_booking.day}',
+                                  getDatePrintable(resourceProvider.start_booking, context),
                                   style: TextStyle(
                                       fontSize: fontSize2,
                                       color: Theme.of(context).colorScheme.primary),
@@ -557,7 +557,7 @@ class _ResourceDetailsState extends State<ResourceDetails> with SingleTickerProv
                                 child: SizedBox(),
                               ),
                               resourceProvider.slot_logic ? Text(
-                                '${resourceProvider.end_booking.year}/${resourceProvider.end_booking.month}/${resourceProvider.end_booking.day}',
+                                getDatePrintable(resourceProvider.end_booking, context),
                                 style: TextStyle(
                                     fontSize: fontSize2,
                                     color: Theme.of(context).colorScheme.onPrimary),
@@ -581,7 +581,7 @@ class _ResourceDetailsState extends State<ResourceDetails> with SingleTickerProv
                                   resourceProvider.notify();
                                 },
                                 child: Text(
-                                  '${resourceProvider.end_booking.year}/${resourceProvider.end_booking.month}/${resourceProvider.end_booking.day}',
+                                  getDatePrintable(resourceProvider.end_booking, context),
                                   style: TextStyle(
                                       fontSize: fontSize2,
                                       color: Theme.of(context).colorScheme.primary),

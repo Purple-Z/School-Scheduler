@@ -3,6 +3,10 @@
 
   "access_denied": "Accesso Negato!",
 
+  "today": "Oggi",
+  "yesterday": "Ieri",
+  "tomorrow": "Domani",
+
 
 
   "account_hello": "Ciao ",

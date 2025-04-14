@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from itertools import groupby
 from setup import setupDB
 from mail import sendMail
+import pytz
+
 import json
 
 db = setupDB()
@@ -15,6 +17,8 @@ notification_times_delta = [1, 60, 60*24]
 mail_content = {}
 
 nome_file_json = 'mail_content.json'
+rome_tz = pytz.timezone('Europe/Rome')
+
 
 try:
     with open(nome_file_json, 'r') as file_json:
@@ -32,7 +36,7 @@ except Exception as e:
 
 def schedule_function():
     while True:
-        now = datetime.now()
+        now = datetime.now(rome_tz)
         if now.second == 30:
             send_notification_thread = threading.Thread(target=check_and_send_notifications, daemon=True)
             send_notification_thread.start()
@@ -4034,7 +4038,7 @@ def generate_password(length=12):
 def check_and_send_notifications():
     #with app.app_context():
 
-    now = datetime.now()
+    now = datetime.now(rome_tz)
 
 
     for notification_time_delta in notification_times_delta:

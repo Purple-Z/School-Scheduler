@@ -74,8 +74,8 @@ class _ManagePendingRequestsAdminState extends State<ManagePendingRequestsAdmin>
 
       for (int i in [1, 2]){
         DateTime dateTime = DateTime.tryParse(newItem[i]) ?? DateTime.now();
-        newItem[i] = '${dateTime.year}/${dateTime.month}/${dateTime.day}\n';
-        newItem[i] += getTimePrintable(dateTime);
+        newItem[i] = getTimePrintable(dateTime)+'\n';
+        newItem[i] += getDatePrintable(dateTime, context);
       }
 
       newItems.add(newItem);

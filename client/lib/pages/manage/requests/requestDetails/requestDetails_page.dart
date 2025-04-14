@@ -67,11 +67,11 @@ class _RequestDetailsState extends State<RequestDetails> {
     double fieldsSpacing = 15;
 
     DateTime start = DateTime.tryParse(requestDetailsProvider.request[1]) ?? DateTime.now();
-    String start_str = '${start.year}/${start.month}/${start.day}\n';
+    String start_str = getDatePrintable(start, context)+'\n';
     start_str += getTimePrintable(start);
 
     DateTime end = DateTime.tryParse(requestDetailsProvider.request[2]) ?? DateTime.now();
-    String end_str = '${end.year}/${end.month}/${end.day}\n';
+    String end_str = getDatePrintable(end, context)+'\n';
     end_str += getTimePrintable(end);
 
     return Padding(

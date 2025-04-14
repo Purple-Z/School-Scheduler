@@ -107,8 +107,16 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
         onPressed: () {
           context.push(Routes.manage_Roles_AddRole);
         },
-        label: Text(AppLocalizations.of(context)!.role_new_role),
-        icon: Icon(Icons.add),
+        label: Text(
+          AppLocalizations.of(context)!.role_new_role,
+          style: TextStyle(
+              color: Theme.of(context).colorScheme.surface
+          ),
+        ),
+        icon: Icon(
+          Icons.add,
+          color: Theme.of(context).colorScheme.surface
+        ),
       ) : null,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),

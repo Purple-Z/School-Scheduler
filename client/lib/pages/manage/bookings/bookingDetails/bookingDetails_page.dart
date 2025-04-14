@@ -13,6 +13,7 @@ import 'package:client/router/routes.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:overflow_text_animated/overflow_text_animated.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -70,11 +71,11 @@ class _BookingDetailsState extends State<BookingDetails> {
     double fieldsSpacing = 15;
 
     DateTime start = bookingDetailsProvider.booking.start;
-    String start_str = '${start.year}/${start.month}/${start.day}\n';
+    String start_str = getDatePrintable(start, context)+'\n';
     start_str += getTimePrintable(start);
 
     DateTime end = bookingDetailsProvider.booking.end;
-    String end_str = '${end.year}/${end.month}/${end.day}\n';
+    String end_str = getDatePrintable(end, context)+'\n';
     end_str += getTimePrintable(end);
     double margin = 7;
 
@@ -296,42 +297,17 @@ class _BookingDetailsState extends State<BookingDetails> {
                             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
                           ),
 
-                          Text(
-                            bookingDetailsProvider.booking.activity_name,
-                            textAlign: TextAlign.center,
+                          OverflowTextAnimated(
+                            text: bookingDetailsProvider.booking.activity_name,
                             style: TextStyle(fontSize: 17, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.surface),
+                            curve: Curves.easeInOut,
+                            animation: OverFlowTextAnimations.scrollOpposite,
+                            animateDuration: Duration(milliseconds: 2000),
+                            delay: Duration(milliseconds: 500),
+                            loopSpace: 10,
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                ),
-                Card(
-                  margin: EdgeInsets.all(margin),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  color: Theme.of(context).colorScheme.primary,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      children: [
-                        if (bookingDetailsProvider.booking.is_resource_place) Text(
-                          "*From Resource",
-                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
-                        ),
-
-                        Text(
-                          "Place",
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
-                        ),
-
-                        Text(
-                          bookingDetailsProvider.booking.place_name,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.surface),
-                        ),
-                      ],
                     ),
                   ),
                 ),
@@ -339,6 +315,49 @@ class _BookingDetailsState extends State<BookingDetails> {
             ),
           ),
 
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Card(
+                    margin: EdgeInsets.all(margin),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    color: Theme.of(context).colorScheme.primary,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        children: [
+                          if (bookingDetailsProvider.booking.is_resource_place) Text(
+                            "*From Resource",
+                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
+                          ),
+                  
+                          Text(
+                            "Place",
+                            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
+                          ),
+
+                          OverflowTextAnimated(
+                            text: bookingDetailsProvider.booking.place_name,
+                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w300, color: Theme.of(context).colorScheme.surface),
+                            curve: Curves.easeInOut,
+                            animation: OverFlowTextAnimations.scrollOpposite,
+                            animateDuration: Duration(milliseconds: 2000),
+                            delay: Duration(milliseconds: 500),
+                            loopSpace: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
 
 
           SizedBox(height: 30,),
