@@ -95,9 +95,14 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
     manageBookingProvider.setBookings(events);
   }
 
-  List<Booking> _getEventsForDay(DateTime day) {
+  List<Booking> _getEventsForDay(DateTime day, {bool f = false}) {
     var manageBookingProvider = Provider.of<ManageBookingsProvider>(context, listen: false);
     final normalizedDay = DateTime(day.year, day.month, day.day);
+    if (f){
+      print(manageBookingProvider.events.toString());
+      print((manageBookingProvider.events[normalizedDay] ?? []).toString());
+    }
+
     return manageBookingProvider.events[normalizedDay] ?? [];
   }
 
@@ -106,6 +111,7 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
     var manageBookingsProvider = context.watch<ManageBookingsProvider>();
     var appProvider = context.watch<AppProvider>();
     List pending_bookings = manageBookingsProvider.requests;
+    List<Booking> currentEvents = manageBookingsProvider.currentEvents;
 
     return Scaffold(
       body: Padding(
@@ -117,20 +123,20 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      buildTableCalendar(appProvider),
+                      buildTableCalendar(appProvider, manageBookingsProvider),
                       SizedBox(height: 30),
-                      buildBookingList(context),
+                      EventListWidget(),
                     ],
                   ),
                 );
               } else {
                 return Row(
                   children: [
-                    Expanded(child: buildTableCalendar(appProvider)),
+                    Expanded(child: buildTableCalendar(appProvider, manageBookingsProvider)),
                     SizedBox(width: 30),
                     Expanded(
                         child: SingleChildScrollView(
-                            child: buildBookingList(context)
+                            child: EventListWidget()
                         )
                     ),
                   ],
@@ -142,217 +148,7 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
     );
   }
 
-  EventListWidget buildBookingList(BuildContext context) {
-    return EventListWidget(
-      events: _getEventsForDay(_selectedDay ?? DateTime.now()),
-    );
-  }
-
-  Container builddBookingList(BuildContext context) {
-    return Container(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 25),
-              child: Column(
-                children: _getEventsForDay(_selectedDay ?? DateTime.now()).map((event) =>
-                  Column(
-                    children: [
-                      Divider(thickness: 0.5,),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text(event.title),
-                                if (event.status == 0) Text(
-                                  'Pending',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Theme.of(context).colorScheme.primary
-                                  ),
-                                ),
-                                if (event.status == 1) Text(
-                                  'Accepted',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Theme.of(context).colorScheme.tertiary
-                                  ),
-                                ),
-                                if (event.status == 2) Text(
-                                  'Refuzed',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Theme.of(context).colorScheme.secondary
-                                  ),
-                                ),
-                                Expanded(child: SizedBox()),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: OverflowTextAnimated(
-                                    text: event.resource_name,
-                                    style: TextStyle(fontSize: 25),
-                                    curve: Curves.easeInOut,
-                                    animation: OverFlowTextAnimations.scrollOpposite,
-                                    animateDuration: Duration(milliseconds: 2000),
-                                    delay: Duration(milliseconds: 500),
-                                    loopSpace: 10,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: OverflowTextAnimated(
-                                    text: event.user_email,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w200,
-                                    ),
-                                    curve: Curves.easeInOut,
-                                    animation: OverFlowTextAnimations.scrollOpposite,
-                                    animateDuration: Duration(milliseconds: 2000),
-                                    delay: Duration(milliseconds: 500),
-                                    loopSpace: 10,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 15,),
-                            Row(
-                              children: [
-                                Text(
-                                  'From',
-                                  style: TextStyle(fontSize: 15,),
-                                ),
-                                SizedBox(width: 5,),
-                                Text(
-                                  getDatePrintable(event.start, context),
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w200
-                                  ),
-                                ),
-                                SizedBox(width: 5,),
-                                Text(
-                                  getTimePrintable(event.start),
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w200
-                                  ),
-                                ),
-                                Expanded(child: SizedBox()),
-                                Text(
-                                  event.quantity.toString(),
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  'To',
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                                SizedBox(width: 5,),
-                                Text(
-                                  getDatePrintable(event.end, context),
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w200
-                                  ),
-                                ),
-                                SizedBox(width: 5,),
-                                Text(
-                                  getTimePrintable(event.end),
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w200
-                                  ),
-                                ),
-                                Expanded(child: SizedBox()),
-                              ],
-                            ),
-                            SizedBox(height: 15,),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Expanded(
-                                  child: OverflowTextAnimated(
-                                    text: event.activity_name,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w200
-                                    ),
-                                    curve: Curves.easeInOut,
-                                    animation: OverFlowTextAnimations.scrollOpposite,
-                                    animateDuration: Duration(milliseconds: 2000),
-                                    delay: Duration(milliseconds: 500),
-                                    loopSpace: 10,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 15,),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Expanded(
-                                  child: OverflowTextAnimated(
-                                    text: event.place_name,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w200
-                                    ),
-                                    curve: Curves.easeInOut,
-                                    animation: OverFlowTextAnimations.scrollOpposite,
-                                    animateDuration: Duration(milliseconds: 2000),
-                                    delay: Duration(milliseconds: 500),
-                                    loopSpace: 10,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 15,),
-                            ElevatedButton(
-                              onPressed: () {
-                                context.push(Routes.manage_Bookings_BookingsDetails, extra: {
-                                  'booking': event,
-                                });
-                              },
-                              child: Row(
-                                children: [
-                                  Expanded(child: SizedBox()),
-                                  Text(
-                                    'View',
-                                    style: TextStyle(
-                                        color: Theme.of(context).colorScheme.surface
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_outward,
-                                    color: Theme.of(context).colorScheme.surface,
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                ],
-                              ),
-                              style: ButtonStyle(
-                                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary)
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
-                ).toList(),
-              ),
-            );
-  }
-
-  TableCalendar<Booking> buildTableCalendar(AppProvider appProvider) {
+  TableCalendar<Booking> buildTableCalendar(AppProvider appProvider, ManageBookingsProvider manageBookingsProvider) {
     return TableCalendar<Booking>(
               firstDay: DateTime(2010, 10, 16),
               lastDay: DateTime(2030, 3, 14),
@@ -364,6 +160,7 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
                 setState(() {
                   _selectedDay = selectedDay;
                   _focusedDay = focusedDay;
+                  manageBookingsProvider.setCurrentEvents(_getEventsForDay(_selectedDay ?? DateTime.now()));
                 });
               },
               locale: appProvider.locale.toLanguageTag(),
@@ -433,22 +230,26 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
   }
 }
 
-class EventListWidget extends StatelessWidget {
-  final List<Booking> events;
-  final DateTime? selectedDay;
+class EventListWidget extends StatefulWidget {
 
   const EventListWidget({
     Key? key,
-    required this.events,
-    this.selectedDay,
   }) : super(key: key);
 
   @override
+  State<EventListWidget> createState() => _EventListWidgetState();
+}
+
+class _EventListWidgetState extends State<EventListWidget> {
+  @override
   Widget build(BuildContext context) {
+    var manageBookingsProvider = context.watch<ManageBookingsProvider>();
+    List<Booking> currentEvents = manageBookingsProvider.currentEvents;
+
     return Container(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 25),
       child: Column(
-        children: events.map((event) =>
+        children: currentEvents.map((event) =>
             Column(
               children: [
                 const Divider(thickness: 0.5,),
@@ -458,7 +259,6 @@ class EventListWidget extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Text(event.title),
                           if (event.status == 0) Text(
                             'Pending',
                             style: TextStyle(
@@ -487,7 +287,8 @@ class EventListWidget extends StatelessWidget {
                         children: [
                           Expanded(
                             child: OverflowTextAnimated(
-                              text: event.resource_name,
+                              key: ValueKey(event.id),
+                              text: event.resource_name.toString(),
                               style: const TextStyle(fontSize: 25),
                               curve: Curves.easeInOut,
                               animation: OverFlowTextAnimations.scrollOpposite,
@@ -502,6 +303,7 @@ class EventListWidget extends StatelessWidget {
                         children: [
                           Expanded(
                             child: OverflowTextAnimated(
+                              key: ValueKey(event.id),
                               text: event.user_email,
                               style: const TextStyle(
                                 fontSize: 15,
@@ -577,6 +379,7 @@ class EventListWidget extends StatelessWidget {
                         children: [
                           Expanded(
                             child: OverflowTextAnimated(
+                              key: ValueKey(event.id),
                               text: event.activity_name,
                               style: const TextStyle(
                                   fontSize: 15,
@@ -597,6 +400,7 @@ class EventListWidget extends StatelessWidget {
                         children: [
                           Expanded(
                             child: OverflowTextAnimated(
+                              key: ValueKey(event.id),
                               text: event.place_name,
                               style: const TextStyle(
                                   fontSize: 15,
@@ -614,27 +418,28 @@ class EventListWidget extends StatelessWidget {
                       const SizedBox(height: 15,),
                       ElevatedButton(
                         onPressed: () {
-                          // Assicurati che 'context' abbia accesso a 'push' (es. tramite 'go_router')
-                          // context.push(Routes.manage_Bookings_BookingsDetails, extra: {
-                          //   'booking': event,
-                          // });
-                          print('Visualizza dettagli per: ${event.title}'); // Placeholder
+                          context.push(Routes.manage_Bookings_BookingsDetails, extra: {
+                            'booking': event,
+                          });
                         },
-                        style: ButtonStyle(
-                          backgroundColor: const WidgetStatePropertyAll(Colors.blue),
-                          foregroundColor: const WidgetStatePropertyAll(Colors.white),
-                        ),
-                        child: const Row(
+                        child: Row(
                           children: [
                             Expanded(child: SizedBox()),
                             Text(
                               'View',
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.surface
+                              ),
                             ),
                             Icon(
                               Icons.arrow_outward,
+                              color: Theme.of(context).colorScheme.surface,
                             ),
                             Expanded(child: SizedBox()),
                           ],
+                        ),
+                        style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary)
                         ),
                       ),
                     ],
