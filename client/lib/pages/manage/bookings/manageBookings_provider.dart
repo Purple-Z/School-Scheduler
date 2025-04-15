@@ -10,7 +10,6 @@ import 'manageBookings_page.dart';
 class ManageBookingsProvider extends ChangeNotifier {
   List requests = [];
   Map<DateTime, List<Booking>> events = {};
-  List<Booking> currentEvents = [];
 
   loadManageBookingsPage(BuildContext context) async {
     var appProvider = Provider.of<AppProvider>(context, listen: false);
@@ -23,14 +22,6 @@ class ManageBookingsProvider extends ChangeNotifier {
     events = c_bookings;
     DateTime now = DateTime.now();
     final normalizedDay = DateTime(now.year, now.month, now.day);
-    setCurrentEvents(
-        events[normalizedDay] ?? []
-    );
-    notifyListeners();
-  }
-
-  setCurrentEvents(List<Booking> c_currentEvents) {
-    currentEvents = c_currentEvents;
     notifyListeners();
   }
 }

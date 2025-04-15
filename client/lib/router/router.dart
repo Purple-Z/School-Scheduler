@@ -59,6 +59,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:client/router/routes.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 import '../pages/manage/classes.dart';
 import '../pages/manage/places/managePlaces_page.dart';
@@ -78,6 +80,10 @@ final router = GoRouter(
       branches: [
         StatefulShellBranch(
           routes: [
+            GoRoute(
+                path: Routes.networkError,
+                builder: (context, state) => Expanded(child: Center(child: Text('Network\nError', style: TextStyle(fontSize: 25,),textAlign: TextAlign.center,),)),
+            ),
             GoRoute(
               path: Routes.resources,
               builder: (context, state) => ResourcesPage(),
@@ -309,27 +315,50 @@ final router = GoRouter(
                     GoRoute(
                       path: Routes.addResource,
                       redirect: (context, state) async {
-
                         var appProvider = Provider.of<AppProvider>(context, listen: false);
-                        List types = await Connection.getTypeList(appProvider);
-                        List places = await Connection.getPlaceList(appProvider);
-                        List activities = await Connection.getActivityList(appProvider);
-                        List users = await Connection.getUsers(appProvider);
 
-                        var addResourceProvider = Provider.of<AddResourceProvider>(context, listen: false);
-                        addResourceProvider.setTypes(types);
-                        addResourceProvider.setPlaces(places, context);
-                        addResourceProvider.setActivities(activities, context);
-                        addResourceProvider.setUsers(users);
+                        appProvider.setLoading(true);
 
-                        List roles_with_description = await Connection.getRoleList(appProvider);
-                        List<String> roles = [];
-                        for (List element in roles_with_description){
-                          roles.add(element[0]);
+
+                        try {
+                          appProvider.setLoadingText('Getting Types List...');
+                          List types = await Connection.getTypeList(appProvider);
+
+                          appProvider.setLoadingText('Getting Places List...');
+                          List places = await Connection.getPlaceList(appProvider);
+
+                          appProvider.setLoadingText('Getting Activities List...');
+                          List activities = await Connection.getActivityList(appProvider);
+
+                          appProvider.setLoadingText('Getting Users List...');
+                          List users = await Connection.getUsers(appProvider);
+
+                          appProvider.setLoadingText('Setting the parameters...');
+
+                          var addResourceProvider = Provider.of<AddResourceProvider>(context, listen: false);
+                          addResourceProvider.setTypes(types);
+                          addResourceProvider.setPlaces(places, context);
+                          addResourceProvider.setActivities(activities, context);
+                          addResourceProvider.setUsers(users);
+
+                          appProvider.setLoadingText('Getting Roles List...');
+                          List roles_with_description = await Connection.getRoleList(appProvider);
+                          List<String> roles = [];
+                          for (List element in roles_with_description){
+                            roles.add(element[0]);
+                          }
+
+                          appProvider.setLoadingText('Getting Permissions List...');
+                          Map roles_permission = await Connection.getResourcePermission(appProvider, roles: roles);
+                          addResourceProvider.setResourcePermission(roles_permission);
+                        } catch (e, s) {
+                          appProvider.setLoading(false);
+                          return Routes.networkError;
                         }
 
-                        Map roles_permission = await Connection.getResourcePermission(appProvider, roles: roles);
-                        addResourceProvider.setResourcePermission(roles_permission);
+                        appProvider.setLoading(false);
+
+
 
                         return null;
                       },
@@ -352,28 +381,49 @@ final router = GoRouter(
                         var appProvider = Provider.of<AppProvider>(context, listen: false);
                         var resourceDetailsProvider = Provider.of<ResourceDetailsProvider>(context, listen: false);
 
+                        appProvider.setLoading(true);
 
-                        List types = await Connection.getTypeList(appProvider);
-                        List places = await Connection.getPlaceList(appProvider);
-                        List activities = await Connection.getActivityList(appProvider);
-                        List users = await Connection.getUsers(appProvider);
-                        List resource = await Connection.getResource(resourceId, appProvider);
+                        try {
+                          appProvider.setLoadingText('Getting Types List...');
+                          List types = await Connection.getTypeList(appProvider);
 
+                          appProvider.setLoadingText('Getting Places List...');
+                          List places = await Connection.getPlaceList(appProvider);
 
-                        resourceDetailsProvider.setTypes(types);
-                        resourceDetailsProvider.setPlaces(places, context);
-                        resourceDetailsProvider.setActivities(activities, context);
-                        resourceDetailsProvider.setUsers(users);
-                        resourceDetailsProvider.setResource(resource);
+                          appProvider.setLoadingText('Getting Activity List...');
+                          List activities = await Connection.getActivityList(appProvider);
 
-                        List roles_with_description = await Connection.getRoleList(appProvider);
-                        List<String> roles = [];
-                        for (List element in roles_with_description){
-                          roles.add(element[0]);
+                          appProvider.setLoadingText('Getting Users List...');
+                          List users = await Connection.getUsers(appProvider);
+
+                          appProvider.setLoadingText('Getting Resource Content...');
+                          List resource = await Connection.getResource(resourceId, appProvider);
+
+                          appProvider.setLoadingText('Setting the parameters...');
+
+                          resourceDetailsProvider.setTypes(types);
+                          resourceDetailsProvider.setPlaces(places, context);
+                          resourceDetailsProvider.setActivities(activities, context);
+                          resourceDetailsProvider.setUsers(users);
+                          resourceDetailsProvider.setResource(resource);
+
+                          appProvider.setLoadingText('Getting Roles List...');
+                          List roles_with_description = await Connection.getRoleList(appProvider);
+                          List<String> roles = [];
+                          for (List element in roles_with_description){
+                            roles.add(element[0]);
+                          }
+
+                          appProvider.setLoadingText('Getting Permissions List...');
+                          Map roles_permission = await Connection.getResourcePermission(appProvider, roles: roles, resource_id: resource[0]);
+                          resourceDetailsProvider.setResourcePermission(roles_permission);
+                        } catch (e, s) {
+                          appProvider.setLoading(false);
+                          return Routes.networkError;
                         }
 
-                        Map roles_permission = await Connection.getResourcePermission(appProvider, roles: roles, resource_id: resource[0]);
-                        resourceDetailsProvider.setResourcePermission(roles_permission);
+                        appProvider.setLoading(false);
+
 
                         return null;
                       },

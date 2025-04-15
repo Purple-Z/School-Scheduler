@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:client/app_provider.dart';
 import 'package:client/router/destination.dart';
@@ -23,13 +24,46 @@ class LayoutScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<AppProvider>();
     appState.topBarContent = standardAppBar(context);
+    Widget loadingWidget = Center(
+      child: Column(
+        children: [
+          Expanded(child: SizedBox()),
+          Row(
+            children: [
+              Expanded(child: SizedBox()),
+              Expanded(
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: LoadingIndicator(
+                      indicatorType: Indicator.circleStrokeSpin,
+                      colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary],
+                      strokeWidth: 10,
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                      pathBackgroundColor: Theme.of(context).colorScheme.surface
+                  ),
+                ),
+              ),
+              Expanded(child: SizedBox()),
+            ],
+          ),
+          SizedBox(height: 30,),
+          Text(
+            appState.loadingText,
+            style: TextStyle(
+              fontSize: 17
+            ),
+          ),
+          Expanded(child: SizedBox())
+        ],
+      ),
+    );
     LayoutBuilder body = LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         // Se la larghezza è inferiore a un certo valore (es. 600), usa BottomNavigationBar
         if (constraints.maxWidth < appState.maxWidth) {
           return Column(
             children: [
-              Expanded(child: navigationShell),
+              appState.isLoading ?  Expanded(child: loadingWidget) : Expanded(child: navigationShell),
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -111,7 +145,7 @@ class LayoutScaffold extends StatelessWidget {
                       .toList(),
                 ),
               ),
-              Expanded(child: navigationShell),
+              appState.isLoading ?  Expanded(child: loadingWidget) : Expanded(child: navigationShell),
             ],
           );
         }

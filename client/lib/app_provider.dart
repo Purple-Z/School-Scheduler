@@ -81,6 +81,19 @@ class AppProvider extends ChangeNotifier {
   bool _isDarkTheme = true;
   bool get isDarkTheme => _isDarkTheme;
 
+  bool isLoading = false;
+  String loadingText = '';
+
+  setLoading(bool value) {
+    isLoading = value;
+    notifyListeners();
+  }
+
+  setLoadingText(String value) {
+    loadingText = value;
+    notifyListeners();
+  }
+
   void toggleTheme() {
     _isDarkTheme = !_isDarkTheme;
     if (_isDarkTheme){
