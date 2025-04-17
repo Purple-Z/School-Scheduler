@@ -14,6 +14,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../../connection.dart';
 import '../../functions.dart';
 import '../../manage/classes.dart';
+import '../../responsiveCalendarAndEvents.dart';
 
 
 class UserBookingsPage extends StatefulWidget {
@@ -54,333 +55,69 @@ class _UserBookingsAdminState extends State<UserBookingsAdmin> {
     super.initState();
 
     _selectedDay = _focusedDay;
-    _loadEvents();
+    loadEvents(context);
   }
 
 
-  void _loadEvents() async {
-    var appProvider = Provider.of<AppProvider>(context, listen: false);
-    var userBookingsProvider = Provider.of<UserBookingsProvider>(context, listen: false);
-    List bookings = await Connection.getUserBookings(appProvider);
-    userBookingsProvider.events.clear();
-    Map<DateTime, List<Booking>> events = {};
 
-    for (List booking in bookings){
-      DateTime time = DateTime.tryParse(booking[1]) ?? DateTime.now();
-      events[DateTime(time.year, time.month, time.day)] = [];
-    }
-
-    for (List booking in bookings){
-      Booking b = Booking(
-          booking[0].toString(),
-          DateTime.tryParse(booking[1]) ?? DateTime.now(),
-          DateTime.tryParse(booking[2]) ?? DateTime.now(),
-          booking[3],
-          booking[4],
-          booking[5],
-          booking[6],
-          booking[7],
-          booking[8],
-          booking[9],
-          booking[10],
-          booking[11]
-      );
-      print('nuovo evento ' + events.toString());
-      DateTime time = DateTime.tryParse(booking[1]) ?? DateTime.now();
-      events[DateTime(time.year, time.month, time.day)]?.add(b);
-    }
-
-    userBookingsProvider.setBookings(events);
-  }
-
-  List<Booking> _getEventsForDay(DateTime day) {
-    var userBookingsProvider = Provider.of<UserBookingsProvider>(context, listen: false);
-    final normalizedDay = DateTime(day.year, day.month, day.day);
-    return userBookingsProvider.events[normalizedDay] ?? [];
-  }
 
   @override
   Widget build(BuildContext context) {
-    var userBookingsProvider = context.watch<UserBookingsProvider>();
+    var manageBookingsProvider = context.watch<UserBookingsProvider>();
     var appProvider = context.watch<AppProvider>();
-    List pending_bookings = userBookingsProvider.requests;
+    List pending_bookings = manageBookingsProvider.requests;
+
+    DateTime now = DateTime.now();
+    final normalizedDay = DateTime(now.year, now.month, now.day);
+    List<Booking> currentEvents = manageBookingsProvider.events[normalizedDay] ?? [];
 
     return Scaffold(
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-          child: LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints)
-            {
-              if (constraints.maxWidth < appProvider.maxWidth) {
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      buildTableCalendar(appProvider),
-                      SizedBox(height: 30),
-                      buildBookingList(context),
-                    ],
-                  ),
-                );
-              } else {
-                return Row(
-                  children: [
-                    Expanded(child: buildTableCalendar(appProvider)),
-                    SizedBox(width: 30),
-                    Expanded(
-                      child: SingleChildScrollView(
-                          child: buildBookingList(context)
-                      )
-                    ),
-                  ],
-                );
-              }
-            },
+          child: ResponsiveCalendarAndEvents(
+            appProvider: appProvider,
+            currentEvents: currentEvents,
+            events: manageBookingsProvider.events,
+            canDelete: (appProvider.delete_booking || appProvider.delete_own_booking),
+            loadEvents: loadEvents,
           )
       ),
     );
   }
+}
 
-  Container buildBookingList(BuildContext context) {
-    return Container(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 25),
-              child: Column(
-                children: _getEventsForDay(_selectedDay ?? DateTime.now()).map((event) =>
-                    Column(
-                      children: [
-                        Divider(thickness: 0.5,),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  if (event.status == 0) Text(
-                                    'Pending',
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: Theme.of(context).colorScheme.primary
-                                    ),
-                                  ),
-                                  if (event.status == 1) Text(
-                                    'Accepted',
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: Theme.of(context).colorScheme.tertiary
-                                    ),
-                                  ),
-                                  if (event.status == 2) Text(
-                                    'Refuzed',
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: Theme.of(context).colorScheme.secondary
-                                    ),
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    event.resource_name,
-                                    style: TextStyle(fontSize: 25),
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                  Text(
-                                    event.user_email,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w200
-                                    ),
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: 15,),
-                              Row(
-                                children: [
-                                  Text(
-                                    'From',
-                                    style: TextStyle(fontSize: 15,),
-                                  ),
-                                  SizedBox(width: 5,),
-                                  Text(
-                                    getDatePrintable(event.start, context),
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w200
-                                    ),
-                                  ),
-                                  SizedBox(width: 5,),
-                                  Text(
-                                    getTimePrintable(event.start),
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w200
-                                    ),
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                  Text(
-                                    event.quantity.toString(),
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'To',
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                  SizedBox(width: 5,),
-                                  Text(
-                                    getDatePrintable(event.end, context),
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w200
-                                    ),
-                                  ),
-                                  SizedBox(width: 5,),
-                                  Text(
-                                    getTimePrintable(event.end),
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w200
-                                    ),
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                ],
-                              ),
-                              SizedBox(height: 15,),
-                              Row(
-                                children: [
-                                  Text(
-                                    event.activity_name,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w200
-                                    ),
-                                  ),
-                                  SizedBox(width: 15,),
-                                  Text(
-                                    event.place_name,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w200
-                                    ),
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      context.push(Routes.manage_Bookings_BookingsDetails, extra: {
-                                        'booking': event,
-                                      });
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          'View',
-                                          style: TextStyle(
-                                              color: Theme.of(context).colorScheme.surface
-                                          ),
-                                        ),
-                                        Icon(
-                                          Icons.arrow_outward,
-                                          color: Theme.of(context).colorScheme.surface,
-                                        )
-                                      ],
-                                    ),
-                                    style: ButtonStyle(
-                                        backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary)
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                ).toList(),
-              ),
-            );
+void loadEvents(BuildContext context) async {
+  var appProvider = Provider.of<AppProvider>(context, listen: false);
+  var userBookingsProvider = Provider.of<UserBookingsProvider>(context, listen: false);
+  List bookings = await Connection.getUserBookings(appProvider);
+  userBookingsProvider.events.clear();
+  Map<DateTime, List<Booking>> events = {};
+
+  for (List booking in bookings){
+    DateTime time = DateTime.tryParse(booking[1]) ?? DateTime.now();
+    events[DateTime(time.year, time.month, time.day)] = [];
   }
 
-  TableCalendar<Booking> buildTableCalendar(AppProvider appProvider) {
-    return TableCalendar<Booking>(
-              firstDay: DateTime(2010, 10, 16),
-              lastDay: DateTime(2030, 3, 14),
-              focusedDay: _focusedDay,
-              selectedDayPredicate: (day) {
-                return isSameDay(_selectedDay, day);
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-              },
-              locale: appProvider.locale.toLanguageTag(),
-              eventLoader: (day) {
-                return _getEventsForDay(day);
-              },
-              calendarBuilders: CalendarBuilders(
-                  markerBuilder: (context, day, events) {
-                    if (events.isNotEmpty) {
-                      return Positioned(
-                        bottom: 1,
-                        child: Container(
-                          width: 16.0,
-                          height: 16.0,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: Text(
-                              '${events.length}',
-                              style:
-                              TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontSize: 10),
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                    return null;
-                  },
-                  selectedBuilder: (context, day, focusedDay) {
-                    return Container(
-                      margin: const EdgeInsets.all(6.0),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Text(
-                        day.day.toString(),
-                        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                      ),
-                    );
-                  },
-
-                  todayBuilder: (context, day, focusedDay) {
-                    return Container(
-                      margin: const EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.tertiary,
-                          width: 2.0,
-                        ),
-                      ),
-                      child: Text(
-                        day.day.toString(),
-                        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                      ),
-                    );
-                  }
-
-              ),
-            );
+  for (List booking in bookings){
+    Booking b = Booking(
+        booking[0],
+        DateTime.tryParse(booking[1]) ?? DateTime.now(),
+        DateTime.tryParse(booking[2]) ?? DateTime.now(),
+        booking[3],
+        booking[4],
+        booking[5],
+        booking[6],
+        booking[7],
+        booking[8],
+        booking[9],
+        booking[10],
+        booking[11],
+        booking[12]
+    );
+    print('nuovo evento ' + events.toString());
+    DateTime time = DateTime.tryParse(booking[1]) ?? DateTime.now();
+    events[DateTime(time.year, time.month, time.day)]?.add(b);
   }
+
+  userBookingsProvider.setBookings(events);
 }

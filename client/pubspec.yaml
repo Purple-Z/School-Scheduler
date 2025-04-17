@@ -37,7 +37,6 @@ dependencies:
   wave: ^0.2.2
   overflow_text_animated: ^0.0.6
   loading_indicator: ^3.1.1
-  quickalert: ^1.1.0
 
 dev_dependencies:
   flutter_test:

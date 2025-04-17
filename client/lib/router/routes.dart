@@ -3,7 +3,8 @@ class Routes {
   static const String resources = '/resources';
   static const String resource = 'resource';
   static const String resources_Resource = '/resources/resource';
-  static const String networkError = '/error';
+  static const String networkError = 'error';
+  static const String resource_NetworkError = '/resources/error';
 
 
 

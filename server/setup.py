@@ -192,11 +192,13 @@ class setupDB():
                         place_id INT,
                         activity_id INT,
                         validator_id INT,
+                        invalidator_id INT,
                         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
                         FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE,
                         FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE SET NULL,
                         FOREIGN KEY (activity_id) REFERENCES activities(id) ON DELETE SET NULL,
-                        FOREIGN KEY (validator_id) REFERENCES users(id) ON DELETE CASCADE
+                        FOREIGN KEY (validator_id) REFERENCES users(id) ON DELETE CASCADE,
+                        FOREIGN KEY (invalidator_id) REFERENCES users(id) ON DELETE CASCADE
                     );
             ''')
 

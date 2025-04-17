@@ -11,8 +11,6 @@ import 'package:client/pages/manage/activities/activityDetails/activityDetails_p
 import 'package:client/pages/manage/activities/addActivity/addActivity_page.dart';
 import 'package:client/pages/manage/activities/manageActivities_page.dart';
 import 'package:client/pages/manage/activities/manageActivities_provider.dart';
-import 'package:client/pages/manage/bookings/bookingDetails/bookingDetails_page.dart';
-import 'package:client/pages/manage/bookings/bookingDetails/bookingDetails_provider.dart';
 import 'package:client/pages/manage/bookings/manageBookings_page.dart';
 import 'package:client/pages/manage/bookings/manageBookings_provider.dart';
 import 'package:client/pages/manage/manage_page.dart';
@@ -59,8 +57,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:client/router/routes.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 import '../pages/manage/classes.dart';
 import '../pages/manage/places/managePlaces_page.dart';
@@ -81,13 +77,13 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-                path: Routes.networkError,
-                builder: (context, state) => Expanded(child: Center(child: Text('Network\nError', style: TextStyle(fontSize: 25,),textAlign: TextAlign.center,),)),
-            ),
-            GoRoute(
               path: Routes.resources,
               builder: (context, state) => ResourcesPage(),
               routes: [
+                GoRoute(
+                  path: Routes.networkError,
+                  builder: (context, state) => Expanded(child: Center(child: Text('Network\nError', style: TextStyle(fontSize: 25,),textAlign: TextAlign.center,),)),
+                ),
                 GoRoute(
                     path: Routes.resource,
                     builder: (context, state) => ResourcePage(),
@@ -353,7 +349,7 @@ final router = GoRouter(
                           addResourceProvider.setResourcePermission(roles_permission);
                         } catch (e, s) {
                           appProvider.setLoading(false);
-                          return Routes.networkError;
+                          return Routes.resource_NetworkError;
                         }
 
                         appProvider.setLoading(false);
@@ -419,7 +415,7 @@ final router = GoRouter(
                           resourceDetailsProvider.setResourcePermission(roles_permission);
                         } catch (e, s) {
                           appProvider.setLoading(false);
-                          return Routes.networkError;
+                          return Routes.resource_NetworkError;
                         }
 
                         appProvider.setLoading(false);
@@ -528,27 +524,6 @@ final router = GoRouter(
                 GoRoute(
                     path: Routes.bookings,
                     builder: (context, state) => ManageBookingsPage(),
-                    routes: [
-                      GoRoute(
-                        path: Routes.bookingsDetails,
-                        builder: (context, state) => BookingDetailsPage(),
-                        redirect: (context, state) async {
-                          final extraData = state.extra as Map<String, dynamic>?;
-                          final Booking booking = extraData?['booking'];
-                          print("booking: " + booking.toString());
-
-                          var bookingDetailsProvider = Provider.of<BookingDetailsProvider>(context, listen: false);
-
-                          bookingDetailsProvider.setBooking(booking);
-                          return null;
-                        },
-                        onExit: (context) {
-                          var manageRequestsProvider = Provider.of<ManageRequestsProvider>(context, listen: false);
-                          manageRequestsProvider.loadManageRequestsPage(context);
-                          return true;
-                        },
-                      ),
-                    ]
                 ),
               ]
             ),

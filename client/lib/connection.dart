@@ -1362,4 +1362,22 @@ class Connection {
     }
   }
 
+  static Future<bool> cancelBooking(AppProvider appProvider, {required int booking_id}) async {
+    final url = Uri.parse(serverAddr + '/cancel-booking');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token, 'booking_id': booking_id}),
+    );
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      appProvider.setLogged(true);
+      appProvider.setToken(data['token']);
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

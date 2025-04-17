@@ -2304,7 +2304,7 @@ def update_resource():
             }
         ), 401
     
-@app.route('/delete-resource', methods=['POST']) ## to be restored
+@app.route('/delete-resource', methods=['POST'])
 def delete_resource():
     data = request.get_json()
     email = data.get('email')
@@ -2738,7 +2738,7 @@ def update_availability():
             }
         ), 500
     
-@app.route('/delete-availability', methods=['POST']) ## to be restored
+@app.route('/delete-availability', methods=['POST'])
 def delete_availability():
     data = request.get_json()
     email = data.get('email')
@@ -3292,6 +3292,62 @@ def add_booking():
             }
         ), 500
     
+@app.route('/cancel-booking', methods=['POST'])
+def cancel_booking():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    request_id = data.get('booking_id')
+    
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    bookings_content = db.fetchSQL(
+        f'''
+            SELECT * FROM bookings WHERE id = {request_id}
+        '''
+    )
+
+    user_id = getIdFromEmail(email)
+    
+    if not (
+            checkUserPermission(email, 'delete_booking')
+            or
+                (
+                    checkUserPermission(email, 'delete_own_booking')
+                    and
+                    (bookings_content[0][4] == user_id)
+                )
+        ):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+
+
+    sql_update = f'''
+        UPDATE bookings SET
+            status = 3,
+            invalidator_id = {user_id}
+        WHERE id = {request_id}
+        '''
+
+    db.executeSQL(sql_update)
+    
+
+    return jsonify(
+        {
+            "token": token_for(user_id)
+        }
+    ), 200
+
 @app.route('/get-pending-bookings', methods=['POST'])
 def get_pending_bookings():
     data = request.get_json()
@@ -3767,6 +3823,14 @@ def elaborateBookings(bookings_content):
             result = db.fetchSQL(sql)
             validator_email = result[0][0]
 
+        invalidator_email = ''
+        if booking[10] != None:
+            sql = f'''
+                SELECT email FROM users WHERE id = '{booking[10]}'
+            '''    
+            result = db.fetchSQL(sql)
+            invalidator_email = result[0][0]
+
         booking[1] = booking[1].isoformat()
         booking[2] = booking[2].isoformat()
 
@@ -3775,6 +3839,7 @@ def elaborateBookings(bookings_content):
         booking[7] = place_name
         booking[8] = activity_name
         booking[9] = validator_email
+        booking[10] = invalidator_email
         booking.append(resource_place)
         booking.append(resource_activity)
 
