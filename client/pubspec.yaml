@@ -37,6 +37,7 @@ dependencies:
   wave: ^0.2.2
   overflow_text_animated: ^0.0.6
   loading_indicator: ^3.1.1
+  syncfusion_flutter_sliders: ^27.2.5
 
 dev_dependencies:
   flutter_test:

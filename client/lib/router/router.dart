@@ -256,8 +256,17 @@ final router = GoRouter(
                           var appProvider = Provider.of<AppProvider>(context, listen: false);
                           var placeDetailsProvider = Provider.of<PlaceDetailsProvider>(context, listen: false);
 
-                          List place = await Connection.getPlace(placeId, appProvider);
-                          placeDetailsProvider.setPlace(place);
+                          appProvider.setLoading(true);
+                          appProvider.setLoadingText('');
+
+                          try {
+                            List place = await Connection.getPlace(placeId, appProvider);
+                            placeDetailsProvider.setPlace(place);
+                          } catch (error) {}
+
+                          appProvider.setLoading(false);
+
+
                           return null;
                         },
                         builder: (context, state) => PlaceDetailsPage(),

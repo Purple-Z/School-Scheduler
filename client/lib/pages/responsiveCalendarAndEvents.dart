@@ -2,11 +2,14 @@ import 'package:client/app_provider.dart';
 import 'package:client/main.dart';
 import 'package:client/router/routes.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
+import 'package:drop_down_list/drop_down_list.dart';
+import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_loading_dialog/simple_loading_dialog.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import 'package:table_calendar/table_calendar.dart';
 import 'package:overflow_text_animated/overflow_text_animated.dart';
@@ -16,6 +19,8 @@ import '../graphics/graphics_methods.dart';
 import 'functions.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'manage/classes.dart';
+import 'manage/manage_page.dart';
+import 'manage/resources/addResource/addResource_page.dart';
 
 
 
@@ -314,6 +319,7 @@ class ResponsiveCalendarAndEvents extends StatefulWidget {
   Map<DateTime, List<Booking>> events = {};
   bool canDelete = false;
   final Function loadEvents;
+  Map<String, dynamic> filters = {};
 
   ResponsiveCalendarAndEvents({
     Key? key,
@@ -332,14 +338,106 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay = DateTime.now();
 
-  List<Booking> _getEventsForDay(DateTime day, {bool f = false}) {
+  List<Booking> _getEventsForDay(DateTime day) {
     final normalizedDay = DateTime(day.year, day.month, day.day);
-    if (f){
-      print(widget.events.toString());
-      print((widget.events[normalizedDay] ?? []).toString());
+
+    //print(widget.events.toString());
+    //print((widget.events[normalizedDay] ?? []).toString());
+
+    List<Booking> day_bookings = widget.events[normalizedDay] ?? [];
+
+    List<Booking> final_day_booking = [];
+
+    for (Booking b in day_bookings){
+      if (widget.filters.containsKey('time_range')){
+
+        if  ((!(
+              (
+                (b.start.hour == widget.filters['time_range'][1] && b.start.minute > 0) ||
+                (b.start.hour > widget.filters['time_range'][1])
+              )
+            &&
+              (
+                (b.end.hour == widget.filters['time_range'][1] && b.end.minute > 0) ||
+                (b.end.hour > widget.filters['time_range'][1])
+              )
+            )
+            )
+
+            &&
+
+            (!(
+            (
+                (b.start.hour < widget.filters['time_range'][0])
+            )
+            &&
+              (
+                (b.end.hour < widget.filters['time_range'][0])
+              )
+            )
+          )
+        ){
+          final_day_booking.add(b);
+        }
+      } else {
+        final_day_booking.add(b);
+      }
     }
 
-    return widget.events[normalizedDay] ?? [];
+    day_bookings = final_day_booking;
+    final_day_booking = [];
+
+    for (Booking b in day_bookings){
+      if (widget.filters.containsKey('users')){
+        if (widget.filters['users'].contains(b.user_email)){
+          final_day_booking.add(b);
+        }
+      } else {
+        final_day_booking.add(b);
+      }
+    }
+
+    day_bookings = final_day_booking;
+    final_day_booking = [];
+
+    for (Booking b in day_bookings){
+      if (widget.filters.containsKey('resources')){
+        if (widget.filters['resources'].contains(b.resource_name)){
+          final_day_booking.add(b);
+        }
+      } else {
+        final_day_booking.add(b);
+      }
+    }
+
+    day_bookings = final_day_booking;
+    final_day_booking = [];
+
+    for (Booking b in day_bookings){
+      if (widget.filters.containsKey('places')){
+        if (widget.filters['places'].contains(b.place_name)){
+          final_day_booking.add(b);
+        }
+      } else {
+        final_day_booking.add(b);
+      }
+    }
+
+    day_bookings = final_day_booking;
+    final_day_booking = [];
+
+
+    for (Booking b in day_bookings){
+      if (widget.filters.containsKey('activities')){
+        if (widget.filters['activities'].contains(b.activity_name)){
+          final_day_booking.add(b);
+        }
+      } else {
+        final_day_booking.add(b);
+      }
+    }
+
+    return final_day_booking;
   }
 
 
@@ -406,14 +504,111 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
 
 
                   IconButton(
-                      onPressed: () {
-                        
-                        Navigator.push(
+                      onPressed: () async {
+
+                        double start = 0;
+                        double end =  24;
+                        if (widget.filters.containsKey('time_range')){
+                          start = widget.filters['time_range'][0] as double;
+                          end = widget.filters['time_range'][1] as double;
+                        }
+
+                        List<Booking> all_bookings = [];
+
+                        for (var day in widget.events.keys){
+                          all_bookings = all_bookings + widget.events[day]!;
+                        }
+
+                        List users = [];
+                        for (Booking b in all_bookings){
+                          if (!users.contains(b.user_email)){
+                            users.add(b.user_email);
+                          }
+                        }
+
+                        for (int i = 0; i < users.length; i++){
+                          bool fb = true;
+                          if (widget.filters.containsKey('users')){
+                            if (!widget.filters['users'].contains(users[i])){
+                              fb = false;
+                            }
+                          }
+                          users[i] = [users[i], fb];
+                        }
+
+
+                        List resources = [];
+                        for (Booking b in all_bookings){
+                          if (!resources.contains(b.resource_name)){
+                            resources.add(b.resource_name);
+                          }
+                        }
+
+                        for (int i = 0; i < resources.length; i++){
+                          bool fb = true;
+                          if (widget.filters.containsKey('resources')){
+                            if (!widget.filters['resources'].contains(resources[i])){
+                              fb = false;
+                            }
+                          }
+                          resources[i] = [resources[i], fb];
+                        }
+
+                        List places = [];
+                        for (Booking b in all_bookings){
+                          if (!places.contains(b.place_name)){
+                            places.add(b.place_name);
+                          }
+                        }
+
+                        for (int i = 0; i < places.length; i++){
+                          bool fb = true;
+                          if (widget.filters.containsKey('places')){
+                            if (!widget.filters['places'].contains(places[i])){
+                              fb = false;
+                            }
+                          }
+                          places[i] = [places[i], fb];
+                        }
+
+                        List activities = [];
+                        for (Booking b in all_bookings){
+                          if (!activities.contains(b.activity_name)){
+                            activities.add(b.activity_name);
+                          }
+                        }
+
+                        for (int i = 0; i < activities.length; i++){
+                          bool fb = true;
+                          if (widget.filters.containsKey('activities')){
+                            if (!widget.filters['activities'].contains(activities[i])){
+                              fb = false;
+                            }
+                          }
+                          activities[i] = [activities[i], fb];
+                        }
+
+                        final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => FiltersPage(loadEvents: widget.loadEvents,),
+                            builder: (context) => FiltersPage(
+                              loadEvents: widget.loadEvents,
+                              start_time: start,
+                              end_time: end,
+                              users: users,
+                              resources: resources,
+                              places: places,
+                              activities: activities,
+                            ),
                           ),
                         );
+
+                        if (result != null) {
+                          setState(() {
+                            widget.filters = result;
+                            widget.currentEvents = _getEventsForDay(_selectedDay ?? DateTime.now());
+                          });
+                        }
                       },
                       icon: Icon(Icons.tune, color: Theme.of(context).colorScheme.primary, size: 30,)
                   ),
@@ -507,8 +702,22 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
 
 class FiltersPage extends StatefulWidget {
   final Function loadEvents;
+  List users;
+  List resources;
+  List places;
+  List activities;
+  late SfRangeValues time_slider_values;
 
-  const FiltersPage({super.key, required this.loadEvents});
+  FiltersPage({
+  super.key,
+  required this.loadEvents,
+  required double start_time,
+  required double end_time,
+  required this.users,
+  required this.resources,
+  required this.places, required this.activities}){
+    this.time_slider_values = SfRangeValues(start_time, end_time);
+  }
 
   @override
   State<FiltersPage> createState() => _FiltersPageState();
@@ -517,12 +726,352 @@ class FiltersPage extends StatefulWidget {
 class _FiltersPageState extends State<FiltersPage> {
   @override
   Widget build(BuildContext context) {
-    //var appState = context.watch<DataProvider>();
     var appProvider = context.watch<AppProvider>();
 
     return Scaffold(
-      body: Center(child: Text('Filters'))
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 20,),
+            Row(
+              children: [
+                Text(
+                  'Filters',
+                  style: TextStyle(fontSize: 30),
+                ),
+                Expanded(child: SizedBox())
+              ],
+            ),
+            SizedBox(height: 20,),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text(
+                      'Time Range',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    SfRangeSlider(
+                      min: 0,
+                      max: 24,
+                      values: widget.time_slider_values,
+                      interval: 6,
+                      showTicks: false,
+                      showLabels: true,
+                      enableTooltip: true,
+                      minorTicksPerInterval: 5,
+                      stepSize: 1,
+                      inactiveColor: Theme.of(context).colorScheme.secondary,
+                      onChanged: (SfRangeValues values){
+                        setState(() {
+                          widget.time_slider_values = values;
+                        });
+                      },
+                    ),
+
+                    SizedBox(height: 40,),
+
+                    Row(
+                      children: [
+                        OptionButton(
+                          child: Text(
+                            "Peaples",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.surface,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600
+                            ),
+                          ),
+                          color: Theme.of(context).colorScheme.primary,
+                          onTap: () async {
+                            List<SelectedListItem<ListItem>> selections = [];
+                            for (List user in widget.users){
+                              selections.add(SelectedListItem<ListItem>(
+                                  data: ListItem(
+                                    display: (user[0]),
+                                    value: user[0],
+                                  ),
+                                  isSelected: user.last
+                              ));
+                            }
+                            DropDownState<ListItem>(
+                              dropDown: DropDown<ListItem>(
+                                enableMultipleSelection: true,
+                                data: selections,
+                                onSelected: (selectedItems) {
+                                  List<String> list = [];
+                                  for (var item in selectedItems) {
+                                    list.add(item.data.value);
+                                  }
+
+                                  setState(() {
+
+                                    for (List user in widget.users){
+                                      String user_email = user[0];
+                                      if (list.contains(user_email)){
+                                        user[user.length-1] = true;
+                                      } else {
+                                        user[user.length-1] = false;
+                                      }
+                                    }
+                                  });
+                                },
+                              ),
+                            ).showModal(context);
+                          },
+                        ),
+                        Expanded(
+                          child: OptionButton(
+                            child: Text(
+                              "Resources",
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.surface,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600
+                              ),
+                            ),
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            onTap: ()  async {
+                              List<SelectedListItem<ListItem>> selections = [];
+                              for (List resource in widget.resources){
+                                selections.add(SelectedListItem<ListItem>(
+                                    data: ListItem(
+                                      display: (resource[0]),
+                                      value: resource[0],
+                                    ),
+                                    isSelected: resource.last
+                                ));
+                              }
+                              DropDownState<ListItem>(
+                                dropDown: DropDown<ListItem>(
+                                  enableMultipleSelection: true,
+                                  data: selections,
+                                  onSelected: (selectedItems) {
+                                    List<String> list = [];
+                                    for (var item in selectedItems) {
+                                      list.add(item.data.value);
+                                    }
+                          
+                                    setState(() {
+                          
+                                      for (List resource in widget.resources){
+                                        String resource_name = resource[0];
+                                        if (list.contains(resource_name)){
+                                          resource[resource.length-1] = true;
+                                        } else {
+                                          resource[resource.length-1] = false;
+                                        }
+                                      }
+                                    });
+                                  },
+                                ),
+                              ).showModal(context);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OptionButton(
+                            child: Text(
+                              "Activities",
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.surface,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600
+                              ),
+                            ),
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            onTap: () async {
+                              List<SelectedListItem<ListItem>> selections = [];
+                              for (List activity in widget.activities){
+                                selections.add(SelectedListItem<ListItem>(
+                                    data: ListItem(
+                                      display: (activity[0]),
+                                      value: activity[0],
+                                    ),
+                                    isSelected: activity.last
+                                ));
+                              }
+                              DropDownState<ListItem>(
+                                dropDown: DropDown<ListItem>(
+                                  enableMultipleSelection: true,
+                                  data: selections,
+                                  onSelected: (selectedItems) {
+                                    List<String> list = [];
+                                    for (var item in selectedItems) {
+                                      list.add(item.data.value);
+                                    }
+
+                                    setState(() {
+
+                                      for (List activity in widget.activities){
+                                        String activity_name = activity[0];
+                                        if (list.contains(activity_name)){
+                                          activity[activity.length-1] = true;
+                                        } else {
+                                          activity[activity.length-1] = false;
+                                        }
+                                      }
+                                    });
+                                  },
+                                ),
+                              ).showModal(context);
+                            },
+                          ),
+                        ),
+                        OptionButton(
+                          child: Text(
+                            "Places",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.surface,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600
+                            ),
+                          ),
+                          color: Theme.of(context).colorScheme.primary,
+                          onTap: () async {
+                            List<SelectedListItem<ListItem>> selections = [];
+                            for (List place in widget.places){
+                              selections.add(SelectedListItem<ListItem>(
+                                  data: ListItem(
+                                    display: (place[0]),
+                                    value: place[0],
+                                  ),
+                                  isSelected: place.last
+                              ));
+                            }
+                            DropDownState<ListItem>(
+                              dropDown: DropDown<ListItem>(
+                                enableMultipleSelection: true,
+                                data: selections,
+                                onSelected: (selectedItems) {
+                                  List<String> list = [];
+                                  for (var item in selectedItems) {
+                                    list.add(item.data.value);
+                                  }
+
+                                  setState(() {
+
+                                    for (List resource in widget.places){
+                                      String place_name = resource[0];
+                                      if (list.contains(place_name)){
+                                        resource[resource.length-1] = true;
+                                      } else {
+                                        resource[resource.length-1] = false;
+                                      }
+                                    }
+                                  });
+                                },
+                              ),
+                            ).showModal(context);
+                          },
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: 40,),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                              onPressed: () {
+                                _cancelFilters();
+                              },
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.surface
+                                ),
+                              ),
+                              style: ButtonStyle(
+                                backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.secondary)
+                              ),
+                          ),
+                        ),
+
+                        SizedBox(width: 15,),
+
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _applyFilters();
+                            },
+                            child: Text(
+                              'Apply',
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.surface
+                              ),
+                            ),
+                            style: ButtonStyle(
+                                backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary)
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      )
     );
+  }
+
+  void _applyFilters() {
+    List<String> users = [];
+    for (List user in widget.users){
+      String user_email = user[0];
+      if (user[user.length-1] == true){
+        users.add(user_email);
+      }
+    }
+
+    List<String> resources = [];
+    for (List resource in widget.resources){
+      String resource_name = resource[0];
+      if (resource[resource.length-1] == true){
+        resources.add(resource_name);
+      }
+    }
+
+    List<String> places = [];
+    for (List place in widget.places){
+      String place_name = place[0];
+      if (place[place.length-1] == true){
+        places.add(place_name);
+      }
+    }
+
+    List<String> activities = [];
+    for (List activity in widget.activities){
+      String activity_name = activity[0];
+      if (activity[activity.length-1] == true){
+        activities.add(activity_name);
+      }
+    }
+
+    Map<String, dynamic> filtersResult = {
+      'time_range': [widget.time_slider_values.start, widget.time_slider_values.end],
+      'users': users,
+      'resources': resources,
+      'places': places,
+      'activities': activities,
+    };
+    Navigator.pop(context, filtersResult);
+  }
+
+
+  void _cancelFilters() {
+    Navigator.pop(context, null);
   }
 }
 
@@ -642,7 +1191,14 @@ class _BookingDetailsState extends State<BookingDetails> {
                           ),
                         ),
                         if (widget.booking.status == 2) Text(
-                          'Refuzed',
+                          'Refused',
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Theme.of(context).colorScheme.surface
+                          ),
+                        ),
+                        if (widget.booking.status == 3) Text(
+                          'Cancelled',
                           style: TextStyle(
                               fontSize: 17,
                               color: Theme.of(context).colorScheme.surface

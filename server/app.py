@@ -12,6 +12,9 @@ import json
 db = setupDB()
 app = Flask(__name__)
 
+dataMin = datetime(2000, 1, 1)
+dataMax = datetime(2100, 1, 1)
+
 notification_times_delta = [1, 60, 60*24]
 
 mail_content = {}
@@ -2191,6 +2194,7 @@ def update_resource():
     old_activity_id = old_resource[6]
     old_place_id = old_resource[5]
     old_auto_accept = old_resource[8] == 1
+    old_over_booking = old_resource[9] == 1
 
     if old_auto_accept != auto_accept:
         #has changed
@@ -2203,6 +2207,22 @@ def update_resource():
                     "token": token_for(user_id)
                 }
             ), 502
+        
+    if old_over_booking != over_booking:
+        #has changed
+        if not over_booking:
+            max_b = getMaxBookability(resource_id, dataMin, dataMax, do_not_consider_over_booking=True)
+
+
+
+            print('max bookability: ', max_b)
+
+            if max_b < 0:
+                return jsonify(
+                    {
+                        "token": token_for(user_id)
+                    }
+                ), 503
 
     if (activity_id != None) != (old_activity_id != None):
         print('qua dentro propio', str(old_activity_id))
@@ -3872,7 +3892,7 @@ def selectAvailabilityRecordsFromShift(start, end, resource_id, remove_availabil
 
     return shifts_content
 
-def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1, remove_availability_id=-1):
+def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1, remove_availability_id=-1, do_not_consider_over_booking=False):
 
     sql = f'SELECT * FROM resources WHERE id = {resource_id}'
     result = db.fetchSQL(sql)
@@ -3882,6 +3902,9 @@ def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1, rem
     slot = result[0][7]
     auto_accept = result[0][8]==1
     over_booking = result[0][9]==1
+
+    if do_not_consider_over_booking:
+        over_booking = False
 
 
 
@@ -3967,7 +3990,7 @@ def getMaxAvailability(resource_id, start, end, remove_availability_id):
 
     return maxAvailability
 
-def getMaxBookability(resource_id, start, end, remove_booking_id=-1, remove_availability_id=-1, shift_set=[]):
+def getMaxBookability(resource_id, start, end, remove_booking_id=-1, remove_availability_id=-1, shift_set=[], do_not_consider_over_booking=False):
     if end < start:
         return -1
     
@@ -3981,7 +4004,7 @@ def getMaxBookability(resource_id, start, end, remove_booking_id=-1, remove_avai
     over_booking = result[0][9]==1
 
 
-    shifts_content = selectAllRecordsFromShift(start, end, resource_id, remove_booking_id, remove_availability_id)
+    shifts_content = selectAllRecordsFromShift(start, end, resource_id, remove_booking_id, remove_availability_id, do_not_consider_over_booking)
 
 
     for shift in shift_set:

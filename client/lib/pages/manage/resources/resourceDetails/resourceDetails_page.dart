@@ -508,6 +508,10 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                             break;
 
                           case 2:
+                            showTopMessage(context, "Can't Toggle over booking.\nTry remove pending bookings", isOK: false);
+                            break;
+
+                          case 3:
                             showTopMessage(context, AppLocalizations.of(context)!.resource_error_occurred, isOK: false);
                             break;
                         }
@@ -535,7 +539,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                 child: ElevatedButton(
                   style: ButtonStyle(
                       minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
-                      backgroundColor: WidgetStatePropertyAll(Color(0xFFB00020)),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.secondary),
                       textStyle: WidgetStatePropertyAll(
                           TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary

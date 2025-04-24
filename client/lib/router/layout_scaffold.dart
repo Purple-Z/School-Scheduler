@@ -24,6 +24,7 @@ class LayoutScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<AppProvider>();
     appState.topBarContent = standardAppBar(context);
+
     Widget loadingWidget = Center(
       child: Column(
         children: [
@@ -38,8 +39,8 @@ class LayoutScaffold extends StatelessWidget {
                       indicatorType: Indicator.circleStrokeSpin,
                       colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary],
                       strokeWidth: 10,
-                      backgroundColor: Theme.of(context).colorScheme.surface,
-                      pathBackgroundColor: Theme.of(context).colorScheme.surface
+                      backgroundColor: Colors.transparent,
+                      pathBackgroundColor: Colors.transparent
                   ),
                 ),
               ),
@@ -50,20 +51,20 @@ class LayoutScaffold extends StatelessWidget {
           Text(
             appState.loadingText,
             style: TextStyle(
-              fontSize: 17
+                fontSize: 17
             ),
           ),
           Expanded(child: SizedBox())
         ],
       ),
     );
+
     LayoutBuilder body = LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        // Se la larghezza è inferiore a un certo valore (es. 600), usa BottomNavigationBar
         if (constraints.maxWidth < appState.maxWidth) {
           return Column(
             children: [
-              appState.isLoading ?  Expanded(child: loadingWidget) : Expanded(child: navigationShell),
+              Expanded(child: navigationShell),
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -126,26 +127,26 @@ class LayoutScaffold extends StatelessWidget {
                 data: NavigationRailThemeData(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   indicatorColor: Theme.of(context).colorScheme.secondary,
-                  selectedLabelTextStyle: TextStyle(color: Theme.of(context).colorScheme.surface), // Aggiungi questo per il testo selezionato
-                  unselectedLabelTextStyle: TextStyle(color: Theme.of(context).colorScheme.surface), // Aggiungi questo per il testo non selezionato
-                  selectedIconTheme: IconThemeData(color: Theme.of(context).colorScheme.surface), // Tema per l'icona selezionata
-                  unselectedIconTheme: IconThemeData(color: Theme.of(context).colorScheme.surface), // Tema per l'icona non selezionata
+                  selectedLabelTextStyle: TextStyle(color: Theme.of(context).colorScheme.surface),
+                  unselectedLabelTextStyle: TextStyle(color: Theme.of(context).colorScheme.surface),
+                  selectedIconTheme: IconThemeData(color: Theme.of(context).colorScheme.surface),
+                  unselectedIconTheme: IconThemeData(color: Theme.of(context).colorScheme.surface),
                 ),
                 child: NavigationRail(
                   selectedIndex: navigationShell.currentIndex,
                   onDestinationSelected: navigationShell.goBranch,
-                  labelType: NavigationRailLabelType.all, // Puoi scegliere come mostrare le etichette (es. none, selected, all)
+                  labelType: NavigationRailLabelType.all,
                   destinations: destinations
                       .map((destination) =>
                       NavigationRailDestination(
-                        icon: Icon(destination.icon), // Il colore dell'icona è gestito dal tema
-                        selectedIcon: Icon(destination.icon), // Il colore dell'icona selezionata è gestito dal tema
+                        icon: Icon(destination.icon),
+                        selectedIcon: Icon(destination.icon),
                         label: Text(destination.label),
                       ))
                       .toList(),
                 ),
               ),
-              appState.isLoading ?  Expanded(child: loadingWidget) : Expanded(child: navigationShell),
+              Expanded(child: navigationShell),
             ],
           );
         }
@@ -153,19 +154,25 @@ class LayoutScaffold extends StatelessWidget {
     );
 
     return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints)
-      {
-        if (constraints.maxWidth < appState.maxWidth) {
-          return Scaffold(
-            appBar: appState.topBarContent,
-            body: body,
-          );
-        } else {
-          return Scaffold(
-            //appBar: appState.topBarContent,
-            body: body,
-          );
-        }
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Scaffold(
+          appBar: constraints.maxWidth < appState.maxWidth ? appState.topBarContent : null,
+          body: Stack(
+            children: [
+              body,
+              if (appState.isLoading)
+                Positioned.fill(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+                    child: Container(
+                      color: Colors.black.withOpacity(0.3), // Sfondo semi-trasparente
+                      child: loadingWidget,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
       },
     );
   }
