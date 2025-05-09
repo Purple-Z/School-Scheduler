@@ -22,7 +22,12 @@ import 'manage/classes.dart';
 import 'manage/manage_page.dart';
 import 'manage/resources/addResource/addResource_page.dart';
 
-
+enum Filters {
+  Pending,
+  Accepted,
+  Refused,
+  Cancelled,
+}
 
 
 class EventListWidget extends StatefulWidget {
@@ -437,6 +442,20 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
       }
     }
 
+    day_bookings = final_day_booking;
+    final_day_booking = [];
+
+
+    for (Booking b in day_bookings){
+      if (widget.filters.containsKey('quantity_range')){
+        if ((widget.filters['quantity_range'][0] <= b.quantity) && (widget.filters['quantity_range'][1] >= b.quantity)){
+          final_day_booking.add(b);
+        }
+      } else {
+        final_day_booking.add(b);
+      }
+    }
+
     return final_day_booking;
   }
 
@@ -588,6 +607,29 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
                           activities[i] = [activities[i], fb];
                         }
 
+                        int absolute_min = all_bookings[0].quantity;
+                        int absolute_max = all_bookings[0].quantity;
+
+                        for (Booking b in all_bookings){
+                          if (absolute_min > b.quantity){
+                            absolute_min = b.quantity;
+                          } else if (absolute_max < b.quantity){
+                            absolute_max = b.quantity;
+                          }
+                        }
+
+                        int quantity_min = absolute_min;
+                        int quantity_max = absolute_max;
+
+                        if (widget.filters.containsKey('quantity_range')){
+                          quantity_min = widget.filters['quantity_range'][0].toInt();
+                          quantity_max = widget.filters['quantity_range'][1].toInt();
+                        }
+
+                        print('min/max: '+ absolute_min.toString() + ', ' + absolute_max.toString());
+
+
+
                         final result = await Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -599,6 +641,10 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
                               resources: resources,
                               places: places,
                               activities: activities,
+                              absolute_min: absolute_min,
+                              absolute_max: absolute_max,
+                              quantity_min: quantity_min.toDouble(),
+                              quantity_max: quantity_max.toDouble(),
                             ),
                           ),
                         );
@@ -706,17 +752,27 @@ class FiltersPage extends StatefulWidget {
   List resources;
   List places;
   List activities;
+  int absolute_min;
+  int absolute_max;
   late SfRangeValues time_slider_values;
+  late SfRangeValues quantity_slider_values;
 
   FiltersPage({
   super.key,
   required this.loadEvents,
   required double start_time,
   required double end_time,
+  required double quantity_min,
+  required double quantity_max,
   required this.users,
   required this.resources,
-  required this.places, required this.activities}){
+  required this.places,
+  required this.activities,
+  required this.absolute_min,
+  required this.absolute_max
+  }){
     this.time_slider_values = SfRangeValues(start_time, end_time);
+    this.quantity_slider_values = SfRangeValues(quantity_min, quantity_max);
   }
 
   @override
@@ -724,6 +780,17 @@ class FiltersPage extends StatefulWidget {
 }
 
 class _FiltersPageState extends State<FiltersPage> {
+  Set<Filters> selectedFilters = <Filters>{};
+
+  @override
+  void initState() {
+    super.initState();
+    selectedFilters.add(Filters.Accepted);
+    selectedFilters.add(Filters.Pending);
+    selectedFilters.add(Filters.Refused);
+    selectedFilters.add(Filters.Cancelled);
+  }
+
   @override
   Widget build(BuildContext context) {
     var appProvider = context.watch<AppProvider>();
@@ -734,21 +801,69 @@ class _FiltersPageState extends State<FiltersPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 20,),
-            Row(
-              children: [
-                Text(
-                  'Filters',
-                  style: TextStyle(fontSize: 30),
-                ),
-                Expanded(child: SizedBox())
-              ],
-            ),
-            SizedBox(height: 20,),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    SizedBox(height: 20,),
+                    Row(
+                      children: [
+                        Text(
+                          'Filters',
+                          style: TextStyle(fontSize: 30),
+                        ),
+                        Expanded(child: SizedBox())
+                      ],
+                    ),
+                    SizedBox(height: 20,),
+
+
+                    if (1 != 1) SegmentedButton<Filters>(
+                      multiSelectionEnabled: true,
+                      segments: const <ButtonSegment<Filters>>[
+                        ButtonSegment<Filters>(
+                            value: Filters.Accepted,
+                            label: Text(
+                              'Accepted',
+                              style: TextStyle(
+                                fontSize: 10
+                              ),
+                            )),
+                        ButtonSegment<Filters>(
+                            value: Filters.Pending,
+                            label: Text(
+                              'Pending',
+                              style: TextStyle(
+                                fontSize: 10
+                              ),
+                            )),
+                        ButtonSegment<Filters>(
+                            value: Filters.Refused,
+                            label: Text(
+                              'Refused',
+                              style: TextStyle(
+                                fontSize: 10
+                              ),
+                            )),
+                        ButtonSegment<Filters>(
+                            value: Filters.Cancelled,
+                            label: Text(
+                              'Cancelled',
+                              style: TextStyle(
+                                fontSize: 10
+                              ),
+                            )),
+                      ],
+                      selected: selectedFilters,
+                      onSelectionChanged: (Set<Filters> newSelection) {
+                        setState(() {
+                          selectedFilters = newSelection;
+                          print('Filtri selezionati: $selectedFilters');
+                        });
+                      },
+                    ),
+
+
                     Text(
                       'Time Range',
                       style: TextStyle(fontSize: 20),
@@ -767,6 +882,30 @@ class _FiltersPageState extends State<FiltersPage> {
                       onChanged: (SfRangeValues values){
                         setState(() {
                           widget.time_slider_values = values;
+                        });
+                      },
+                    ),
+
+                    SizedBox(height: 40,),
+
+                    Text(
+                      'Quantity Range',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    SfRangeSlider(
+                      min: widget.absolute_min,
+                      max: widget.absolute_max,
+                      values: widget.quantity_slider_values,
+                      interval: 5,
+                      showTicks: false,
+                      showLabels: true,
+                      enableTooltip: true,
+                      minorTicksPerInterval: 5,
+                      stepSize: 1,
+                      inactiveColor: Theme.of(context).colorScheme.secondary,
+                      onChanged: (SfRangeValues values){
+                        setState(() {
+                          widget.quantity_slider_values = values;
                         });
                       },
                     ),
@@ -1065,6 +1204,7 @@ class _FiltersPageState extends State<FiltersPage> {
       'resources': resources,
       'places': places,
       'activities': activities,
+      'quantity_range': [widget.quantity_slider_values.start, widget.quantity_slider_values.end],
     };
     Navigator.pop(context, filtersResult);
   }
