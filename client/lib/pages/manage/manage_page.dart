@@ -7,8 +7,11 @@ import 'package:client/pages/manage/manage_provider.dart';
 import 'package:client/pages/manage/requests/manageRequests_page.dart';
 import 'package:client/pages/manage/requests/manageRequests_page.dart';
 import 'package:client/router/layout_scaffold.dart';
+import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../connection.dart';
+import '../../graphics/graphics_methods.dart';
 import '../../router/routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -90,7 +93,9 @@ class _ManagePageState extends State<ManagePage> {
                                 childFocusNode: _buttonFocusNode,
                                 menuChildren: <Widget>[
                                   if (appProvider.create_user) MenuItemButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        context.push(Routes.manage_Users_AddUsersCSV);
+                                      },
                                       child: Text(
                                         'Load CSV',
                                         style: TextStyle(
@@ -99,7 +104,16 @@ class _ManagePageState extends State<ManagePage> {
                                       )
                                   ),
                                   if (appProvider.edit_user) MenuItemButton(
-                                      onPressed: () {},
+                                      onPressed: () async {
+                                        if (!await confirm(context, content: Text("Disconnect All Users?"))){
+                                          return;
+                                        }
+                                        if (await Connection.disconnectUsers(appProvider)){
+                                          showTopMessage(context, "All User Disconnected");
+                                        }  else {
+                                          showTopMessage(context, "Error Occurred", isOK: false);
+                                        }
+                                      },
                                       child: Text(
                                         'Disconnect all users',
                                         style: TextStyle(

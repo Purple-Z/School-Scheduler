@@ -38,6 +38,8 @@ dependencies:
   overflow_text_animated: ^0.0.6
   loading_indicator: ^3.1.1
   syncfusion_flutter_sliders: ^27.2.5
+  file_picker: ^10.1.7
+  csv: ^5.0.0
 
 dev_dependencies:
   flutter_test:

@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'app_provider.dart';
 
 class Connection {
-  //static String serverAddr = "http://192.168.178.32:5000";
-  static String serverAddr = "https://bbruno.pythonanywhere.com";
+  static String serverAddr = "http://192.168.178.32:5000";
+  //static String serverAddr = "https://bbruno.pythonanywhere.com";
 
   static Future<bool> login(String email, String password, AppProvider appProvider) async {
     final url = Uri.parse(serverAddr + '/login');
@@ -356,6 +356,29 @@ class Connection {
     }
   }
 
+  static Future<int> addUsers({required List users, required AppProvider appProvider}) async {
+    final url = Uri.parse(serverAddr + '/add-users');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': appProvider.email,
+        'token': appProvider.token,
+        'users': users
+      }),
+    );
+
+    final data = jsonDecode(response.body);
+    appProvider.setLogged(true);
+    appProvider.setToken(data['token']);
+
+    if (response.statusCode == 200) {
+      return data['fail_count'];
+    } else {
+      return -1;
+    }
+  }
+
   static Future<List> getUser(int user_id, AppProvider appProvider) async {
     final url = Uri.parse(serverAddr + '/get-user');
     final response = await http.post(
@@ -410,6 +433,25 @@ class Connection {
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': appProvider.email, 'token': appProvider.token, 'user_id': user_id}),
+    );
+
+    final data = jsonDecode(response.body);
+    appProvider.setLogged(true);
+    appProvider.setToken(data['token']);
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  static Future<bool> disconnectUsers(AppProvider appProvider) async {
+    final url = Uri.parse(serverAddr + '/disconnect-users');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': appProvider.email, 'token': appProvider.token}),
     );
 
     final data = jsonDecode(response.body);

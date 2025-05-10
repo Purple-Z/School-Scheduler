@@ -21,6 +21,7 @@ import 'package:client/pages/manage/types/addType/addType_provider.dart';
 import 'package:client/pages/manage/types/manageTypes_provider.dart';
 import 'package:client/pages/manage/types/typeDetails/typeDetails_provider.dart';
 import 'package:client/pages/manage/users/addUser/addUser_provider.dart';
+import 'package:client/pages/manage/users/addUserCSV/addUserCSV_provider.dart';
 import 'package:client/pages/manage/users/manageUsers_provider.dart';
 import 'package:client/pages/manage/users/userDetails/userDetails_provider.dart';
 import 'package:client/pages/manage/resources/addResource/addResource_provider.dart';
@@ -85,6 +86,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ManageBookingsProvider()),
         ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
         ChangeNotifierProvider(create: (_) => UserBookingsProvider()),
+        ChangeNotifierProvider(create: (_) => AddUsersCSVProvider()),
       ],
       child: Consumer<AppProvider>(
         builder: (context, dataProvider, child) {

@@ -34,6 +34,7 @@ import 'package:client/pages/manage/types/typeDetails/typeDetails_page.dart';
 import 'package:client/pages/manage/types/typeDetails/typeDetails_provider.dart';
 import 'package:client/pages/manage/users/addUser/addUser_page.dart';
 import 'package:client/pages/manage/users/addUser/addUser_provider.dart';
+import 'package:client/pages/manage/users/addUserCSV/addUserCSV_page.dart';
 import 'package:client/pages/manage/users/manageUsers_page.dart';
 import 'package:client/pages/manage/users/manageUsers_provider.dart';
 import 'package:client/pages/manage/users/userDetails/userDetails_page.dart';
@@ -176,7 +177,7 @@ final router = GoRouter(
                     ),
                     GoRoute(
                       path: Routes.addUsersCSV,
-                      builder: (context, state) => AddUserPage(),
+                      builder: (context, state) => AddUsersCSVPage(),
                     ),
                     GoRoute(
                       path: Routes.userDetails,
