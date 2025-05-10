@@ -175,6 +175,10 @@ final router = GoRouter(
                       },
                     ),
                     GoRoute(
+                      path: Routes.addUsersCSV,
+                      builder: (context, state) => AddUserPage(),
+                    ),
+                    GoRoute(
                       path: Routes.userDetails,
                       redirect: (context, state) async {
                         final extraData = state.extra as Map<String, dynamic>?;

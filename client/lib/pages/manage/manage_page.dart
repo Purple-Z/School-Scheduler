@@ -25,6 +25,14 @@ class ManagePage extends StatefulWidget {
 }
 
 class _ManagePageState extends State<ManagePage> {
+  final FocusNode _buttonFocusNode = FocusNode(debugLabel: 'Menu Button');
+
+  @override
+  void dispose() {
+    _buttonFocusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     //var appState = context.watch<DataProvider>();
@@ -75,17 +83,50 @@ class _ManagePageState extends State<ManagePage> {
                                   },
                                 ),
                               ),
-                              OptionButton(
-                                child: Column(
-                                  children: [
-                                    Icon(Icons.more_vert, color: Theme.of(context).colorScheme.surface, size: 35,),
-                                  ],
+                              MenuAnchor(
+                                style: MenuStyle(
+                                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.onPrimary),
                                 ),
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                onTap: () {
-
+                                childFocusNode: _buttonFocusNode,
+                                menuChildren: <Widget>[
+                                  if (appProvider.create_user) MenuItemButton(
+                                      onPressed: () {},
+                                      child: Text(
+                                        'Load CSV',
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.surface
+                                        ),
+                                      )
+                                  ),
+                                  if (appProvider.edit_user) MenuItemButton(
+                                      onPressed: () {},
+                                      child: Text(
+                                        'Disconnect all users',
+                                        style: TextStyle(
+                                            color: Theme.of(context).colorScheme.surface
+                                        ),
+                                      )
+                                  ),
+                                ],
+                                builder: (_, MenuController controller, Widget? child) {
+                                  return OptionButton(
+                                    child: Column(
+                                      children: [
+                                        Icon(Icons.more_vert, color: Theme.of(context).colorScheme.surface, size: 35,),
+                                      ],
+                                    ),
+                                    focusNode: _buttonFocusNode,
+                                    color: Theme.of(context).colorScheme.onPrimary,
+                                    onTap: () {
+                                      if (controller.isOpen) {
+                                        controller.close();
+                                      } else {
+                                        controller.open();
+                                      }
+                                    },
+                                  );
                                 },
-                              ),
+                              )
                             ],
                           ),
                           SizedBox(height: 30,),
@@ -300,16 +341,18 @@ class _ManagePageState extends State<ManagePage> {
 }
 
 class OptionButton extends StatelessWidget {
-  const OptionButton({
+  OptionButton({
     super.key,
     required this.child,
     required this.onTap,
-    required this.color
+    required this.color,
+    this.focusNode
   });
 
   final Widget child;
   final VoidCallback onTap;
   final Color color;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -321,6 +364,7 @@ class OptionButton extends StatelessWidget {
         ),
         color: color,
         child: InkWell(
+          focusNode: focusNode,
           onTap: onTap,
           child: Center(
             child: Padding(

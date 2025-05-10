@@ -27,6 +27,9 @@ class Routes {
   static const String addUsers = 'addUsers';
   static const String manage_Users_AddUsers = '/manage/users/addUsers';
 
+  static const String addUsersCSV = 'addUsersCSV';
+  static const String manage_Users_AddUsersCSV = '/manage/users/addUsersCSV';
+
   static const String userDetails = 'userDetails';
   static const String manage_Users_userDetails = '/manage/users/userDetails';
 
