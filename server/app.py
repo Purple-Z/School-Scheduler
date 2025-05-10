@@ -715,7 +715,7 @@ def get_users():
     ), 200
 
 @app.route('/add-user', methods=['POST'])
-def add_users():
+def add_user():
     data = request.get_json()
     email = data.get('email')
     token = data.get('token')
@@ -740,62 +740,63 @@ def add_users():
     
     user_id = getIdFromEmail(email)
 
-    password = generate_password()
-    subject = "School Scheduler Activation"
-    body = f"""
-    Here your password for the School Scheduler account.
-
-    Your password: {password}
-
-    Use this password hust for login once and then set a new password.
-
-    Best regards,
-    School Scheduler
-    """
-    
-
-    try:
-        sql_insert = f'''
-        INSERT INTO users
-        (id, name, surname, email, password_hash, token)
-        VALUES (
-            0,
-            '{new_name}', 
-            '{new_surname}', 
-            '{new_email}', 
-            '{password}', 
-            ' '
-        )
-        '''
-        db.executeSQL(sql_insert)
-
-        new_user_id = getIdFromEmail(new_email)
-
-        for new_role in new_roles:
-            sql = "SELECT id FROM roles WHERE name = '" + new_role + "'"
-            new_role_id = db.fetchSQL(sql)[0][0]
-            
-
-            sql_insert = f'''
-            INSERT INTO users_roles
-            (id, user_id, role_id)
-            VALUES (
-                0,
-                {new_user_id}, 
-                {new_role_id}
-            )
-            '''
-            db.executeSQL(sql_insert)
-
-        emailSenderThread = threading.Thread(target=sendEmail, args=(new_email, subject, body))
-        emailSenderThread.start()
+    if addUser(new_name, new_surname, new_email, new_roles):
         return jsonify(
             {
                 "token": token_for(user_id)
             }
         ), 200
-    except Exception as e:
-        print(e)
+    else:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 500
+    
+@app.route('/add-users', methods=['POST'])
+def add_users():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    users = data.get('users')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'create_users'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    try:
+
+        user_id = getIdFromEmail(email)
+
+
+        fail_count = 0
+
+        for user in users:
+            new_name = user[0]
+            new_surname = user[1]
+            new_email = user[2]
+            new_roles = user[3]
+            if not addUser(new_name, new_surname, new_email, new_roles):
+                fail_count += 1
+
+
+        return jsonify(
+            {
+                "token": token_for(user_id),
+                "fail_count": fail_count
+            }
+        ), 200
+    except e:
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -1064,6 +1065,52 @@ def delete_user():
         db.executeSQL(sql_delete)
         emailSenderThread = threading.Thread(target=sendEmail, args=(new_email, subject, body))
         emailSenderThread.start()
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 200
+    except:
+        return jsonify(
+            {
+                "token": token_for(user_id)
+            }
+        ), 401
+
+@app.route('/disconnect-users', methods=['POST'])
+def disconnect_users():
+    data = request.get_json()
+    email = data.get('email')
+    token = data.get('token')
+    
+    if not checkUserToken(email, token):
+        return jsonify(
+            {
+                'message': 'User disconnected'
+            }
+            ), 400
+    
+    if not checkUserPermission(email, 'edit_users'):
+        return jsonify(
+            {
+                'message': 'Access denied'
+            }
+            ), 401
+    
+    try:
+
+        user_id = getIdFromEmail(email)
+
+        sql_fetch = f'''
+            SELECT id FROM users WHERE NOT id = '{user_id}'
+        '''    
+
+        result = db.fetchSQL(sql_fetch)
+
+        for user in result:
+            token_for(user[0])
+
+
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -3637,6 +3684,63 @@ def get_user_bookings():
         }
     ), 200
 
+def addUser(new_name, new_surname, new_email, new_roles):    
+    password = generate_password()
+    subject = "School Scheduler Activation"
+    body = f"""
+    Here your password for the School Scheduler account.
+
+    Your password: {password}
+
+    Use this password hust for login once and then set a new password.
+
+    Best regards,
+    School Scheduler
+    """
+    
+
+    try:
+        sql_insert = f'''
+        INSERT INTO users
+        (id, name, surname, email, password_hash, token)
+        VALUES (
+            0,
+            '{new_name}', 
+            '{new_surname}', 
+            '{new_email}', 
+            '{password}', 
+            ' '
+        )
+        '''
+        db.executeSQL(sql_insert)
+        
+
+        new_user_id = getIdFromEmail(new_email)
+
+        token_for(new_user_id)
+
+        for new_role in new_roles:
+            sql = "SELECT id FROM roles WHERE name = '" + new_role + "'"
+            new_role_id = db.fetchSQL(sql)[0][0]
+            
+
+            sql_insert = f'''
+            INSERT INTO users_roles
+            (id, user_id, role_id)
+            VALUES (
+                0,
+                {new_user_id}, 
+                {new_role_id}
+            )
+            '''
+            db.executeSQL(sql_insert)
+
+        emailSenderThread = threading.Thread(target=sendEmail, args=(new_email, subject, body))
+        emailSenderThread.start()
+        return True
+    except Exception as e:
+        print(e)
+        return False
 
 def checkUserToken(email, token):
     #collecting data...
