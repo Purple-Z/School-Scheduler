@@ -89,6 +89,11 @@ class _ManageTypesAdminState extends State<ManageTypesAdmin> {
                 true, //1
                 true,  //2
               ],
+              itemCategories: [
+                'other',
+                'other',
+                'other'
+              ],
               refreshController: refreshController
           )
       ),

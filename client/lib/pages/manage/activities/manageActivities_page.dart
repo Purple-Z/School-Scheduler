@@ -91,7 +91,12 @@ class _ManageActivitiesAdminState extends State<ManageActivitiesAdmin> {
                 true, //1
                 true,  //2
               ],
-              refreshController: refreshController
+              refreshController: refreshController,
+              itemCategories: [
+                'other',
+                'other',
+                'other'
+              ],
           )
       ),
     );

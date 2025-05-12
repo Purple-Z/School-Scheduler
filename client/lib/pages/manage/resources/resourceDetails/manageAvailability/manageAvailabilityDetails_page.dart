@@ -152,6 +152,13 @@ class _ManageAvailabilityState extends State<ManageAvailability> {
                       true, //3
                       false,  //4
                     ],
+                    itemCategories: [
+                      'other',
+                      'other',
+                      'other',
+                      'other',
+                      'other'
+                    ],
                     refreshController: refreshController
                 ),
               ),

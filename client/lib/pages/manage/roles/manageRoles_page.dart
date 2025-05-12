@@ -124,7 +124,16 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
           header: [AppLocalizations.of(context)!.role_name, AppLocalizations.of(context)!.role_description],
           onRefresh: refreshRoles,
           refreshController: refreshController,
-          itemsColumn: [false, true, true],
+          itemsColumn: [
+            false,
+            true,
+            true
+          ],
+          itemCategories: [
+            'other',
+            'other',
+            'other'
+          ],
           onItemTap: (List item) {
             context.push(Routes.manage_Roles_RoleDetails, extra: {'roleId': item[0]});
           },

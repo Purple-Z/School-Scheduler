@@ -89,6 +89,11 @@ class _ManagePlacesAdminState extends State<ManagePlacesAdmin> {
                 true, //1
                 true,  //2
               ],
+              itemCategories: [
+                'other',
+                'other',
+                'other'
+              ],
               refreshController: refreshController
           )
       ),

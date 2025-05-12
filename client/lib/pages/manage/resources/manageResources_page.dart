@@ -102,6 +102,18 @@ class _ManageResourcesState extends State<ManageResources> {
                 false,  //8
                 false,  //9
               ],
+              itemCategories: [
+                'other',
+                'other',
+                'other',
+                'other',
+                'other',
+                'other',
+                'other',
+                'other',
+                'other',
+                'other'
+              ],
               refreshController: refreshController
           )
       ),

@@ -8,6 +8,14 @@ import '../../../connection.dart';
 class ManageUsersProvider extends ChangeNotifier {
   List users = [];
 
+  List filters = [];
+
+  setFilters(c_filters) {
+    c_filters = filters;
+    print('valore filtri dall interno: '+ filters.toString());
+    notifyListeners();
+  }
+
   loadManageUsersPage(BuildContext context) async {
     var appProvider = Provider.of<AppProvider>(context, listen: false);
     List c_users = await Connection.getUsers(appProvider);

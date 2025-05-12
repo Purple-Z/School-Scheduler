@@ -113,6 +113,19 @@ class _ManagePendingRequestsAdminState extends State<ManagePendingRequestsAdmin>
                 false,  //9
                 false, //10
               ],
+              itemCategories: [
+                'other',
+                'other',
+                'other',
+                'other',
+                'other',
+                'other',
+                'other',
+                'other',
+                'other',
+                'other',
+                'other'
+              ],
               refreshController: refreshController
           )
       ),

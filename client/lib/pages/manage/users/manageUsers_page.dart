@@ -102,17 +102,23 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
         label: Text(
           AppLocalizations.of(context)!.user_new_user,
           style: TextStyle(
-            color: Theme.of(context).colorScheme.surface
+              color: Theme
+                  .of(context)
+                  .colorScheme
+                  .surface
           ),
         ),
         icon: Icon(
           Icons.add,
-          color: Theme.of(context).colorScheme.surface,
+          color: Theme
+              .of(context)
+              .colorScheme
+              .surface,
         ),
       ) : null,
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
-        child: DataTableWidget(
+          padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
+          child: DataTableWidget(
             header: [AppLocalizations.of(context)!.user_name,
               AppLocalizations.of(context)!.user_surname,
               AppLocalizations.of(context)!.user_email,
@@ -120,21 +126,32 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
             ],
             onRefresh: refreshUsers,
             onItemTap: (List item) {
-              context.push(Routes.manage_Users_userDetails, extra: {'userId': item[0]});
+              context.push(Routes.manage_Users_userDetails,
+                  extra: {'userId': item[0]});
             },
             items: getItem(manageUsersProvider.users),
             itemsColumn: [
-              false,  //0
-              true, //1
-              true,  //2
-              true,  //3
-              false,  //4
-              false, //5
-              false, //6
-              true, //7
+              null, //0
+              AppLocalizations.of(context)!.user_name, //1
+              AppLocalizations.of(context)!.user_surname, //2
+              AppLocalizations.of(context)!.user_email, //3
+              null, //4
+              null, //5
+              null, //6
+              AppLocalizations.of(context)!.user_roles, //7
             ],
-            refreshController: refreshController
-        )
+            itemCategories: [
+              'other',
+              'text',
+              'text',
+              'other',
+              'other',
+              'other',
+              'other',
+              'other'
+            ],
+            refreshController: refreshController,
+          )
       ),
     );
   }

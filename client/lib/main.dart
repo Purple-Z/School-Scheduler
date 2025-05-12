@@ -30,6 +30,7 @@ import 'package:client/pages/manage/resources/resourceDetails/addAvailability/ad
 import 'package:client/pages/manage/resources/resourceDetails/availabilityDetails/availabilityDetails_provider.dart';
 import 'package:client/pages/manage/resources/resourceDetails/manageAvailability/manageAvailabilitiesDetails_provider.dart';
 import 'package:client/pages/manage/resources/resourceDetails/resourceDetails_provider.dart';
+import 'package:client/pages/manage/widgetsStates_provider.dart';
 import 'package:client/pages/resources/resource/resource_provider.dart';
 import 'package:client/pages/resources/resources_provider.dart';
 import 'package:flutter/material.dart';
@@ -87,6 +88,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ChangePasswordProvider()),
         ChangeNotifierProvider(create: (_) => UserBookingsProvider()),
         ChangeNotifierProvider(create: (_) => AddUsersCSVProvider()),
+        ChangeNotifierProvider(create: (_) => WidgetStatesProvider()),
       ],
       child: Consumer<AppProvider>(
         builder: (context, dataProvider, child) {
