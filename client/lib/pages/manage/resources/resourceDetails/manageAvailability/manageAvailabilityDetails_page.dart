@@ -135,6 +135,7 @@ class _ManageAvailabilityState extends State<ManageAvailability> {
               ),
               Expanded(
                 child: DataTableWidget(
+                    id: 'manageAvailabilityDetails',
                     header: [
                       AppLocalizations.of(context)!.availability_start,
                       AppLocalizations.of(context)!.availability_end,
@@ -146,17 +147,17 @@ class _ManageAvailabilityState extends State<ManageAvailability> {
                     },
                     items: getItem(manageAvailabilityProvider.availabilities),
                     itemsColumn: [
-                      false,  //0
-                      true, //1
-                      true,  //2
-                      true, //3
-                      false,  //4
+                      null,  //0
+                      AppLocalizations.of(context)!.availability_start, //1
+                      AppLocalizations.of(context)!.availability_end,  //2
+                      AppLocalizations.of(context)!.availability_quantity, //3
+                      null,  //4
                     ],
                     itemCategories: [
                       'other',
-                      'other',
-                      'other',
-                      'other',
+                      'text',
+                      'text',
+                      'text',
                       'other'
                     ],
                     refreshController: refreshController

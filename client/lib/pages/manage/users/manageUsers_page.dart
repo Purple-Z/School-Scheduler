@@ -119,6 +119,7 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
           child: DataTableWidget(
+            id: 'manageUsers',
             header: [AppLocalizations.of(context)!.user_name,
               AppLocalizations.of(context)!.user_surname,
               AppLocalizations.of(context)!.user_email,
@@ -144,7 +145,7 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
               'other',
               'text',
               'text',
-              'other',
+              'text',
               'other',
               'other',
               'other',

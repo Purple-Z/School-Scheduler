@@ -121,18 +121,19 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
         child: DataTableWidget(
+          id: 'manageRoles',
           header: [AppLocalizations.of(context)!.role_name, AppLocalizations.of(context)!.role_description],
           onRefresh: refreshRoles,
           refreshController: refreshController,
           itemsColumn: [
-            false,
-            true,
-            true
+            null,
+            AppLocalizations.of(context)!.role_name,
+            AppLocalizations.of(context)!.role_description
           ],
           itemCategories: [
             'other',
-            'other',
-            'other'
+            'text',
+            'text'
           ],
           onItemTap: (List item) {
             context.push(Routes.manage_Roles_RoleDetails, extra: {'roleId': item[0]});

@@ -7,7 +7,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:go_router/go_router.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../../router/routes.dart';
 
@@ -71,6 +73,14 @@ class _DataTableWidgetState extends State<DataTableWidget> {
           } else {
             new_items.add(item);
           }
+        } else if (widget.itemCategories[i] == 'number') {
+          if (f.length >= i){
+            if (f[i][0] <= item[i] && f[i][1] >= item[i]){
+              new_items.add(item);
+            }
+          } else {
+            new_items.add(item);
+          }
         } else {
           new_items.add(item);
         }
@@ -90,13 +100,20 @@ class _DataTableWidgetState extends State<DataTableWidget> {
     for (int i = 0; i < widget.itemCategories.length; i++){
       if (widget.itemCategories[i] == 'text'){
         List items = [];
+
         for (int j = 0; j < widget.items.length; j++){
           if (!items.contains(widget.items[j][i])){
-            items.add([widget.items[j][i], true]);
+            items.add(widget.items[j][i]);
           }
         }
 
+        for (int j = 0; j < items.length; j ++){
+          items[j] = [items[j], true];
+        }
+
         f.add(items);
+      } else if (widget.itemCategories[i] == 'number'){
+        f.add([categoryGetMinMax(widgetProvider, i)[0], categoryGetMinMax(widgetProvider, i)[1]]);
       } else {
         f.add(null);
       }
@@ -104,6 +121,66 @@ class _DataTableWidgetState extends State<DataTableWidget> {
 
     widgetProvider.setState(widget.id, f);
     return f;
+  }
+
+  bool categoryHasFilters(WidgetStatesProvider widgetProvider, i){
+    List f = widgetProvider.states[widget.id]??[];
+
+    if (widget.itemCategories[i] == 'text'){
+      if (f.length <= i){
+        return false;
+      }
+      for (List item in f[i]){
+        if (!item[1]){
+          return true;
+        }
+      }
+      return false;
+    } else if (widget.itemCategories[i] == 'number'){
+      if (f.length <= i){
+        return false;
+      }
+      if ((f[i][0] == categoryGetMinMax(widgetProvider, i)[0]) && (f[i][1] == categoryGetMinMax(widgetProvider, i)[1])){
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  bool hasFilters(WidgetStatesProvider widgetProvider){
+    List f = widgetProvider.states[widget.id]??[];
+
+    for (int i = 0; i < widget.itemCategories.length; i++){
+      if (categoryHasFilters(widgetProvider, i)){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  List<int> categoryGetMinMax(WidgetStatesProvider widgetProvider, i){
+    List f = widgetProvider.states[widget.id]??[];
+
+    if (widget.itemCategories[i] == 'number'){
+
+      int min = widget.items[0][i];
+      int max = widget.items[0][i];
+
+      for (List item in widget.items){
+        if (item[i] > max){
+          max = item[i];
+        } else if (item[i] < min){
+          min = item[i];
+        }
+      }
+      print([min, max]);
+      return [min, max];
+    } else {
+      return [0, 0];
+    }
   }
 
   @override
@@ -150,6 +227,10 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                       list.add(item.data.value);
                                     }
 
+                                    print('selectedItems');
+                                    for (SelectedListItem<ListItem> item in selectedItems){
+                                      print(item.data);
+                                    }
                                     for (List itemContent in f[i]){
                                       String content = itemContent[0];
                                       if (list.contains(content)){
@@ -159,6 +240,8 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                       }
                                     }
 
+                                    print(f);
+
                                     widgetProvider.setState(widget.id, f);
                                   },
                                 ),
@@ -167,22 +250,77 @@ class _DataTableWidgetState extends State<DataTableWidget> {
 
                               widgetProvider.setState(widget.id, f);
 
-                            } else {
-                              resetFilters(widgetProvider);
+                            } else if (widget.itemCategories[i] == 'number'){
+                              print('ecco il filtro usato');
+                              print(f[i]);
+                              print(f[i][0]);
+                              print(f[i][1]);
+                              showModalBottomSheet<List<int>>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  var modalSheetWidgetProvider = context.watch<WidgetStatesProvider>();
+                                  List f = modalSheetWidgetProvider.states[widget.id]??[];
+
+                                  print(f);
+                                  if (f.isEmpty){
+                                    f = resetFilters(modalSheetWidgetProvider);
+                                  }
+
+                                  return SizedBox(
+                                    height: 200,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          const Text('Modal BottomSheet'),
+                                          SfRangeSlider(
+                                            min: categoryGetMinMax(modalSheetWidgetProvider, i)[0],
+                                            max: categoryGetMinMax(modalSheetWidgetProvider, i)[1],
+                                            values: SfRangeValues(f[i][0], f[i][1]),
+                                            interval: 5,
+                                            showTicks: false,
+                                            showLabels: true,
+                                            enableTooltip: true,
+                                            minorTicksPerInterval: 5,
+                                            stepSize: 1,
+                                            inactiveColor: Theme.of(context).colorScheme.secondary,
+                                            onChanged: (SfRangeValues values){
+                                              setState(() {
+                                                f[i][0] = values.start.toInt();
+                                                f[i][1] = values.end.toInt();
+                                                f = f.toList();
+                                                modalSheetWidgetProvider.setState(widget.id, f);
+                                              });
+                                            },
+                                          ),
+                                          ElevatedButton(
+                                            child: const Text('Close BottomSheet'),
+                                            onPressed: () => Navigator.pop(context),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
                             }
                           },
                           child: Center(
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-                              child: SizedBox(
-                                  height: 35,
-                                  child: Text(
-                                      widget.itemsColumn[i],
-                                      style: TextStyle(
-                                          fontStyle: FontStyle.italic,
-                                          fontWeight: FontWeight.bold
-                                      )
-                                  )
+                              child: badges.Badge(
+                                showBadge: categoryHasFilters(widgetProvider, i),
+                                child: SizedBox(
+                                    height: 25,
+                                    child: Text(
+                                        widget.itemsColumn[i],
+                                        style: TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            fontWeight: FontWeight.bold
+                                        )
+                                    )
+                                ),
                               ),
                             ),
                           ),
@@ -190,6 +328,20 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                     )
                 ),
           ],
+        ),
+        if (hasFilters(widgetProvider)) ElevatedButton(
+            onPressed: (){
+              resetFilters(widgetProvider);
+            },
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Text(
+              'Clear All Filters',
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            )
         ),
         Expanded( 
           child: SmartRefresher(
@@ -229,7 +381,7 @@ class _DataTableWidgetState extends State<DataTableWidget> {
               },
             ),
           ),
-        ),
+        )
       ],
     );
   }

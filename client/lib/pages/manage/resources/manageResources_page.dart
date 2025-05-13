@@ -79,6 +79,7 @@ class _ManageResourcesState extends State<ManageResources> {
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
           child: DataTableWidget(
+              id: 'manageResources',
               header: [
                 AppLocalizations.of(context)!.resource_name,
                 AppLocalizations.of(context)!.resource_description,
@@ -91,28 +92,28 @@ class _ManageResourcesState extends State<ManageResources> {
               },
               items: manageResourcesProvider.resources,
               itemsColumn: [
-                false,  //0
-                true, //1
-                true,  //2
-                true, //3
-                true,  //4
-                false,  //5
-                false, //6
-                false,  //7
-                false,  //8
-                false,  //9
+                null,  //0
+                AppLocalizations.of(context)!.resource_name, //1
+                AppLocalizations.of(context)!.resource_description,  //2
+                AppLocalizations.of(context)!.resource_quantity, //3
+                null,  //4
+                null,  //5
+                null, //6
+                null,  //7
+                null,  //8
+                AppLocalizations.of(context)!.resource_type,  //9
               ],
               itemCategories: [
                 'other',
+                'text',
+                'text',
+                'number',
                 'other',
                 'other',
                 'other',
                 'other',
                 'other',
-                'other',
-                'other',
-                'other',
-                'other'
+                'text'
               ],
               refreshController: refreshController
           )

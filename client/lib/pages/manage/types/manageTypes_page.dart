@@ -78,6 +78,7 @@ class _ManageTypesAdminState extends State<ManageTypesAdmin> {
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
           child: DataTableWidget(
+              id: 'manageTypes',
               header: [AppLocalizations.of(context)!.type_name, AppLocalizations.of(context)!.type_description],
               onRefresh: refreshTypes,
               onItemTap: (List item) {
@@ -85,14 +86,14 @@ class _ManageTypesAdminState extends State<ManageTypesAdmin> {
               },
               items: manageTypesProvider.types,
               itemsColumn: [
-                false,  //0
-                true, //1
-                true,  //2
+                null,  //0
+                AppLocalizations.of(context)!.type_name, //1
+                AppLocalizations.of(context)!.type_description,  //2
               ],
               itemCategories: [
                 'other',
-                'other',
-                'other'
+                'text',
+                'text'
               ],
               refreshController: refreshController
           )

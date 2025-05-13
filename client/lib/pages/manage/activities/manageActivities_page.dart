@@ -80,6 +80,7 @@ class _ManageActivitiesAdminState extends State<ManageActivitiesAdmin> {
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
           child: DataTableWidget(
+              id: 'manageActivities',
               header: [AppLocalizations.of(context)!.activity_name, AppLocalizations.of(context)!.activity_description],
               onRefresh: refreshActivities,
               onItemTap: (List item) {
@@ -87,15 +88,15 @@ class _ManageActivitiesAdminState extends State<ManageActivitiesAdmin> {
               },
               items: manageActivitiesProvider.activities,
               itemsColumn: [
-                false,  //0
-                true, //1
-                true,  //2
+                null,  //0
+                AppLocalizations.of(context)!.activity_name, //1
+                AppLocalizations.of(context)!.activity_description,  //2
               ],
               refreshController: refreshController,
               itemCategories: [
                 'other',
-                'other',
-                'other'
+                'text',
+                'text'
               ],
           )
       ),

@@ -78,6 +78,7 @@ class _ManagePlacesAdminState extends State<ManagePlacesAdmin> {
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
           child: DataTableWidget(
+              id: 'managePlaces',
               header: [AppLocalizations.of(context)!.place_name, AppLocalizations.of(context)!.place_description],
               onRefresh: refreshPlaces,
               onItemTap: (List item) {
@@ -85,14 +86,14 @@ class _ManagePlacesAdminState extends State<ManagePlacesAdmin> {
               },
               items: managePlacesProvider.places,
               itemsColumn: [
-                false,  //0
-                true, //1
-                true,  //2
+                null,  //0
+                AppLocalizations.of(context)!.place_name, //1
+                AppLocalizations.of(context)!.place_description,  //2
               ],
               itemCategories: [
                 'other',
-                'other',
-                'other'
+                'text',
+                'text'
               ],
               refreshController: refreshController
           )

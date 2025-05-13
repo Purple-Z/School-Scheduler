@@ -94,6 +94,7 @@ class _ManagePendingRequestsAdminState extends State<ManagePendingRequestsAdmin>
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
           child: DataTableWidget(
+              id: 'manageRequests',
               header: ['Start', 'End', 'Quantity', 'Resource'],
               onRefresh: refreshRequests,
               onItemTap: (List item) {
@@ -101,25 +102,25 @@ class _ManagePendingRequestsAdminState extends State<ManagePendingRequestsAdmin>
               },
               items: getItem(manageRequestsProvider.requests),
               itemsColumn: [
-                false,  //0
-                true, //1
-                true,  //2
-                true,  //3
-                false, //4
-                true,  //5
-                false,  //6
-                false,  //7
-                false,  //8
-                false,  //9
-                false, //10
+                null,  //0
+                'Start', //1
+                'End',  //2
+                'Quantity',  //3
+                null, //4
+                'Resource',  //5
+                null,  //6
+                null,  //7
+                null,  //8
+                null,  //9
+                null, //10
               ],
               itemCategories: [
                 'other',
+                'text',
+                'text',
+                'number',
                 'other',
-                'other',
-                'other',
-                'other',
-                'other',
+                'text',
                 'other',
                 'other',
                 'other',
