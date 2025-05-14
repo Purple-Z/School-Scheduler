@@ -72,11 +72,11 @@ class _ManagePendingRequestsAdminState extends State<ManagePendingRequestsAdmin>
 
 
 
-      for (int i in [1, 2]){
-        DateTime dateTime = DateTime.tryParse(newItem[i]) ?? DateTime.now();
-        newItem[i] = getTimePrintable(dateTime)+'\n';
-        newItem[i] += getDatePrintable(dateTime, context);
-      }
+      //for (int i in [1, 2]){
+      //  DateTime dateTime = DateTime.tryParse(newItem[i]) ?? DateTime.now();
+      //  newItem[i] = getTimePrintable(dateTime)+'\n';
+      //  newItem[i] += getDatePrintable(dateTime, context);
+      //}
 
       newItems.add(newItem);
     }
@@ -100,7 +100,7 @@ class _ManagePendingRequestsAdminState extends State<ManagePendingRequestsAdmin>
               onItemTap: (List item) {
                 context.push(Routes.manage_Requests_RequestDetails, extra: {'requestId': item[0]});
               },
-              items: getItem(manageRequestsProvider.requests),
+              items: manageRequestsProvider.requests,
               itemsColumn: [
                 null,  //0
                 'Start', //1
@@ -116,8 +116,8 @@ class _ManagePendingRequestsAdminState extends State<ManagePendingRequestsAdmin>
               ],
               itemCategories: [
                 'other',
-                'text',
-                'text',
+                'time',
+                'time',
                 'number',
                 'other',
                 'text',

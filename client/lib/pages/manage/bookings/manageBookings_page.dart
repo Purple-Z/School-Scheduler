@@ -89,6 +89,7 @@ class _ManageBookingsAdminState extends State<ManageBookingsAdmin> {
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: ResponsiveCalendarAndEvents(
+            id: 'manageBookings',
             appProvider: appProvider,
             currentEvents: currentEvents,
             events: manageBookingsProvider.events,

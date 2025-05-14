@@ -12,6 +12,7 @@ import 'package:go_router/go_router.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../../router/routes.dart';
+import '../functions.dart';
 
 class DataTableWidget extends StatefulWidget {
   final List<String> header;
@@ -81,6 +82,23 @@ class _DataTableWidgetState extends State<DataTableWidget> {
           } else {
             new_items.add(item);
           }
+        } else if (widget.itemCategories[i] == 'time') {
+          if (f.length >= i){
+            DateTime currDateTime = DateTime.tryParse(item[i]) ?? DateTime.now();
+            if (
+                (currDateTime.isAfter(f[i][0]) || currDateTime.isAtSameMomentAs(f[i][0]))
+                &&
+                (currDateTime.isBefore(f[i][1]) || currDateTime.isAtSameMomentAs(f[i][1]))){
+
+              List newItem = item.toList();
+              newItem[i] = getPrintableDateTime(newItem[i]);
+              new_items.add(newItem);
+            }
+          } else {
+            List newItem = item.toList();
+            newItem[i] = getPrintableDateTime(newItem[i]);
+            new_items.add(newItem);
+          }
         } else {
           new_items.add(item);
         }
@@ -92,6 +110,13 @@ class _DataTableWidgetState extends State<DataTableWidget> {
 
 
     return curr_items;
+  }
+
+  getPrintableDateTime (String dateTimeStr) {
+    DateTime dateTime = DateTime.tryParse(dateTimeStr) ?? DateTime.now();
+    String result = getTimePrintable(dateTime)+'\n';
+    result += getDatePrintable(dateTime, context);
+    return result;
   }
 
   resetFilters(WidgetStatesProvider widgetProvider){
@@ -113,7 +138,9 @@ class _DataTableWidgetState extends State<DataTableWidget> {
 
         f.add(items);
       } else if (widget.itemCategories[i] == 'number'){
-        f.add([categoryGetMinMax(widgetProvider, i)[0], categoryGetMinMax(widgetProvider, i)[1]]);
+        f.add([numberCategoryGetMinMax(widgetProvider, i)[0], numberCategoryGetMinMax(widgetProvider, i)[1]]);
+      } else if (widget.itemCategories[i] == 'time') {
+        f.add([timeCategoryGetMinMax(widgetProvider, i)[0], timeCategoryGetMinMax(widgetProvider, i)[1]]);
       } else {
         f.add(null);
       }
@@ -140,7 +167,16 @@ class _DataTableWidgetState extends State<DataTableWidget> {
       if (f.length <= i){
         return false;
       }
-      if ((f[i][0] == categoryGetMinMax(widgetProvider, i)[0]) && (f[i][1] == categoryGetMinMax(widgetProvider, i)[1])){
+      if ((f[i][0] == numberCategoryGetMinMax(widgetProvider, i)[0]) && (f[i][1] == numberCategoryGetMinMax(widgetProvider, i)[1])){
+        return false;
+      } else {
+        return true;
+      }
+    } else if (widget.itemCategories[i] == 'time') {
+      if (f.length <= i){
+        return false;
+      }
+      if (timeCategoryGetMinMax(widgetProvider, i)[0].isAtSameMomentAs(f[i][0]) && timeCategoryGetMinMax(widgetProvider, i)[1].isAtSameMomentAs(f[i][1])){
         return false;
       } else {
         return true;
@@ -161,7 +197,33 @@ class _DataTableWidgetState extends State<DataTableWidget> {
     return false;
   }
 
-  List<int> categoryGetMinMax(WidgetStatesProvider widgetProvider, i){
+  List<DateTime> timeCategoryGetMinMax(WidgetStatesProvider widgetProvider, i){
+    List f = widgetProvider.states[widget.id]??[];
+
+    if (widget.itemCategories[i] == 'time'){
+
+      print('qua');
+      print(widget.items[0][i]);
+      print(widget.items[0][i].runtimeType);
+      DateTime min = DateTime.tryParse(widget.items[0][i]) ?? DateTime.now();
+      DateTime max = DateTime.tryParse(widget.items[0][i]) ?? DateTime.now();
+
+      for (List item in widget.items){
+        DateTime currDateTime = DateTime.tryParse(item[i]) ?? DateTime.now();
+        if (currDateTime.isAfter(max)){
+          max = currDateTime;
+        } else if (currDateTime.isBefore(min)){
+          min = currDateTime;
+        }
+      }
+      print([min, max]);
+      return [min, max];
+    } else {
+      return [DateTime.now(), DateTime.now()];
+    }
+  }
+
+  List<int> numberCategoryGetMinMax(WidgetStatesProvider widgetProvider, i){
     List f = widgetProvider.states[widget.id]??[];
 
     if (widget.itemCategories[i] == 'number'){
@@ -207,6 +269,7 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                             print(f);
 
                             if (widget.itemCategories[i] == 'text'){
+
                               List<SelectedListItem<ListItem>> selections = [];
                               for (List categoryItem in f[i]){
                                 selections.add(SelectedListItem<ListItem>(
@@ -250,7 +313,62 @@ class _DataTableWidgetState extends State<DataTableWidget> {
 
                               widgetProvider.setState(widget.id, f);
 
-                            } else if (widget.itemCategories[i] == 'number'){
+                            }
+                            else if (widget.itemCategories[i] == 'number'){
+                              showModalBottomSheet<List<int>>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  var modalSheetWidgetProvider = context.watch<WidgetStatesProvider>();
+                                  List f = modalSheetWidgetProvider.states[widget.id]??[];
+
+                                  print(f);
+                                  if (f.isEmpty){
+                                    f = resetFilters(modalSheetWidgetProvider);
+                                  }
+
+                                  return SizedBox(
+                                    height: MediaQuery.of(context).size.height*0.3,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          const Text('Select Range'),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                            child: SfRangeSlider(
+                                              min: numberCategoryGetMinMax(modalSheetWidgetProvider, i)[0],
+                                              max: numberCategoryGetMinMax(modalSheetWidgetProvider, i)[1],
+                                              values: SfRangeValues(f[i][0], f[i][1]),
+                                              interval: 5,
+                                              showTicks: false,
+                                              showLabels: true,
+                                              enableTooltip: true,
+                                              minorTicksPerInterval: 5,
+                                              stepSize: 1,
+                                              inactiveColor: Theme.of(context).colorScheme.secondary,
+                                              onChanged: (SfRangeValues values){
+                                                setState(() {
+                                                  f[i][0] = values.start.toInt();
+                                                  f[i][1] = values.end.toInt();
+                                                  f = f.toList();
+                                                  modalSheetWidgetProvider.setState(widget.id, f);
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                          ElevatedButton(
+                                            child: const Text('Close'),
+                                            onPressed: () => Navigator.pop(context),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                            else if (widget.itemCategories[i] == 'time') {
                               print('ecco il filtro usato');
                               print(f[i]);
                               print(f[i][0]);
@@ -267,35 +385,110 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                   }
 
                                   return SizedBox(
-                                    height: 200,
+                                    height: MediaQuery.of(context).size.height*0.7,
                                     child: Center(
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
-                                          const Text('Modal BottomSheet'),
-                                          SfRangeSlider(
-                                            min: categoryGetMinMax(modalSheetWidgetProvider, i)[0],
-                                            max: categoryGetMinMax(modalSheetWidgetProvider, i)[1],
-                                            values: SfRangeValues(f[i][0], f[i][1]),
-                                            interval: 5,
-                                            showTicks: false,
-                                            showLabels: true,
-                                            enableTooltip: true,
-                                            minorTicksPerInterval: 5,
-                                            stepSize: 1,
-                                            inactiveColor: Theme.of(context).colorScheme.secondary,
-                                            onChanged: (SfRangeValues values){
-                                              setState(() {
-                                                f[i][0] = values.start.toInt();
-                                                f[i][1] = values.end.toInt();
-                                                f = f.toList();
-                                                modalSheetWidgetProvider.setState(widget.id, f);
-                                              });
-                                            },
+                                          SizedBox(height: 20,),
+                                          const Text('Select Range'),
+
+                                          Expanded(child: SizedBox()),
+
+                                          Text('From', style: TextStyle(fontSize: 20),),
+                                          Center(
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                ElevatedButton(
+                                                  style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0))),
+                                                  onPressed: () async {
+                                                    DateTime? pickedDate = await selectDate(context, f[i][0]);
+
+                                                    if (pickedDate != null) {
+                                                      setState(() {
+                                                        f[i][0] = pickedDate;
+                                                        f = f.toList();
+                                                        modalSheetWidgetProvider.setState(widget.id, f);
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Text(
+                                                    getDatePrintable(f[i][0], context),
+                                                    style: TextStyle(fontSize: 18),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 5,),
+                                                ElevatedButton(
+                                                  style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0))),
+                                                  onPressed: () async {
+                                                    DateTime? pickedDate = await selectTime(context, f[i][0]);
+
+                                                    if (pickedDate != null) {
+                                                      setState(() {
+                                                        f[i][0] = pickedDate;
+                                                        f = f.toList();
+                                                        modalSheetWidgetProvider.setState(widget.id, f);
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Text(
+                                                    getTimePrintable(f[i][0]),
+                                                    style: TextStyle(fontSize: 18),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
+                                          Text('To', style: TextStyle(fontSize: 20),),
+                                          Center(
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                ElevatedButton(
+                                                  style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0))),
+                                                  onPressed: () async {
+                                                    DateTime? pickedDate = await selectDate(context, f[i][1]);
+
+                                                    if (pickedDate != null) {
+                                                      setState(() {
+                                                        f[i][1] = pickedDate;
+                                                        f = f.toList();
+                                                        modalSheetWidgetProvider.setState(widget.id, f);
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Text(
+                                                    getDatePrintable(f[i][1], context),
+                                                    style: TextStyle(fontSize: 18),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 5,),
+                                                ElevatedButton(
+                                                  style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0))),
+                                                  onPressed: () async {
+                                                    DateTime? pickedDate = await selectTime(context, f[i][1]);
+
+                                                    if (pickedDate != null) {
+                                                      setState(() {
+                                                        f[i][1] = pickedDate;
+                                                        f = f.toList();
+                                                        modalSheetWidgetProvider.setState(widget.id, f);
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Text(
+                                                    getTimePrintable(f[i][1]),
+                                                    style: TextStyle(fontSize: 18),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(child: SizedBox()),
                                           ElevatedButton(
-                                            child: const Text('Close BottomSheet'),
+                                            child: const Text('Close'),
                                             onPressed: () => Navigator.pop(context),
                                           ),
                                         ],
@@ -356,7 +549,12 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(3.0),
-                      child: Divider(),
+                      child: Divider(thickness: 1, color: Color.lerp(
+                          Theme.of(context).colorScheme.onPrimary,
+                          Theme.of(context).colorScheme.surface,
+                          0.4
+                        )
+                      ),
                     ),
                     ElevatedButton(
                       style: ButtonStyle(
@@ -370,7 +568,10 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                             if (widget.itemsColumn[i] != null)
                               Expanded(
                                 child: Center(
-                                  child: Text("${item[i]}"),
+                                  child: Text(
+                                    "${item[i]}",
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                               ),
                         ],

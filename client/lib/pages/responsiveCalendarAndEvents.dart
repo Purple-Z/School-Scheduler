@@ -21,6 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'manage/classes.dart';
 import 'manage/manage_page.dart';
 import 'manage/resources/addResource/addResource_page.dart';
+import 'manage/widgetsStates_provider.dart';
 
 enum Filters {
   Pending,
@@ -324,7 +325,7 @@ class ResponsiveCalendarAndEvents extends StatefulWidget {
   Map<DateTime, List<Booking>> events = {};
   bool canDelete = false;
   final Function loadEvents;
-  Map<String, dynamic> filters = {};
+  final String id;
 
   ResponsiveCalendarAndEvents({
     Key? key,
@@ -332,8 +333,11 @@ class ResponsiveCalendarAndEvents extends StatefulWidget {
     required this.currentEvents,
     required this.events,
     required this.canDelete,
-    required this.loadEvents
+    required this.loadEvents,
+    required this.id,
   }) : super(key: key);
+
+
 
   @override
   State<ResponsiveCalendarAndEvents> createState() => _ResponsiveCalendarAndEventsState();
@@ -343,7 +347,11 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay = DateTime.now();
 
-  List<Booking> _getEventsForDay(DateTime day) {
+  resetFilters(WidgetStatesProvider widgetProvider) async {
+    widgetProvider.setState(widget.id, {});
+  }
+
+  List<Booking> _getEventsForDay(WidgetStatesProvider widgetProvider, DateTime day) {
     final normalizedDay = DateTime(day.year, day.month, day.day);
 
     //print(widget.events.toString());
@@ -353,18 +361,23 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
 
     List<Booking> final_day_booking = [];
 
+    if (widgetProvider.states[widget.id] == null) {
+      resetFilters(widgetProvider);
+      return [];
+    }
+
     for (Booking b in day_bookings){
-      if (widget.filters.containsKey('time_range')){
+      if (widgetProvider.states[widget.id].containsKey('time_range')){
 
         if  ((!(
               (
-                (b.start.hour == widget.filters['time_range'][1] && b.start.minute > 0) ||
-                (b.start.hour > widget.filters['time_range'][1])
+                (b.start.hour == widgetProvider.states[widget.id]['time_range'][1] && b.start.minute > 0) ||
+                (b.start.hour > widgetProvider.states[widget.id]['time_range'][1])
               )
             &&
               (
-                (b.end.hour == widget.filters['time_range'][1] && b.end.minute > 0) ||
-                (b.end.hour > widget.filters['time_range'][1])
+                (b.end.hour == widgetProvider.states[widget.id]['time_range'][1] && b.end.minute > 0) ||
+                (b.end.hour > widgetProvider.states[widget.id]['time_range'][1])
               )
             )
             )
@@ -373,11 +386,11 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
 
             (!(
             (
-                (b.start.hour < widget.filters['time_range'][0])
+                (b.start.hour < widgetProvider.states[widget.id]['time_range'][0])
             )
             &&
               (
-                (b.end.hour < widget.filters['time_range'][0])
+                (b.end.hour < widgetProvider.states[widget.id]['time_range'][0])
               )
             )
           )
@@ -393,8 +406,8 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
     final_day_booking = [];
 
     for (Booking b in day_bookings){
-      if (widget.filters.containsKey('users')){
-        if (widget.filters['users'].contains(b.user_email)){
+      if (widgetProvider.states[widget.id].containsKey('users')){
+        if (widgetProvider.states[widget.id]['users'].contains(b.user_email)){
           final_day_booking.add(b);
         }
       } else {
@@ -406,8 +419,8 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
     final_day_booking = [];
 
     for (Booking b in day_bookings){
-      if (widget.filters.containsKey('resources')){
-        if (widget.filters['resources'].contains(b.resource_name)){
+      if (widgetProvider.states[widget.id].containsKey('resources')){
+        if (widgetProvider.states[widget.id]['resources'].contains(b.resource_name)){
           final_day_booking.add(b);
         }
       } else {
@@ -419,22 +432,8 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
     final_day_booking = [];
 
     for (Booking b in day_bookings){
-      if (widget.filters.containsKey('places')){
-        if (widget.filters['places'].contains(b.place_name)){
-          final_day_booking.add(b);
-        }
-      } else {
-        final_day_booking.add(b);
-      }
-    }
-
-    day_bookings = final_day_booking;
-    final_day_booking = [];
-
-
-    for (Booking b in day_bookings){
-      if (widget.filters.containsKey('activities')){
-        if (widget.filters['activities'].contains(b.activity_name)){
+      if (widgetProvider.states[widget.id].containsKey('places')){
+        if (widgetProvider.states[widget.id]['places'].contains(b.place_name)){
           final_day_booking.add(b);
         }
       } else {
@@ -447,8 +446,22 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
 
 
     for (Booking b in day_bookings){
-      if (widget.filters.containsKey('quantity_range')){
-        if ((widget.filters['quantity_range'][0] <= b.quantity) && (widget.filters['quantity_range'][1] >= b.quantity)){
+      if (widgetProvider.states[widget.id].containsKey('activities')){
+        if (widgetProvider.states[widget.id]['activities'].contains(b.activity_name)){
+          final_day_booking.add(b);
+        }
+      } else {
+        final_day_booking.add(b);
+      }
+    }
+
+    day_bookings = final_day_booking;
+    final_day_booking = [];
+
+
+    for (Booking b in day_bookings){
+      if (widgetProvider.states[widget.id].containsKey('quantity_range')){
+        if ((widgetProvider.states[widget.id]['quantity_range'][0] <= b.quantity) && (widgetProvider.states[widget.id]['quantity_range'][1] >= b.quantity)){
           final_day_booking.add(b);
         }
       } else {
@@ -462,14 +475,16 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
 
   @override
   Widget build(BuildContext context) {
+    var widgetProvider = context.watch<WidgetStatesProvider>();
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         if (constraints.maxWidth < widget.appProvider.maxWidth) {
           return SingleChildScrollView(
             child: Column(
               children: [
-                buildTopBar(),
-                buildTableCalendar(),
+                buildTopBar(widgetProvider),
+                buildTableCalendar(widgetProvider),
                 SizedBox(height: 30),
                 EventListWidget(currentEvents: widget.currentEvents, canDelete: widget.canDelete, loadEvents: widget.loadEvents,),
               ],
@@ -478,14 +493,14 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
         } else {
           return Row(
             children: [
-              Expanded(child: buildTableCalendar()),
+              Expanded(child: buildTableCalendar(widgetProvider)),
               SizedBox(width: 30),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
                       SizedBox(height: 20,),
-                      buildTopBar(),
+                      buildTopBar(widgetProvider),
                       EventListWidget(currentEvents: widget.currentEvents, canDelete: widget.canDelete, loadEvents: widget.loadEvents,),
                     ],
                   ),
@@ -498,7 +513,7 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
     );
   }
 
-  Row buildTopBar() {
+  Row buildTopBar(WidgetStatesProvider widgetProvider) {
     return  Row(
               children: [
                   ElevatedButton(
@@ -527,9 +542,9 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
 
                         double start = 0;
                         double end =  24;
-                        if (widget.filters.containsKey('time_range')){
-                          start = widget.filters['time_range'][0] as double;
-                          end = widget.filters['time_range'][1] as double;
+                        if (widgetProvider.states[widget.id].containsKey('time_range')){
+                          start = widgetProvider.states[widget.id]['time_range'][0] as double;
+                          end = widgetProvider.states[widget.id]['time_range'][1] as double;
                         }
 
                         List<Booking> all_bookings = [];
@@ -547,8 +562,8 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
 
                         for (int i = 0; i < users.length; i++){
                           bool fb = true;
-                          if (widget.filters.containsKey('users')){
-                            if (!widget.filters['users'].contains(users[i])){
+                          if (widgetProvider.states[widget.id].containsKey('users')){
+                            if (!widgetProvider.states[widget.id]['users'].contains(users[i])){
                               fb = false;
                             }
                           }
@@ -565,8 +580,8 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
 
                         for (int i = 0; i < resources.length; i++){
                           bool fb = true;
-                          if (widget.filters.containsKey('resources')){
-                            if (!widget.filters['resources'].contains(resources[i])){
+                          if (widgetProvider.states[widget.id].containsKey('resources')){
+                            if (!widgetProvider.states[widget.id]['resources'].contains(resources[i])){
                               fb = false;
                             }
                           }
@@ -582,8 +597,8 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
 
                         for (int i = 0; i < places.length; i++){
                           bool fb = true;
-                          if (widget.filters.containsKey('places')){
-                            if (!widget.filters['places'].contains(places[i])){
+                          if (widgetProvider.states[widget.id].containsKey('places')){
+                            if (!widgetProvider.states[widget.id]['places'].contains(places[i])){
                               fb = false;
                             }
                           }
@@ -599,8 +614,8 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
 
                         for (int i = 0; i < activities.length; i++){
                           bool fb = true;
-                          if (widget.filters.containsKey('activities')){
-                            if (!widget.filters['activities'].contains(activities[i])){
+                          if (widgetProvider.states[widget.id].containsKey('activities')){
+                            if (!widgetProvider.states[widget.id]['activities'].contains(activities[i])){
                               fb = false;
                             }
                           }
@@ -621,9 +636,9 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
                         int quantity_min = absolute_min;
                         int quantity_max = absolute_max;
 
-                        if (widget.filters.containsKey('quantity_range')){
-                          quantity_min = widget.filters['quantity_range'][0].toInt();
-                          quantity_max = widget.filters['quantity_range'][1].toInt();
+                        if (widgetProvider.states[widget.id].containsKey('quantity_range')){
+                          quantity_min = widgetProvider.states[widget.id]['quantity_range'][0].toInt();
+                          quantity_max = widgetProvider.states[widget.id]['quantity_range'][1].toInt();
                         }
 
                         print('min/max: '+ absolute_min.toString() + ', ' + absolute_max.toString());
@@ -651,8 +666,8 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
 
                         if (result != null) {
                           setState(() {
-                            widget.filters = result;
-                            widget.currentEvents = _getEventsForDay(_selectedDay ?? DateTime.now());
+                            widgetProvider.setState(widget.id, result);
+                            widget.currentEvents = _getEventsForDay(widgetProvider, _selectedDay ?? DateTime.now());
                           });
                         }
                       },
@@ -662,7 +677,7 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
               );
   }
 
-  TableCalendar<Booking> buildTableCalendar() {
+  TableCalendar<Booking> buildTableCalendar(WidgetStatesProvider widgetProvider) {
     return TableCalendar<Booking>(
       firstDay: DateTime(2010, 10, 16),
       lastDay: DateTime(2030, 3, 14),
@@ -675,7 +690,7 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
           _selectedDay = selectedDay;
           _focusedDay = focusedDay;
           setState(() {
-            widget.currentEvents = _getEventsForDay(_selectedDay ?? DateTime.now());
+            widget.currentEvents = _getEventsForDay(widgetProvider, _selectedDay ?? DateTime.now());
             //widget.currentEvents = _getEventsForDay(DateTime(2025, 04, 14));
           });
           //widget.manageBookingsProvider.setCurrentEvents(_getEventsForDay(_selectedDay ?? DateTime.now()));
@@ -683,7 +698,7 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
       },
       locale: widget.appProvider.locale.toLanguageTag(),
       eventLoader: (day) {
-        return _getEventsForDay(day);
+        return _getEventsForDay(widgetProvider, day);
       },
       calendarBuilders: CalendarBuilders(
         markerBuilder: (context, day, events) {
