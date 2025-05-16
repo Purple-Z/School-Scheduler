@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from itertools import groupby
 from setup import setupDB
 from mail import sendMail
-import pytz
+import pytz, bcrypt
 
 import json
 
@@ -95,7 +95,7 @@ def login():
             roles.append(getRoleInformation(role_id))
     #print("roles: " + str(roles))
 
-    if user_password_hash == password:
+    if verify_password(user_password_hash, password):
         return jsonify(
             {
                 "name": user_name,
@@ -225,7 +225,7 @@ def change_password():
     user_id = getIdFromEmail(email)
 
 
-    if result[0][4] != password:
+    if not verify_password(result[0][4], password):
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -238,7 +238,7 @@ def change_password():
 
     sql_update = f'''
     UPDATE users SET
-        password_hash = '{new_password}'
+        password_hash = '{hash_password(new_password)}'
     WHERE email = '{email}'
     '''
 
@@ -972,7 +972,7 @@ def reset_password():
 
     sql_update = f'''
     UPDATE users SET
-        password_hash = '{password}'
+        password_hash = '{hash_password(password)}'
     WHERE id = {new_user_id}
     '''
 
@@ -3684,6 +3684,17 @@ def get_user_bookings():
         }
     ), 200
 
+def hash_password(password):
+    password_bytes = password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password_bytes, salt)
+    return hashed_password.decode('utf-8')
+
+def verify_password(stored_hash, password):
+    password_bytes = password.encode('utf-8')
+    hashed_bytes = stored_hash.encode('utf-8')
+    return bcrypt.checkpw(password_bytes, hashed_bytes)
+
 def addUser(new_name, new_surname, new_email, new_roles):    
     password = generate_password()
     subject = "School Scheduler Activation"
@@ -3708,7 +3719,7 @@ def addUser(new_name, new_surname, new_email, new_roles):
             '{new_name}', 
             '{new_surname}', 
             '{new_email}', 
-            '{password}', 
+            '{hash_password(password)}', 
             ' '
         )
         '''

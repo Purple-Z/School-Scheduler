@@ -46,10 +46,6 @@ class _DataTableWidgetState extends State<DataTableWidget> {
   getItems(WidgetStatesProvider widgetProvider){
     List f = widgetProvider.states[widget.id]??[];
 
-    if (f.isEmpty){
-      return widget.items;
-    }
-
     if (widget.items.isEmpty){
       return [];
     }
@@ -99,6 +95,52 @@ class _DataTableWidgetState extends State<DataTableWidget> {
             newItem[i] = getPrintableDateTime(newItem[i]);
             new_items.add(newItem);
           }
+        } else if (widget.itemCategories[i] == 'multi-text') {
+          if (f.length >= i){
+
+            bool flag = false;
+
+            for (List element in f[i]){
+
+              for (String itemElement in item[i]){
+                if (element[0] == itemElement && element[1]){
+                  flag = true;
+                  break;
+                }
+
+                if (flag) {
+                  break;
+                }
+              }
+
+              if (flag) {
+                break;
+              }
+            }
+
+            if (flag){
+
+              String result = '';
+
+              for (String text in item[i]){
+                result += (text + '\n');
+              }
+
+              List newItem = item.toList();
+              newItem[i] = result;
+              new_items.add(newItem);
+            }
+          } else {
+            String result = '';
+
+            for (String text in item[i]){
+              result += (text + '\n');
+            }
+
+            List newItem = item.toList();
+            newItem[i] = result;
+            new_items.add(newItem);
+          }
         } else {
           new_items.add(item);
         }
@@ -106,7 +148,6 @@ class _DataTableWidgetState extends State<DataTableWidget> {
 
       curr_items = new_items;
     }
-
 
 
     return curr_items;
@@ -141,6 +182,25 @@ class _DataTableWidgetState extends State<DataTableWidget> {
         f.add([numberCategoryGetMinMax(widgetProvider, i)[0], numberCategoryGetMinMax(widgetProvider, i)[1]]);
       } else if (widget.itemCategories[i] == 'time') {
         f.add([timeCategoryGetMinMax(widgetProvider, i)[0], timeCategoryGetMinMax(widgetProvider, i)[1]]);
+      } else if (widget.itemCategories[i] == 'multi-text') {
+        List items = [];
+
+        for (int j = 0; j < widget.items.length; j++){
+          List currItems = widget.items[j][i];
+
+          for (int k = 0; k < currItems.length; k++){
+            String item = currItems[k];
+            if (!items.contains(item)){
+              items.add(item);
+            }
+          }
+        }
+
+        for (int j = 0; j < items.length; j ++){
+          items[j] = [items[j], true];
+        }
+
+        f.add(items);
       } else {
         f.add(null);
       }
@@ -153,7 +213,7 @@ class _DataTableWidgetState extends State<DataTableWidget> {
   bool categoryHasFilters(WidgetStatesProvider widgetProvider, i){
     List f = widgetProvider.states[widget.id]??[];
 
-    if (widget.itemCategories[i] == 'text'){
+    if (widget.itemCategories[i] == 'text' || widget.itemCategories[i] == 'multi-text'){
       if (f.length <= i){
         return false;
       }
@@ -268,7 +328,7 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                             }
                             print(f);
 
-                            if (widget.itemCategories[i] == 'text'){
+                            if (widget.itemCategories[i] == 'text' || widget.itemCategories[i] == 'multi-text'){
 
                               List<SelectedListItem<ListItem>> selections = [];
                               for (List categoryItem in f[i]){

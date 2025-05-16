@@ -130,7 +130,7 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
               context.push(Routes.manage_Users_userDetails,
                   extra: {'userId': item[0]});
             },
-            items: getItem(manageUsersProvider.users),
+            items: manageUsersProvider.users,
             itemsColumn: [
               null, //0
               AppLocalizations.of(context)!.user_name, //1
@@ -149,7 +149,7 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
               'other',
               'other',
               'other',
-              'other'
+              'multi-text'
             ],
             refreshController: refreshController,
           )
