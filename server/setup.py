@@ -249,13 +249,13 @@ class setupDB():
         self.mycursor.execute(sql)
         self.db.commit()
 
-    def fetchSQL(self, sql):
-        self.mycursor.execute(sql)
+    def fetchSQL(self, sql, args = None):
+        self.mycursor.execute(sql, args)
         result = self.mycursor.fetchall()
         self.db.commit()
 
         return result
 
-    def executeSQL(self, sql):
-        self.mycursor.execute(sql)
+    def executeSQL(self, sql, args = None):
+        self.mycursor.execute(sql, args)
         self.db.commit()
