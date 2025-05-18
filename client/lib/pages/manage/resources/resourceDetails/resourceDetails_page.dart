@@ -105,11 +105,11 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                 Checkbox(
                   checkColor: Colors.white,
                   value: resourceDetailsProvider.slot_chek,
-                  onChanged: (bool? value) {
+                  onChanged: appProvider.edit_resources ? (bool? value) {
                     setState(() {
                       resourceDetailsProvider.slot_chek = value!;
                     });
-                  },
+                  } : null,
                 ),
                 SizedBox(width: 20,),
                 Text(
@@ -123,7 +123,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
               children: [
                 SizedBox(height: fieldsSpacing),
                 ElevatedButton(
-                    onPressed: () async {
+                    onPressed: appProvider.edit_resources ? () async {
                       resourceDetailsProvider.setSlotDuration(
                           await showDurationPicker(
                             decoration: BoxDecoration(
@@ -135,10 +135,11 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                           ) ?? resourceDetailsProvider.slot_duration
                       );
 
-                    },
+                    } : () {},
                     child: Text(
                         resourceDetailsProvider.slot_duration.inHours.toString()+' hours '+
-                            (resourceDetailsProvider.slot_duration.inMinutes-resourceDetailsProvider.slot_duration.inHours*60).toString()+' minutes'
+                        (resourceDetailsProvider.slot_duration.inMinutes-resourceDetailsProvider.slot_duration.inHours*60).toString()+' minutes',
+                      style: TextStyle(color: appProvider.edit_resources ? Theme.of(context).colorScheme.primary: Theme.of(context).colorScheme.onPrimary),
                     )
                 )
               ],
@@ -149,11 +150,11 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                 Checkbox(
                   checkColor: Colors.white,
                   value: resourceDetailsProvider.resource[8],
-                  onChanged: (bool? value) {
+                  onChanged: appProvider.edit_resources ? (bool? value) {
                     setState(() {
                       resourceDetailsProvider.resource[8] = value!;
                     });
-                  },
+                  } : null,
                 ),
                 SizedBox(width: 20,),
                 Text(
@@ -168,11 +169,11 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                 Checkbox(
                   checkColor: Colors.white,
                   value: resourceDetailsProvider.resource[9],
-                  onChanged: (bool? value) {
+                  onChanged: appProvider.edit_resources ? (bool? value) {
                     setState(() {
                       resourceDetailsProvider.resource[9] = value!;
                     });
-                  },
+                  } : null,
                 ),
                 SizedBox(width: 20,),
                 Text(
@@ -193,7 +194,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
 
 
                     ElevatedButton(
-                      onPressed: () async {
+                      onPressed: appProvider.edit_resources ? () async {
                         List<SelectedListItem<String>> selections = [];
                         for (var data in resourceDetailsProvider.places){
                           selections.add(SelectedListItem<String>(data: data[0]));
@@ -211,10 +212,12 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                             },
                           ),
                         ).showModal(context);
-                      },
+                      } : null,
                       child: Text(
                         resourceDetailsProvider.place,
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(
+                          fontSize: 20
+                        ),
                       ),
                       style: ButtonStyle(
                           shadowColor: WidgetStatePropertyAll(Colors.transparent)
@@ -225,6 +228,9 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                 Expanded(child: SizedBox())
               ],
             ),
+
+            const SizedBox(height: 15),
+
             Row(
               children: [
                 Expanded(child: SizedBox()),
@@ -234,7 +240,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
 
 
                     ElevatedButton(
-                      onPressed: () async {
+                      onPressed: appProvider.edit_resources ? () async {
                         List<SelectedListItem<String>> selections = [];
                         for (var data in resourceDetailsProvider.activities){
                           selections.add(SelectedListItem<String>(data: data[0]));
@@ -252,10 +258,12 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                             },
                           ),
                         ).showModal(context);
-                      },
+                      } : null,
                       child: Text(
                         resourceDetailsProvider.activity,
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(
+                          fontSize: 20
+                        ),
                       ),
                       style: ButtonStyle(
                           shadowColor: WidgetStatePropertyAll(Colors.transparent)
@@ -266,6 +274,9 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                 Expanded(child: SizedBox())
               ],
             ),
+
+            const SizedBox(height: 15),
+
             Row(
               children: [
                 Expanded(child: SizedBox()),
@@ -275,7 +286,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
 
 
                     ElevatedButton(
-                      onPressed: () async {
+                      onPressed: appProvider.edit_resources ? () async {
                         List<SelectedListItem<String>> selections = [];
                         for (var data in resourceDetailsProvider.types){
                           selections.add(SelectedListItem<String>(data: data[0]));
@@ -293,10 +304,12 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                             },
                           ),
                         ).showModal(context);
-                      },
+                      } : null,
                       child: Text(
                         resourceDetailsProvider.type,
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(
+                          fontSize: 20
+                        ),
                       ),
                       style: ButtonStyle(
                           shadowColor: WidgetStatePropertyAll(Colors.transparent)
@@ -307,6 +320,8 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                 Expanded(child: SizedBox())
               ],
             ),
+
+            const SizedBox(height: 15),
 
             ExpansionTile(
 
@@ -319,7 +334,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                     Column(
                       children: [
                         ElevatedButton(
-                          onPressed: () async {
+                          onPressed: appProvider.edit_resources ? () async {
                             List<SelectedListItem<ListItem>> selections = [];
                             for (List user in resourceDetailsProvider.users){
                               selections.add(SelectedListItem<ListItem>(
@@ -344,7 +359,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                                 },
                               ),
                             ).showModal(context);
-                          },
+                          } : null,
                           style: const ButtonStyle(
                               shadowColor: WidgetStatePropertyAll(Colors.transparent),
                               overlayColor: WidgetStatePropertyAll(Colors.transparent)
@@ -352,7 +367,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                           child: Column(
                             children: [
                               if(resourceDetailsProvider.users.every((riga) => riga[riga.length-1] == false))
-                                Text(AppLocalizations.of(context)!.resource_referents_empty),
+                                Text('Empty List' + (appProvider.edit_resources ? ', Tap To Add' : '')),
                               for (var user in resourceDetailsProvider.users)
                                 if (user.last == true)
                                   Padding(
@@ -376,9 +391,11 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                                       ],
                                     ),
                                   ),
+
                             ],
                           ),
                         ),
+                        const SizedBox(height: 15),
                       ],
                     ),
                     Expanded(child: SizedBox())

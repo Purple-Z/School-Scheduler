@@ -109,8 +109,8 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ElevatedButton(
-                      style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0))),
-                      onPressed: () async {
+                      style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0)), backgroundColor: WidgetStatePropertyAll(Colors.transparent)),
+                      onPressed: appProvider.edit_availability ? () async {
                         DateTime? pickedDate = await selectDate(context, startDate);
 
                         if (pickedDate != null) {
@@ -118,7 +118,7 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                             startDate = pickedDate;
                           });
                         }
-                      },
+                      } : null,
                       child: Text(
                         '${startDate.year}/${startDate.month}/${startDate.day}',
                         style: TextStyle(fontSize: 18),
@@ -126,8 +126,8 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                     ),
                     SizedBox(width: 5,),
                     ElevatedButton(
-                      style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0))),
-                      onPressed: () async {
+                      style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0)), backgroundColor: WidgetStatePropertyAll(Colors.transparent)),
+                      onPressed: appProvider.edit_availability ? () async {
                         DateTime? pickedDate = await selectTime(context, startDate);
 
                         if (pickedDate != null) {
@@ -135,7 +135,7 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                             startDate = pickedDate;
                           });
                         }
-                      },
+                      } : null,
                       child: Text(
                         getTimePrintable(startDate),
                         style: TextStyle(fontSize: 18),
@@ -164,8 +164,8 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ElevatedButton(
-                      style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0))),
-                      onPressed: () async {
+                      style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0)), backgroundColor: WidgetStatePropertyAll(Colors.transparent)),
+                      onPressed: appProvider.edit_availability ? () async {
                         DateTime? pickedDate = await selectDate(context, endDate);
 
                         if (pickedDate != null) {
@@ -173,7 +173,7 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                             endDate = pickedDate;
                           });
                         }
-                      },
+                      } : null,
                       child: Text(
                         '${endDate.year}/${endDate.month}/${endDate.day}',
                         style: TextStyle(fontSize: 18),
@@ -181,8 +181,8 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                     ),
                     SizedBox(width: 5,),
                     ElevatedButton(
-                      style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0))),
-                      onPressed: () async {
+                      style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.all(0)), backgroundColor: WidgetStatePropertyAll(Colors.transparent)),
+                      onPressed: appProvider.edit_availability ? () async {
                         DateTime? pickedDate = await selectTime(context, endDate);
 
                         if (pickedDate != null) {
@@ -190,7 +190,7 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                             endDate = pickedDate;
                           });
                         }
-                      },
+                      } : null,
                       child: Text(
                         getTimePrintable(endDate),
                         style: TextStyle(fontSize: 18),
@@ -209,7 +209,7 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
               style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
             ),
             SizedBox(height: 5),
-            buildTextField(quantityController, AppLocalizations.of(context)!.availability_quantity, Icons.person, editable: appProvider.edit_user, inputType: TextInputType.numberWithOptions()),
+            buildTextField(quantityController, AppLocalizations.of(context)!.availability_quantity, Icons.person, editable: appProvider.edit_availability, inputType: TextInputType.numberWithOptions()),
             SizedBox(height: fieldsSpacing),
 
             if (appProvider.view_availability)

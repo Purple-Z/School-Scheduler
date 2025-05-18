@@ -30,9 +30,9 @@ class _UserBookingsPageState extends State<UserBookingsPage> {
     var userBookingsProvider = context.watch<UserBookingsProvider>();
     var appProvider = context.watch<AppProvider>();
 
-    return appProvider.view_own_booking
+    return appProvider.view_own_booking || appProvider.view_booking
         ? UserBookingsAdmin()
-        : Text(AppLocalizations.of(context)!.access_denied);
+        : Center(child: Text(AppLocalizations.of(context)!.access_denied));
   }
 }
 

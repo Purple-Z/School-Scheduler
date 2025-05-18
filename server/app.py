@@ -71,8 +71,8 @@ def login():
     email = data.get('email')
     password = data.get('password')
     
-    sql = "SELECT * FROM users WHERE email = '" + email + "'"
-    result = db.fetchSQL(sql)
+    sql = "SELECT * FROM users WHERE email = %s"
+    result = db.fetchSQL(sql, (email,))
     if len(result) != 1:
         return jsonify(), 400
 
@@ -86,9 +86,8 @@ def login():
     roles = []
 
 
-    sql = "SELECT role_id FROM users_roles WHERE user_id = " + str(user_id)
-
-    result = db.fetchSQL(sql)
+    sql = "SELECT role_id FROM users_roles WHERE user_id = %s"
+    result = db.fetchSQL(sql, (user_id,))
     if result:
         roles_ids = result[0]
         for role_id in roles_ids:
@@ -124,6 +123,11 @@ def reload():
     
     sql = "SELECT * FROM users WHERE email = '" + email + "'"
     result = db.fetchSQL(sql)
+
+    sql = "SELECT * FROM users WHERE email = %s"
+    result = db.fetchSQL(sql, (email,))
+
+
     if len(result) != 1:
         return jsonify(), 400
 
@@ -136,9 +140,8 @@ def reload():
     roles = []
 
 
-    sql = "SELECT role_id FROM users_roles WHERE user_id = " + str(user_id)
-
-    result = db.fetchSQL(sql)
+    sql = "SELECT role_id FROM users_roles WHERE user_id = %s"
+    result = db.fetchSQL(sql, (user_id,))
     if result:
         roles_ids = result[0]
         for role_id in roles_ids:
@@ -180,16 +183,16 @@ def update_own_user():
 
     user_id = getIdFromEmail(email)
 
-    sql_update = f'''
-    UPDATE users SET
-        name = '{new_name}',
-        surname = '{new_surname}'
-    WHERE email = '{email}'
+    sql_update = '''
+        UPDATE users SET
+            name = %s,
+            surname = %s
+        WHERE email = %s
     '''
 
 
     try:
-        db.executeSQL(sql_update)
+        db.executeSQL(sql_update, (new_name, new_surname, email))
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -217,8 +220,8 @@ def change_password():
             }
             ), 400
     
-    sql = "SELECT * FROM users WHERE email = '" + email + "'"
-    result = db.fetchSQL(sql)
+    sql = "SELECT * FROM users WHERE email = %s"
+    result = db.fetchSQL(sql, (email,))
     if len(result) != 1:
         return jsonify(), 400
 
@@ -236,18 +239,16 @@ def change_password():
 
 
 
-    sql_update = f'''
-    UPDATE users SET
-        password_hash = '{hash_password(new_password)}'
-    WHERE email = '{email}'
+    sql_update = '''
+        UPDATE users SET
+            password_hash = %s
+        WHERE email = %s
     '''
 
-    sql_fetch = f'''
-        SELECT * FROM users WHERE email = '{email}'
-    '''    
-
-
-    result = db.fetchSQL(sql_fetch)
+    sql_fetch = '''
+        SELECT * FROM users WHERE email = %s
+    '''
+    result = db.fetchSQL(sql_fetch, (email,))
     if len(result) == 0:
         return jsonify(
             {
@@ -257,7 +258,7 @@ def change_password():
 
 
     try:
-        db.executeSQL(sql_update)
+        db.executeSQL(sql_update, (hash_password(new_password), email))
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -357,9 +358,47 @@ def add_role():
 
     roles = db.fetchSQL("SELECT * FROM roles")
 
-    sql_insert = f'''
-        INSERT INTO roles
-        (name, 
+    sql_insert = '''
+        INSERT INTO roles (
+            name, 
+            description, 
+            view_users, 
+            edit_users, 
+            create_users, 
+            delete_users, 
+            view_own_user, 
+            edit_own_user, 
+            create_own_user, 
+            delete_own_user, 
+            view_roles, 
+            edit_roles, 
+            create_roles, 
+            delete_roles, 
+            view_availability, 
+            edit_availability, 
+            create_availability, 
+            delete_availability, 
+            view_resources, 
+            edit_resources, 
+            create_resources, 
+            delete_resources, 
+            view_booking, 
+            edit_booking, 
+            create_booking, 
+            delete_booking, 
+            view_own_booking, 
+            edit_own_booking, 
+            create_own_booking, 
+            delete_own_booking
+        ) VALUES (
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
+            %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+        );
+    '''
+
+    parameters = (
+        name, 
         description, 
         view_users, 
         edit_users, 
@@ -388,44 +427,12 @@ def add_role():
         view_own_booking, 
         edit_own_booking, 
         create_own_booking, 
-        delete_own_booking)
-    VALUES (
-        '{name}', 
-        '{description}', 
-        {view_users}, 
-        {edit_users}, 
-        {create_users}, 
-        {delete_users}, 
-        {view_own_user}, 
-        {edit_own_user}, 
-        {create_own_user}, 
-        {delete_own_user}, 
-        {view_roles}, 
-        {edit_roles}, 
-        {create_roles}, 
-        {delete_roles}, 
-        {view_availability}, 
-        {edit_availability}, 
-        {create_availability}, 
-        {delete_availability}, 
-        {view_resources}, 
-        {edit_resources}, 
-        {create_resources}, 
-        {delete_resources}, 
-        {view_booking}, 
-        {edit_booking}, 
-        {create_booking}, 
-        {delete_booking}, 
-        {view_own_booking}, 
-        {edit_own_booking}, 
-        {create_own_booking}, 
-        {delete_own_booking}
-    );
-    '''
+        delete_own_booking
+    )
 
     try:
         #print('sql, ' + sql_insert)
-        db.executeSQL(sql_insert)
+        db.executeSQL(sql_insert, parameters)
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -460,15 +467,15 @@ def get_role():
             ), 401
 
 
-    sql = f'''
-        SELECT * FROM roles WHERE id = {str(role_id)}
-    '''    
+    sql = '''
+        SELECT * FROM roles WHERE id = %s
+    '''
     user_id = getIdFromEmail(email)
 
 
 
     try:
-        result = db.fetchSQL(sql)
+        result = db.fetchSQL(sql, (role_id,))
         role = result[0]
         return jsonify(
         {
@@ -536,43 +543,77 @@ def update_role():
 
     user_id = getIdFromEmail(email)
 
-    sql_update = f'''
-    UPDATE roles SET
-        name = '{name}',
-        description = '{description}',
-        view_users = {view_users},
-        edit_users = {edit_users},
-        create_users = {create_users},
-        delete_users = {delete_users},
-        view_own_user = {view_own_user},
-        edit_own_user = {edit_own_user},
-        create_own_user = {create_own_user},
-        delete_own_user = {delete_own_user},
-        view_roles = {view_roles},
-        edit_roles = {edit_roles},
-        create_roles = {create_roles},
-        delete_roles = {delete_roles},
-        view_availability = {view_availability},
-        edit_availability = {edit_availability},
-        create_availability = {create_availability},
-        delete_availability = {delete_availability},
-        view_resources = {view_resources},
-        edit_resources = {edit_resources},
-        create_resources = {create_resources},
-        delete_resources = {delete_resources},
-        view_booking = {view_booking},
-        edit_booking = {edit_booking},
-        create_booking = {create_booking},
-        delete_booking = {delete_booking},
-        view_own_booking = {view_own_booking},
-        edit_own_booking = {edit_own_booking},
-        create_own_booking = {create_own_booking},
-        delete_own_booking = {delete_own_booking}
-    WHERE id = {role_id}
+    sql_update = '''
+        UPDATE roles SET
+            name = %s,
+            description = %s,
+            view_users = %s,
+            edit_users = %s,
+            create_users = %s,
+            delete_users = %s,
+            view_own_user = %s,
+            edit_own_user = %s,
+            create_own_user = %s,
+            delete_own_user = %s,
+            view_roles = %s,
+            edit_roles = %s,
+            create_roles = %s,
+            delete_roles = %s,
+            view_availability = %s,
+            edit_availability = %s,
+            create_availability = %s,
+            delete_availability = %s,
+            view_resources = %s,
+            edit_resources = %s,
+            create_resources = %s,
+            delete_resources = %s,
+            view_booking = %s,
+            edit_booking = %s,
+            create_booking = %s,
+            delete_booking = %s,
+            view_own_booking = %s,
+            edit_own_booking = %s,
+            create_own_booking = %s,
+            delete_own_booking = %s
+        WHERE id = %s
     '''
 
+    parameters = (
+        name,
+        description,
+        view_users,
+        edit_users,
+        create_users,
+        delete_users,
+        view_own_user,
+        edit_own_user,
+        create_own_user,
+        delete_own_user,
+        view_roles,
+        edit_roles,
+        create_roles,
+        delete_roles,
+        view_availability,
+        edit_availability,
+        create_availability,
+        delete_availability,
+        view_resources,
+        edit_resources,
+        create_resources,
+        delete_resources,
+        view_booking,
+        edit_booking,
+        create_booking,
+        delete_booking,
+        view_own_booking,
+        edit_own_booking,
+        create_own_booking,
+        delete_own_booking,
+        role_id
+    )
+
     try:
-        db.executeSQL(sql_update)
+        db.executeSQL(sql_update, parameters)
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -611,12 +652,11 @@ def delete_role():
 
 
     try:
-        sql_delete = f'''
-        DELETE FROM roles
-        WHERE id = {str(role_id)}
+        sql_delete = '''
+            DELETE FROM roles
+            WHERE id = %s
         '''
-
-        db.executeSQL(sql_delete)
+        db.executeSQL(sql_delete, (role_id,))
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -692,12 +732,12 @@ def get_users():
         for quality in user_content:
             user.append(quality)
         user_roles = []
-        sql = "SELECT role_id FROM users_roles WHERE user_id = " + str(user[0])
-        role_ids = db.fetchSQL(sql)
+        sql = "SELECT role_id FROM users_roles WHERE user_id = %s"
+        role_ids = db.fetchSQL(sql, (user[0],))
         if len(role_ids) != 0:
             for role in role_ids:
-                sql = "SELECT name FROM roles WHERE id = " + str(role[0])
-                result = db.fetchSQL(sql)
+                sql = "SELECT name FROM roles WHERE id = %s"
+                result = db.fetchSQL(sql, (role[0],))
                 if len(result) == 0:
                     continue
                 user_roles.append(result[0][0])
@@ -829,19 +869,19 @@ def get_user():
 
 
     try:
-        sql = f'''
-            SELECT * FROM users WHERE id = '{new_user_id}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT * FROM users WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (new_user_id,))
         user_content = result[0]
 
-        sql = "SELECT role_id FROM users_roles WHERE user_id = " + str(user_content[0])
-        role_ids = db.fetchSQL(sql)
+        sql = "SELECT role_id FROM users_roles WHERE user_id = %s"
+        role_ids = db.fetchSQL(sql, (user_content[0],))
         user_roles = []
         if len(role_ids) != 0:
             for role in role_ids:
-                sql = "SELECT name FROM roles WHERE id = " + str(role[0])
-                result = db.fetchSQL(sql)
+                sql = "SELECT name FROM roles WHERE id = %s"
+                result = db.fetchSQL(sql, (role[0],))
                 if len(result) == 0:
                     continue
                 user_roles.append(result[0][0])
@@ -889,38 +929,33 @@ def update_user():
 
     user_id = getIdFromEmail(email)
 
-    sql_update = f'''
-    UPDATE users SET
-        name = '{new_name}',
-        surname = '{new_surname}'
-    WHERE id = {new_user_id}
+    sql_update = '''
+        UPDATE users SET
+            name = %s,
+            surname = %s
+        WHERE id = %s
     '''
 
 
-    sql_delete = f"DELETE FROM users_roles WHERE user_id = {new_user_id}"
-    db.executeSQL(sql_delete)
+    sql_delete = "DELETE FROM users_roles WHERE user_id = %s"
+    db.executeSQL(sql_delete, (new_user_id,))
 
 
 
     for new_role in new_roles:
-        sql = "SELECT id FROM roles WHERE name = '" + new_role + "'"
-        new_role_id = db.fetchSQL(sql)[0][0]
+        sql = "SELECT id FROM roles WHERE name = %s"
+        new_role_id = db.fetchSQL(sql, (new_role,))[0][0]
         
 
-        sql_insert = f'''
-        INSERT INTO users_roles
-        (id, user_id, role_id)
-        VALUES (
-            0,
-            {new_user_id}, 
-            {new_role_id}
-        )
+        sql_insert = '''
+            INSERT INTO users_roles (id, user_id, role_id)
+            VALUES (%s, %s, %s)
         '''
-        db.executeSQL(sql_insert)
+        db.executeSQL(sql_insert, (0, new_user_id, new_role_id))
 
 
     try:
-        db.executeSQL(sql_update)
+        db.executeSQL(sql_update, (new_name, new_surname, new_user_id))
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -970,18 +1005,16 @@ def reset_password():
     School Scheduler
     """
 
-    sql_update = f'''
-    UPDATE users SET
-        password_hash = '{hash_password(password)}'
-    WHERE id = {new_user_id}
+    sql_update = '''
+        UPDATE users SET
+            password_hash = %s
+        WHERE id = %s
     '''
 
-    sql_fetch = f'''
-        SELECT * FROM users WHERE id = '{new_user_id}'
-    '''    
-
-
-    result = db.fetchSQL(sql_fetch)
+    sql_fetch = '''
+        SELECT * FROM users WHERE id = %s
+    '''
+    result = db.fetchSQL(sql_fetch, (new_user_id,))
     if len(result) == 0:
         return jsonify(
             {
@@ -993,7 +1026,7 @@ def reset_password():
 
 
     try:
-        db.executeSQL(sql_update)
+        db.executeSQL(sql_update, (hash_password(password), new_user_id))
         emailSenderThread = threading.Thread(target=sendEmail, args=(new_email, subject, body))
         emailSenderThread.start()
         return jsonify(
@@ -1041,11 +1074,10 @@ def delete_user():
     """
 
 
-    sql_fetch = f'''
-        SELECT * FROM users WHERE id = '{new_user_id}'
-    '''    
-
-    result = db.fetchSQL(sql_fetch)
+    sql_fetch = '''
+        SELECT * FROM users WHERE id = %s
+    '''
+    result = db.fetchSQL(sql_fetch, (new_user_id,))
     if len(result) == 0:
         return jsonify(
             {
@@ -1057,12 +1089,11 @@ def delete_user():
 
 
     try:
-        sql_delete = f'''
-        DELETE FROM users
-        WHERE id = {new_user_id}
+        sql_delete = '''
+            DELETE FROM users
+            WHERE id = %s
         '''
-
-        db.executeSQL(sql_delete)
+        db.executeSQL(sql_delete, (new_user_id,))
         emailSenderThread = threading.Thread(target=sendEmail, args=(new_email, subject, body))
         emailSenderThread.start()
         return jsonify(
@@ -1101,11 +1132,10 @@ def disconnect_users():
 
         user_id = getIdFromEmail(email)
 
-        sql_fetch = f'''
-            SELECT id FROM users WHERE NOT id = '{user_id}'
-        '''    
-
-        result = db.fetchSQL(sql_fetch)
+        sql_fetch = '''
+            SELECT id FROM users WHERE NOT id = %s
+        '''
+        result = db.fetchSQL(sql_fetch, (user_id,))
 
         for user in result:
             token_for(user[0])
@@ -1185,16 +1215,11 @@ def add_type():
 
 
     try:
-        sql_insert = f'''
-        INSERT INTO types
-        (id, name, description)
-        VALUES (
-            0,
-            '{name}', 
-            '{description}'
-        )
+        sql_insert = '''
+            INSERT INTO types (id, name, description)
+            VALUES (%s, %s, %s)
         '''
-        db.executeSQL(sql_insert)
+        db.executeSQL(sql_insert, (0, name, description))
 
         return jsonify(
             {
@@ -1235,10 +1260,10 @@ def get_type():
 
 
     try:
-        sql = f'''
-            SELECT * FROM types WHERE id = '{type_id}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT * FROM types WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (type_id,))
         type_content = result[0]
 
         return jsonify(
@@ -1280,16 +1305,16 @@ def update_type():
 
     user_id = getIdFromEmail(email)
 
-    sql_update = f'''
-    UPDATE types SET
-        name = '{name}',
-        description = '{description}'
-    WHERE id = {type_id}
+    sql_update = '''
+        UPDATE types SET
+            name = %s,
+            description = %s
+        WHERE id = %s
     '''
 
 
     try:
-        db.executeSQL(sql_update)
+        db.executeSQL(sql_update, (name, description, type_id))
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -1329,12 +1354,11 @@ def delete_type():
 
 
     try:
-        sql_delete = f'''
-        DELETE FROM types
-        WHERE id = {type_id}
+        sql_delete = '''
+            DELETE FROM types
+            WHERE id = %s
         '''
-
-        db.executeSQL(sql_delete)
+        db.executeSQL(sql_delete, (type_id,))
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -1441,16 +1465,11 @@ def add_place():
 
 
     try:
-        sql_insert = f'''
-        INSERT INTO places
-        (id, name, description)
-        VALUES (
-            0,
-            '{name}', 
-            '{description}'
-        )
+        sql_insert = '''
+            INSERT INTO places (id, name, description)
+            VALUES (%s, %s, %s)
         '''
-        db.executeSQL(sql_insert)
+        db.executeSQL(sql_insert, (0, name, description))
 
         return jsonify(
             {
@@ -1491,10 +1510,10 @@ def get_place():
 
 
     try:
-        sql = f'''
-            SELECT * FROM places WHERE id = '{place_id}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT * FROM places WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (place_id,))
         place_content = result[0]
 
         return jsonify(
@@ -1536,16 +1555,16 @@ def update_place():
 
     user_id = getIdFromEmail(email)
 
-    sql_update = f'''
-    UPDATE places SET
-        name = '{name}',
-        description = '{description}'
-    WHERE id = {place_id}
+    sql_update = '''
+        UPDATE places SET
+            name = %s,
+            description = %s
+        WHERE id = %s
     '''
 
 
     try:
-        db.executeSQL(sql_update)
+        db.executeSQL(sql_update, (name, description, place_id))
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -1585,12 +1604,11 @@ def delete_place():
 
 
     try:
-        sql_delete = f'''
-        DELETE FROM places
-        WHERE id = {place_id}
+        sql_delete = '''
+            DELETE FROM places
+            WHERE id = %s
         '''
-
-        db.executeSQL(sql_delete)
+        db.executeSQL(sql_delete, (place_id,))
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -1697,16 +1715,11 @@ def add_activity():
 
 
     try:
-        sql_insert = f'''
-        INSERT INTO activities
-        (id, name, description)
-        VALUES (
-            0,
-            '{name}', 
-            '{description}'
-        )
+        sql_insert = '''
+            INSERT INTO activities (id, name, description)
+            VALUES (%s, %s, %s)
         '''
-        db.executeSQL(sql_insert)
+        db.executeSQL(sql_insert, (0, name, description))
 
         return jsonify(
             {
@@ -1746,10 +1759,10 @@ def get_activity():
 
 
     try:
-        sql = f'''
-            SELECT * FROM activities WHERE id = '{activity_id}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT * FROM activities WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (activity_id,))
         activity_content = result[0]
 
         return jsonify(
@@ -1791,16 +1804,16 @@ def update_activity():
 
     user_id = getIdFromEmail(email)
 
-    sql_update = f'''
-    UPDATE activities SET
-        name = '{name}',
-        description = '{description}'
-    WHERE id = {activity_id}
+    sql_update = '''
+        UPDATE activities SET
+            name = %s,
+            description = %s
+        WHERE id = %s
     '''
 
 
     try:
-        db.executeSQL(sql_update)
+        db.executeSQL(sql_update, (name, description, activity_id))
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -1840,12 +1853,11 @@ def delete_activity():
 
 
     try:
-        sql_delete = f'''
-        DELETE FROM activities
-        WHERE id = {activity_id}
+        sql_delete = '''
+            DELETE FROM activities
+            WHERE id = %s
         '''
-
-        db.executeSQL(sql_delete)
+        db.executeSQL(sql_delete, (activity_id,))
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -1918,10 +1930,10 @@ def get_resources():
     resources = []
     for resource in resources_content:
         resource = list(resource)
-        sql = f'''
-            SELECT name FROM types WHERE id = '{resource[4]}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT name FROM types WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (resource[4],))
         type_name = result[0][0]
 
         resource[len(resource)-1] = type_name
@@ -1967,8 +1979,8 @@ def add_resource():
     
     user_id = getIdFromEmail(email)
 
-    sql = "SELECT id FROM types WHERE name = '" + type + "'"
-    result = db.fetchSQL(sql)
+    resource_id_sql = "SELECT id FROM types WHERE name = %s"
+    result = db.fetchSQL(resource_id_sql, (type,))
     if len(result) == 0:
         return jsonify(
             {
@@ -1978,14 +1990,14 @@ def add_resource():
     
     type_id = result[0][0]
 
-    sql = "SELECT id FROM places WHERE name = '" + place + "'"
-    result = db.fetchSQL(sql)
+    resource_id_sql = "SELECT id FROM places WHERE name = %s"
+    result = db.fetchSQL(resource_id_sql, (place,))
     place_id = None
     if len(result) != 0:
         place_id = result[0][0]
 
-    sql = "SELECT id FROM activities WHERE name = '" + activity + "'"
-    result = db.fetchSQL(sql)
+    resource_id_sql = "SELECT id FROM activities WHERE name = %s"
+    result = db.fetchSQL(resource_id_sql, (activity,))
     activity_id = None
     if len(result) != 0:
         activity_id = result[0][0]
@@ -1994,64 +2006,69 @@ def add_resource():
         slot = None
 
     try:
-        sql_insert = f'''
-        INSERT INTO resources
-        (id, name, description, quantity, type_id, place_id, activity_id, slot, auto_accept, overbooking)
-        VALUES (
-            0,
-            '{name}', 
-            '{description}',
-            {quantity}, 
-            {type_id},
-            {'null' if place_id is None else place_id},
-            {'null' if activity_id is None else activity_id},
-            {'null' if slot is None else slot},
-            {auto_accept},
-            {over_booking}
-        )
+        sql_insert = '''
+            INSERT INTO resources
+            (id, name, description, quantity, type_id, place_id, activity_id, slot, auto_accept, overbooking)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         '''
-        db.executeSQL(sql_insert)
 
-        resource_id = db.fetchSQL(
-                f'''SELECT id FROM resources WHERE name = '{name}\''''
-            )[0][0]
+        parameters = (
+            0,
+            name,
+            description,
+            quantity,
+            type_id,
+            place_id,
+            activity_id,
+            slot,
+            auto_accept,
+            over_booking
+        )
+
+        db.executeSQL(sql_insert, parameters)
+
+        resource_id_sql = "SELECT id FROM resources WHERE name = %s"
+        resource_id = db.fetchSQL(resource_id_sql, (name,))[0][0]
         
 
         for role in resource_permissions.keys():
-            role_id = db.fetchSQL(
-                f'''SELECT id FROM roles WHERE name = '{role}\''''
-            )[0][0]
+            role_id_sql = "SELECT id FROM roles WHERE name = %s"
+            role_id = db.fetchSQL(role_id_sql, (role,))[0][0]
 
-            sql_insert = f'''
-            INSERT INTO permissions
-            VALUES (
-                0,
-                {resource_permissions[role][0]}, 
-                {resource_permissions[role][1]},
-                {resource_permissions[role][2]}, 
-                {resource_permissions[role][3]},
-                {resource_permissions[role][4]},
-                {role_id},
-                {resource_id}
-            )
+            sql_insert = '''
+                INSERT INTO permissions
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             '''
-            db.executeSQL(sql_insert)
+
+            parameters = (
+                0,
+                resource_permissions[role][0],
+                resource_permissions[role][1],
+                resource_permissions[role][2],
+                resource_permissions[role][3],
+                resource_permissions[role][4],
+                role_id,
+                resource_id
+            )
+
+            db.executeSQL(sql_insert, parameters)
 
 
         for referent in referents.keys():
 
             referent_id = getIdFromEmail(referent)
 
-            sql_insert = f'''
-            INSERT INTO referents
-            VALUES (
-                0,
-                {referents[referent]}, 
-                {referent_id},
-                {resource_id}
-            )
+            sql_insert = '''
+                INSERT INTO referents
+                VALUES (%s, %s, %s, %s)
             '''
-            db.executeSQL(sql_insert)
+            parameters = (
+                0,
+                referents[referent],
+                referent_id,
+                resource_id
+            )
+            db.executeSQL(sql_insert, parameters)
 
         return jsonify(
             {
@@ -2092,30 +2109,30 @@ def get_resource():
 
 
     try:
-        sql = f'''
-            SELECT * FROM resources WHERE id = '{resource_id}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT * FROM resources WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (resource_id,))
         resource_content = result[0]
 
-        sql = f'''
-            SELECT name FROM types WHERE id = '{resource_content[4]}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT name FROM types WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (resource_content[4],))
         type_name = result[0][0]
 
-        sql = f'''
-            SELECT name FROM places WHERE id = '{resource_content[5]}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT name FROM places WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (resource_content[5],))
         place_name = ''
         if len(result) != 0:
             place_name = result[0][0]
 
-        sql = f'''
-            SELECT name FROM activities WHERE id = '{resource_content[6]}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT name FROM activities WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (resource_content[6],))
         activities_name = ''
         if len(result) != 0:
             activities_name = result[0][0]
@@ -2130,18 +2147,18 @@ def get_resource():
         resource[8] = resource[8]==1
         resource[9] = resource[9]==1
 
-        sql = f'''
-            SELECT * FROM referents WHERE resource_id = '{resource_id}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT * FROM referents WHERE resource_id = %s
+        '''
+        result = db.fetchSQL(sql, (resource_id,))
 
         referents = {}
 
         for record in result:
             referent_id = record[2]
 
-            sql = "SELECT email FROM users WHERE id = " + str(referent_id)
-            referent_result = db.fetchSQL(sql)
+            sql = "SELECT email FROM users WHERE id = %s"
+            referent_result = db.fetchSQL(sql, (referent_id,))
             if len(referent_result) == 0:
                 continue
             user_email = referent_result[0][0]
@@ -2199,8 +2216,8 @@ def update_resource():
 
     user_id = getIdFromEmail(email)
 
-    sql = "SELECT * FROM resources WHERE id = " + str(resource_id)
-    result = db.fetchSQL(sql)
+    role_id_sql = "SELECT * FROM resources WHERE id = %s"
+    result = db.fetchSQL(role_id_sql, (resource_id,))
     if len(result) == 0:
         return jsonify(
             {
@@ -2211,8 +2228,8 @@ def update_resource():
     old_resource = result[0]
 
 
-    sql = "SELECT id FROM types WHERE name = '" + type + "'"
-    result = db.fetchSQL(sql)
+    role_id_sql = "SELECT id FROM types WHERE name = %s"
+    result = db.fetchSQL(role_id_sql, (type,))
     if len(result) == 0:
         return jsonify(
             {
@@ -2223,14 +2240,14 @@ def update_resource():
     type_id = result[0][0]
 
 
-    sql = "SELECT id FROM places WHERE name = '" + place + "'"
-    result = db.fetchSQL(sql)
+    role_id_sql = "SELECT id FROM places WHERE name = %s"
+    result = db.fetchSQL(role_id_sql, (place,))
     place_id = None
     if len(result) != 0:
         place_id = result[0][0]
 
-    sql = "SELECT id FROM activities WHERE name = '" + activity + "'"
-    result = db.fetchSQL(sql)
+    role_id_sql = "SELECT id FROM activities WHERE name = %s"
+    result = db.fetchSQL(role_id_sql, (activity,))
     activity_id = None
     if len(result) != 0:
         activity_id = result[0][0]
@@ -2245,9 +2262,8 @@ def update_resource():
 
     if old_auto_accept != auto_accept:
         #has changed
-        print('changed')
-        sql = f"SELECT * FROM bookings WHERE resource_id = {resource_id} AND status = 0"
-        result = db.fetchSQL(sql)
+        role_id_sql = "SELECT * FROM bookings WHERE resource_id = %s AND status = %s"
+        result = db.fetchSQL(role_id_sql, (resource_id, 0))
         if len(result) != 0:
             return jsonify(
                 {
@@ -2260,10 +2276,6 @@ def update_resource():
         if not over_booking:
             max_b = getMaxBookability(resource_id, dataMin, dataMax, do_not_consider_over_booking=True)
 
-
-
-            print('max bookability: ', max_b)
-
             if max_b < 0:
                 return jsonify(
                     {
@@ -2272,92 +2284,100 @@ def update_resource():
                 ), 503
 
     if (activity_id != None) != (old_activity_id != None):
-        print('qua dentro propio', str(old_activity_id))
-        sql_update = f'''
-        UPDATE bookings SET
-            activity_id = {'null' if old_activity_id is None else old_activity_id}
-        WHERE resource_id = {resource_id}
+        sql_update = '''
+            UPDATE bookings SET
+                activity_id = %s
+            WHERE resource_id = %s
         '''
-        db.executeSQL(sql_update)
+        db.executeSQL(sql_update, (old_activity_id, resource_id))
 
     if (place_id != None) != (old_place_id != None):
-        sql_update = f'''
-        UPDATE bookings SET
-            place_id = {'null' if old_place_id is None else old_place_id}
-        WHERE resource_id = {resource_id}
+        sql_update = '''
+            UPDATE bookings SET
+                place_id = %s
+            WHERE resource_id = %s
         '''
-        db.executeSQL(sql_update)
+        db.executeSQL(sql_update, (old_place_id, resource_id))
 
 
-
-    print(auto_accept)
-    print(old_resource)
-
-
-    sql_update = f'''
-    UPDATE resources SET
-        name = '{name}',
-        description = '{description}',
-        quantity = {quantity},
-        type_id = {type_id},
-        auto_accept = {auto_accept},
-        overbooking = {over_booking},
-        place_id = {'null' if place_id is None else place_id},
-        activity_id = {'null' if activity_id is None else activity_id},
-        slot = {'null' if slot is None else slot}
-    WHERE id = {resource_id}
+    sql_update = '''
+        UPDATE resources SET
+            name = %s,
+            description = %s,
+            quantity = %s,
+            type_id = %s,
+            auto_accept = %s,
+            overbooking = %s,
+            place_id = %s,
+            activity_id = %s,
+            slot = %s
+        WHERE id = %s
     '''
+
+    parameters = (
+        name,
+        description,
+        quantity,
+        type_id,
+        auto_accept,
+        over_booking,
+        place_id,
+        activity_id,
+        slot,
+        resource_id
+    )
 
 
     try:
-        db.executeSQL(sql_update)
+        db.executeSQL(sql_update, parameters)
 
-        sql_delete = f'''
-        DELETE FROM permissions WHERE resource_id = {resource_id}
+        sql_delete = '''
+            DELETE FROM permissions WHERE resource_id = %s
         '''
-        db.executeSQL(sql_delete)
+        db.executeSQL(sql_delete, (resource_id,))
 
         for role in resource_permissions.keys():
-            role_id = db.fetchSQL(
-                f'''SELECT id FROM roles WHERE name = '{role}\''''
-            )[0][0]
+            role_id_sql = "SELECT id FROM roles WHERE name = %s"
+            role_id = db.fetchSQL(role_id_sql, (role,))[0][0]
 
-            sql_insert = f'''
-            INSERT INTO permissions
-            VALUES (
-                0,
-                {resource_permissions[role][0]}, 
-                {resource_permissions[role][1]},
-                {resource_permissions[role][2]}, 
-                {resource_permissions[role][3]},
-                {resource_permissions[role][4]},
-                {role_id},
-                {resource_id}
-            )
+            sql_insert = '''
+                INSERT INTO permissions
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             '''
-            db.executeSQL(sql_insert)
+            parameters = (
+                0,
+                resource_permissions[role][0],
+                resource_permissions[role][1],
+                resource_permissions[role][2],
+                resource_permissions[role][3],
+                resource_permissions[role][4],
+                role_id,
+                resource_id
+            )
+            db.executeSQL(sql_insert, parameters)
 
         
-        sql_delete = f'''
-        DELETE FROM referents WHERE resource_id = {resource_id}
+        sql_delete = '''
+            DELETE FROM referents WHERE resource_id = %s
         '''
-        db.executeSQL(sql_delete)
+        db.executeSQL(sql_delete, (resource_id,))
 
 
         for referent in referents.keys():
 
             referent_id = getIdFromEmail(referent)
 
-            sql_insert = f'''
-            INSERT INTO referents
-            VALUES (
-                0,
-                {referents[referent]}, 
-                {referent_id},
-                {resource_id}
-            )
+            sql_insert = '''
+                INSERT INTO referents
+                VALUES (%s, %s, %s, %s)
             '''
-            db.executeSQL(sql_insert)
+            parameters = (
+                0,
+                referents[referent],
+                referent_id,
+                resource_id
+            )
+            db.executeSQL(sql_insert, parameters)
 
         return jsonify(
             {
@@ -2397,12 +2417,11 @@ def delete_resource():
 
 
     try:
-        sql_delete = f'''
-        DELETE FROM resources
-        WHERE id = {resource_id}
+        sql_delete = '''
+            DELETE FROM resources
+            WHERE id = %s
         '''
-
-        db.executeSQL(sql_delete)
+        db.executeSQL(sql_delete, (resource_id,))
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -2449,13 +2468,13 @@ def get_resource_permission():
     roles_permission = {}
 
     for role in roles:
-        role_id = db.fetchSQL(
-            f'''SELECT id FROM roles WHERE name = '{role}\''''
-        )[0][0]
+        role_id_sql = "SELECT id FROM roles WHERE name = %s"
+        role_id = db.fetchSQL(role_id_sql, (role,))[0][0]
 
-        permission = db.fetchSQL(
-            f'''SELECT * FROM permissions WHERE role_id = {role_id} and resource_id = {resource_id}'''
-        )
+        permission_sql = '''
+            SELECT * FROM permissions WHERE role_id = %s AND resource_id = %s
+        '''
+        permission = db.fetchSQL(permission_sql, (role_id, resource_id))
 
         view = False
         remove = False
@@ -2511,18 +2530,15 @@ def get_availabilities():
     
     user_id = getIdFromEmail(email)
 
-    availabilities_content = db.fetchSQL(
-        f'''
-            SELECT * FROM availability WHERE resource_id = {resource_id}
-        '''
-    )
+    availabilities_content_sql = '''
+        SELECT * FROM availability WHERE resource_id = %s
+    '''
+    availabilities_content = db.fetchSQL(availabilities_content_sql, (resource_id,))
     availabilities = []
     for availability in availabilities_content:
         availability = list(availability)
-        sql = f'''
-            SELECT name FROM resources WHERE id = '{availability[len(availability)-1]}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = "SELECT name FROM resources WHERE id = %s"
+        result = db.fetchSQL(sql, (availability[-1],))
         resource_name = result[0][0]
 
         availability[1] = availability[1].isoformat()
@@ -2603,18 +2619,19 @@ def add_availability():
 
 
     try:
-        sql_insert = f'''
-        INSERT INTO availability
-        (id, start, end, quantity, resource_id)
-        VALUES (
-            0,
-            '{start}', 
-            '{end}',
-            {quantity}, 
-            {resource_id}
-        )
+        sql_insert = '''
+            INSERT INTO availability
+            (id, start, end, quantity, resource_id)
+            VALUES (%s, %s, %s, %s, %s)
         '''
-        db.executeSQL(sql_insert)
+        params = (
+            0,
+            start,
+            end,
+            quantity,
+            resource_id
+        )
+        db.executeSQL(sql_insert, params)
 
         return jsonify(
             {
@@ -2655,16 +2672,12 @@ def get_availability():
 
 
     try:
-        sql = f'''
-            SELECT * FROM availability WHERE id = '{availability_id}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = "SELECT * FROM availability WHERE id = %s"
+        result = db.fetchSQL(sql, (availability_id,))
         availability_content = result[0]
 
-        sql = f'''
-            SELECT name FROM resources WHERE id = '{availability_content[len(availability_content)-1]}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = "SELECT name FROM resources WHERE id = %s"
+        result = db.fetchSQL(sql, (availability_content[-1],))
         resource_name = result[0][0]
 
         availability = []
@@ -2714,8 +2727,8 @@ def update_availability():
             ), 401
     
 
-    sql = "SELECT * FROM availability WHERE id = " + str(availability_id)
-    result = db.fetchSQL(sql)
+    sql = "SELECT * FROM availability WHERE id = %s"
+    result = db.fetchSQL(sql, (availability_id,))
     if len(result) == 0:
         return jsonify(
             {
@@ -2783,16 +2796,16 @@ def update_availability():
             }
         ), 502
 
-    sql_update = f'''
-    UPDATE availability SET
-        start = '{start}',
-        end = '{end}',
-        quantity = {quantity}
-    WHERE id = {availability_id}
+    sql_update = '''
+        UPDATE availability SET
+            start = %s,
+            end = %s,
+            quantity = %s
+        WHERE id = %s
     '''
 
     try:
-        db.executeSQL(sql_update)
+        db.executeSQL(sql_update, (start, end, quantity, availability_id))
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -2828,8 +2841,8 @@ def delete_availability():
     
     user_id = getIdFromEmail(email)
 
-    sql = "SELECT * FROM availability WHERE id = " + str(availability_id)
-    result = db.fetchSQL(sql)
+    sql = "SELECT * FROM availability WHERE id = %s"
+    result = db.fetchSQL(sql, (availability_id,))
     if len(result) == 0:
         return jsonify(
             {
@@ -2860,12 +2873,11 @@ def delete_availability():
 
 
     try:
-        sql_delete = f'''
-        DELETE FROM availability
-        WHERE id = {availability_id}
+        sql_delete = '''
+            DELETE FROM availability
+            WHERE id = %s
         '''
-
-        db.executeSQL(sql_delete)
+        db.executeSQL(sql_delete, (availability_id,))
         return jsonify(
             {
                 "token": token_for(user_id)
@@ -2965,11 +2977,10 @@ def get_resources_feed():
     
     user_id = getIdFromEmail(email)
 
-    roles_id = db.fetchSQL(
-        f'''
-            SELECT role_id FROM users_roles WHERE user_id = {user_id}
-        '''
-    )
+    roles_id_sql = '''
+        SELECT role_id FROM users_roles WHERE user_id = %s
+    '''
+    roles_id = db.fetchSQL(roles_id_sql, (user_id,))
 
     permission = getResourcesPermissions(roles_id)
     
@@ -2985,17 +2996,15 @@ def get_resources_feed():
 
     resources = []
     for resource_id in resources_id:
-        resource = db.fetchSQL(
-            f'''
-                SELECT * FROM resources WHERE id = {resource_id}
-            '''
-        )[0]
+        sql = '''
+            SELECT * FROM resources WHERE id = %s
+        '''
+        resource = db.fetchSQL(sql, (resource_id,))[0]
 
-        type_name = db.fetchSQL(
-            f'''
-                SELECT name FROM types WHERE id = {resource[4]}
-            '''
-        )[0][0]
+        sql = '''
+            SELECT name FROM types WHERE id = %s
+        '''
+        type_name = db.fetchSQL(sql, (resource[4],))[0][0]
         
         resource = list(resource)
 
@@ -3033,11 +3042,10 @@ def get_resource_for_booking():
     
     user_id = getIdFromEmail(email)
 
-    roles_id = db.fetchSQL(
-        f'''
-            SELECT role_id FROM users_roles WHERE user_id = {user_id}
-        '''
-    )
+    roles_id_sql = '''
+        SELECT role_id FROM users_roles WHERE user_id = %s
+    '''
+    roles_id = db.fetchSQL(roles_id_sql, (user_id,))
 
     permission = getResourcesPermissions(roles_id)
 
@@ -3062,33 +3070,33 @@ def get_resource_for_booking():
 
 
     try:
-        sql = f'''
-            SELECT * FROM resources WHERE id = '{resource_id}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT * FROM resources WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (resource_id,))
         resource_content = result[0]
 
-        sql = f'''
-            SELECT name FROM types WHERE id = '{resource_content[4]}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT name FROM types WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (resource_content[4],))
         type_name = result[0][0]
 
         place_name = resource_content[5] if resource_content[5] != None else ''
         if resource_content[5] != None:
-            sql = f'''
-                SELECT name FROM places WHERE id = '{resource_content[5]}'
-            '''    
-            result = db.fetchSQL(sql)
+            sql = '''
+                SELECT name FROM places WHERE id = %s
+            '''
+            result = db.fetchSQL(sql, (resource_content[5],))
             place_name = result[0][0]
 
 
         activity_name = resource_content[6] if resource_content[6] != None else ''
         if resource_content[6] != None:
-            sql = f'''
-                SELECT name FROM activities WHERE id = '{resource_content[6]}'
-            '''    
-            result = db.fetchSQL(sql)
+            sql = '''
+                SELECT name FROM activities WHERE id = %s
+            '''
+            result = db.fetchSQL(sql, (resource_content[6],))
             activity_name = result[0][0]
 
         resource = []
@@ -3271,10 +3279,10 @@ def add_booking():
             }
             ), 403
     
-    sql = f'''
-            SELECT * FROM resources WHERE id = '{resource_id}'
-        '''    
-    result = db.fetchSQL(sql)
+    sql = '''
+        SELECT * FROM resources WHERE id = %s
+    '''
+    result = db.fetchSQL(sql, (resource_id,))
     if len(result) == 0:
         return jsonify(
             {
@@ -3282,22 +3290,20 @@ def add_booking():
             }
         ), 500
     
-    print(result[0][5])
     
 
     place = '' if place == None else place
     place_name = '' if result[0][5] != None else place
-    sql = "SELECT id FROM places WHERE name = '" + place_name + "'"
-    place_result = db.fetchSQL(sql)
+    sql = "SELECT id FROM places WHERE name = %s"
+    place_result = db.fetchSQL(sql, (place_name,))
     place_id = None
     if len(place_result) != 0:
         place_id = place_result[0][0]
 
-    print('activity:' , activity)
     activity = '' if activity == None else activity
     activity_name = '' if result[0][6] != None else activity
-    sql = "SELECT id FROM activities WHERE name = '" + activity_name + "'"
-    activity_result = db.fetchSQL(sql)
+    sql = "SELECT id FROM activities WHERE name = %s"
+    activity_result = db.fetchSQL(sql, (activity_name,))
     activity_id = None
     if len(activity_result) != 0:
         activity_id = activity_result[0][0]
@@ -3329,22 +3335,25 @@ def add_booking():
         
 
 
-        sql_insert = f'''
-        INSERT INTO bookings
-        (id, start, end, quantity, resource_id, user_id, status, place_id, activity_id)
-        VALUES (
-            0,
-            '{start}', 
-            '{end}',
-            {quantity}, 
-            {resource_id},
-            {user_id},
-            {1 if auto_accept is True else 0},
-            {'null' if place_id is None else place_id},
-            {'null' if activity_id is None else activity_id}
-        )
+        sql_insert = '''
+            INSERT INTO bookings
+            (id, start, end, quantity, resource_id, user_id, status, place_id, activity_id)
+            VALUES (
+                0, %s, %s, %s, %s, %s, %s, %s, %s
+            )
         '''
-        db.executeSQL(sql_insert)
+        parameters = (
+            start,
+            end,
+            quantity,
+            resource_id,
+            user_id,
+            1 if auto_accept is True else 0,
+            place_id if place_id is not None else None,
+            activity_id if activity_id is not None else None
+        )
+
+        db.executeSQL(sql_insert, parameters)
 
         return jsonify(
             {
@@ -3374,11 +3383,10 @@ def cancel_booking():
             }
             ), 400
     
-    bookings_content = db.fetchSQL(
-        f'''
-            SELECT * FROM bookings WHERE id = {request_id}
-        '''
-    )
+    sql = '''
+        SELECT * FROM bookings WHERE id = %s
+    '''
+    bookings_content = db.fetchSQL(sql, (request_id,))
 
     user_id = getIdFromEmail(email)
     
@@ -3399,14 +3407,13 @@ def cancel_booking():
     
 
 
-    sql_update = f'''
+    sql_update = '''
         UPDATE bookings SET
             status = 3,
-            invalidator_id = {user_id}
-        WHERE id = {request_id}
-        '''
-
-    db.executeSQL(sql_update)
+            invalidator_id = %s
+        WHERE id = %s
+    '''
+    db.executeSQL(sql_update, (user_id, request_id))
     
 
     return jsonify(
@@ -3437,17 +3444,15 @@ def get_pending_bookings():
     
     user_id = getIdFromEmail(email)
 
-    bookings_content = db.fetchSQL(
-        f'''
-            SELECT * FROM bookings WHERE status = 0
-        '''
-    )
+    sql = '''
+        SELECT * FROM bookings WHERE status = 0
+    '''
+    bookings_content = db.fetchSQL(sql)
 
-    roles_id = db.fetchSQL(
-        f'''
-            SELECT role_id FROM users_roles WHERE user_id = {user_id}
-        '''
-    )
+    sql = '''
+        SELECT role_id FROM users_roles WHERE user_id = %s
+    '''
+    roles_id = db.fetchSQL(sql, (user_id,))
 
     permission = getResourcesPermissions(roles_id)
 
@@ -3460,16 +3465,16 @@ def get_pending_bookings():
 
 
         booking = list(booking)
-        sql = f'''
-            SELECT name FROM resources WHERE id = '{booking[5]}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT name FROM resources WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (booking[5],))
         resource_name = result[0][0]
 
-        sql = f'''
-            SELECT email FROM users WHERE id = '{booking[4]}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT email FROM users WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (booking[4],))
         user_email = result[0][0]
 
         booking[1] = booking[1].isoformat()
@@ -3510,17 +3515,16 @@ def accept_pending_bookings():
     
     user_id = getIdFromEmail(email)
 
-    bookings_content = db.fetchSQL(
-        f'''
-            SELECT * FROM bookings WHERE id = {request_id}
-        '''
-    )
+    sql = '''
+        SELECT * FROM bookings WHERE id = %s
+    '''
+    bookings_content = db.fetchSQL(sql, (request_id,))
 
-    roles_id = db.fetchSQL(
-        f'''
-            SELECT role_id FROM users_roles WHERE user_id = {user_id}
-        '''
-    )
+
+    sql = '''
+        SELECT role_id FROM users_roles WHERE user_id = %s
+    '''
+    roles_id = db.fetchSQL(sql, (user_id,))
 
 
     resource_id = bookings_content[0][5]
@@ -3532,14 +3536,13 @@ def accept_pending_bookings():
             }
             ), 402
 
-    sql_update = f'''
+    sql_update = '''
         UPDATE bookings SET
             status = 1,
-            validator_id = {user_id}
-        WHERE id = {request_id}
-        '''
-
-    db.executeSQL(sql_update)
+            validator_id = %s
+        WHERE id = %s
+    '''
+    db.executeSQL(sql_update, (user_id, request_id))
     
 
     return jsonify(
@@ -3572,17 +3575,15 @@ def refuse_pending_bookings():
     
     user_id = getIdFromEmail(email)
 
-    bookings_content = db.fetchSQL(
-        f'''
-            SELECT * FROM bookings WHERE id = {request_id}
-        '''
-    )
+    sql = '''
+        SELECT * FROM bookings WHERE id = %s
+    '''
+    bookings_content = db.fetchSQL(sql, (request_id,))
 
-    roles_id = db.fetchSQL(
-        f'''
-            SELECT role_id FROM users_roles WHERE user_id = {user_id}
-        '''
-    )
+    sql = '''
+        SELECT role_id FROM users_roles WHERE user_id = %s
+    '''
+    roles_id = db.fetchSQL(sql, (user_id,))
 
 
     resource_id = bookings_content[0][5]
@@ -3594,14 +3595,13 @@ def refuse_pending_bookings():
             }
             ), 402
 
-    sql_update = f'''
+    sql_update = '''
         UPDATE bookings SET
             status = 2,
-            validator_id = {user_id}
-        WHERE id = {request_id}
-        '''
-
-    db.executeSQL(sql_update)
+            validator_id = %s
+        WHERE id = %s
+    '''
+    db.executeSQL(sql_update, (user_id, request_id))
     
 
     return jsonify(
@@ -3660,7 +3660,7 @@ def get_user_bookings():
             }
             ), 400
     
-    if not checkUserPermission(email, 'view_own_booking'):
+    if not (checkUserPermission(email, 'view_own_booking') or checkUserPermission(email, 'view_booking')):
         return jsonify(
             {
                 'message': 'Access denied'
@@ -3669,11 +3669,11 @@ def get_user_bookings():
     
     user_id = getIdFromEmail(email)
 
-    bookings_content = db.fetchSQL(
-        f'''
-            SELECT * FROM bookings where user_id = {user_id}
-        '''
-    )
+    sql = '''
+        SELECT * FROM bookings WHERE user_id = %s
+    '''
+    bookings_content = db.fetchSQL(sql, (user_id,))
+    
     bookings = elaborateBookings(bookings_content)
     
 
@@ -3711,19 +3711,23 @@ def addUser(new_name, new_surname, new_email, new_roles):
     
 
     try:
-        sql_insert = f'''
-        INSERT INTO users
-        (id, name, surname, email, password_hash, token)
-        VALUES (
-            0,
-            '{new_name}', 
-            '{new_surname}', 
-            '{new_email}', 
-            '{hash_password(password)}', 
+        sql_insert = '''
+            INSERT INTO users
+            (id, name, surname, email, password_hash, token)
+            VALUES (
+                0, %s, %s, %s, %s, %s
+            )
+        '''
+        parameters = (
+            new_name,
+            new_surname,
+            new_email,
+            hash_password(password),
             ' '
         )
-        '''
-        db.executeSQL(sql_insert)
+
+        db.executeSQL(sql_insert, parameters)
+
         
 
         new_user_id = getIdFromEmail(new_email)
@@ -3731,20 +3735,18 @@ def addUser(new_name, new_surname, new_email, new_roles):
         token_for(new_user_id)
 
         for new_role in new_roles:
-            sql = "SELECT id FROM roles WHERE name = '" + new_role + "'"
-            new_role_id = db.fetchSQL(sql)[0][0]
+            sql = "SELECT id FROM roles WHERE name = %s"
+            new_role_id = db.fetchSQL(sql, (new_role,))[0][0]
             
 
-            sql_insert = f'''
-            INSERT INTO users_roles
-            (id, user_id, role_id)
-            VALUES (
-                0,
-                {new_user_id}, 
-                {new_role_id}
-            )
+            sql_insert = '''
+                INSERT INTO users_roles
+                (id, user_id, role_id)
+                VALUES (
+                    0, %s, %s
+                )
             '''
-            db.executeSQL(sql_insert)
+            db.executeSQL(sql_insert, (new_user_id, new_role_id))
 
         emailSenderThread = threading.Thread(target=sendEmail, args=(new_email, subject, body))
         emailSenderThread.start()
@@ -3755,8 +3757,8 @@ def addUser(new_name, new_surname, new_email, new_roles):
 
 def checkUserToken(email, token):
     #collecting data...
-    sql = "SELECT * FROM users WHERE email = '" + email + "'"
-    result = db.fetchSQL(sql)
+    sql = "SELECT * FROM users WHERE email = %s"
+    result = db.fetchSQL(sql, (email,))
     if len(result) != 1:
         return False
 
@@ -3773,16 +3775,16 @@ def checkUserToken(email, token):
 
 def checkUserPermission(email, permission):
     #collecting data...
-    sql = "SELECT id FROM users WHERE email = '" + email + "'"
-    result = db.fetchSQL(sql)
+    sql = "SELECT id FROM users WHERE email = %s"
+    result = db.fetchSQL(sql, (email,))
     if len(result) != 1:
         return False
 
     user_id = result[0][0]
 
 
-    sql = "SELECT role_id FROM users_roles WHERE user_id = " + str(user_id)
-    result = db.fetchSQL(sql)
+    sql = "SELECT role_id FROM users_roles WHERE user_id = %s"
+    result = db.fetchSQL(sql, (user_id,))
     if len(result) == 0:
         return False
     
@@ -3799,8 +3801,8 @@ def checkUserPermission(email, permission):
     return False
 
 def getRoleInformation(role_id):
-    sql = "SELECT * FROM roles WHERE id = " + str(role_id)
-    role_content = db.fetchSQL(sql)[0]
+    sql = "SELECT * FROM roles WHERE id = %s"
+    role_content = db.fetchSQL(sql, (role_id,))[0]
     return {
         'role_name': role_content[1],
         'description': role_content[2],
@@ -3836,8 +3838,8 @@ def getRoleInformation(role_id):
 
 def getIdFromEmail(email):
     #collecting data...
-    sql = "SELECT * FROM users WHERE email = '" + email + "'"
-    result = db.fetchSQL(sql)
+    sql = "SELECT * FROM users WHERE email = %s"
+    result = db.fetchSQL(sql, (email,))
     if len(result) != 1:
         return None
 
@@ -3850,8 +3852,8 @@ def getIdFromEmail(email):
 
 def getEmailFromId(id):
     #collecting data...
-    sql = "SELECT * FROM users WHERE id = " + str(id)
-    result = db.fetchSQL(sql)
+    sql = "SELECT * FROM users WHERE id = %s"
+    result = db.fetchSQL(sql, (id,))
     if len(result) != 1:
         return None
 
@@ -3868,11 +3870,10 @@ def getResourcesPermissions(roles_id):
     for role_id in roles_id:
         role_id = role_id[0]
 
-        result = db.fetchSQL(
-            f'''
-                SELECT * FROM permissions WHERE role_id = {role_id}
-            '''
-        )
+        sql = '''
+            SELECT * FROM permissions WHERE role_id = %s
+        '''
+        result = db.fetchSQL(sql, (role_id,))
 
         if len(result) == 0:
             continue
@@ -3905,31 +3906,31 @@ def elaborateBookings(bookings_content):
     bookings = []
     for booking in bookings_content:
         booking = list(booking)
-        sql = f'''
-            SELECT email FROM users WHERE id = '{booking[4]}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT email FROM users WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (booking[4],))
         user_mail = result[0][0]
 
-        sql = f'''
-            SELECT name FROM resources WHERE id = '{booking[5]}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT name FROM resources WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (booking[5],))
         resource_name = result[0][0]
 
         place_name = ''
         resource_place = False
         if booking[7] == None:
             resource_place = True
-            sql = f'''
-            SELECT place_id FROM resources WHERE id = '{booking[5]}'
-            '''    
-            result = db.fetchSQL(sql)
+            sql = '''
+                SELECT place_id FROM resources WHERE id = %s
+            '''
+            result = db.fetchSQL(sql, (booking[5],))
             booking[7] = result[0][0]
-        sql = f'''
-            SELECT name FROM places WHERE id = '{booking[7]}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT name FROM places WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (booking[7],))
         place_name = result[0][0]
 
 
@@ -3938,32 +3939,32 @@ def elaborateBookings(bookings_content):
         resource_activity = False
         if booking[8] == None:
             resource_activity = True
-            sql = f'''
-            SELECT activity_id FROM resources WHERE id = '{booking[5]}'
-            '''    
-            result = db.fetchSQL(sql)
+            sql = '''
+                SELECT activity_id FROM resources WHERE id = %s
+            '''
+            result = db.fetchSQL(sql, (booking[5],))
             booking[8] = result[0][0]
 
-        sql = f'''
-            SELECT name FROM activities WHERE id = '{booking[8]}'
-        '''    
-        result = db.fetchSQL(sql)
+        sql = '''
+            SELECT name FROM activities WHERE id = %s
+        '''
+        result = db.fetchSQL(sql, (booking[8],))
         activity_name = result[0][0]
 
         validator_email = ''
         if booking[9] != None:
-            sql = f'''
-                SELECT email FROM users WHERE id = '{booking[9]}'
-            '''    
-            result = db.fetchSQL(sql)
+            sql = '''
+                SELECT email FROM users WHERE id = %s
+            '''
+            result = db.fetchSQL(sql, (booking[9],))
             validator_email = result[0][0]
 
         invalidator_email = ''
         if booking[10] != None:
-            sql = f'''
-                SELECT email FROM users WHERE id = '{booking[10]}'
-            '''    
-            result = db.fetchSQL(sql)
+            sql = '''
+                SELECT email FROM users WHERE id = %s
+            '''
+            result = db.fetchSQL(sql, (booking[10],))
             invalidator_email = result[0][0]
 
         booking[1] = booking[1].isoformat()
@@ -3983,18 +3984,18 @@ def elaborateBookings(bookings_content):
     return bookings
 
 def selectAvailabilityRecordsFromShift(start, end, resource_id, remove_availability_id=-1):
-    sql = f'''
-    SELECT * FROM availability WHERE
-
-    (
-        (NOT(start > '{end}' AND end > '{end}'))
+    sql = '''
+        SELECT * FROM availability WHERE
+        (
+            NOT (start > %s AND end > %s)
+            AND
+            NOT (start < %s AND end < %s)
+        )
         AND
-        (NOT(start < '{start}' AND end < '{start}'))
-    )
-    AND
-    resource_id = {resource_id}
+        resource_id = %s
     '''
-    result = db.fetchSQL(sql)
+    params = (end, end, start, start, resource_id)
+    result = db.fetchSQL(sql, params)
 
     shifts_content = []
     for record in result:
@@ -4009,8 +4010,8 @@ def selectAvailabilityRecordsFromShift(start, end, resource_id, remove_availabil
 
 def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1, remove_availability_id=-1, do_not_consider_over_booking=False):
 
-    sql = f'SELECT * FROM resources WHERE id = {resource_id}'
-    result = db.fetchSQL(sql)
+    sql = 'SELECT * FROM resources WHERE id = %s'
+    result = db.fetchSQL(sql, (resource_id,))
     if len(result) == 0:
         return -1
     
@@ -4023,18 +4024,17 @@ def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1, rem
 
 
 
-    sql = f'''
-    SELECT * FROM availability WHERE
-
-    (
-        (NOT(start > '{end}' AND end > '{end}'))
-        AND
-        (NOT(start < '{start}' AND end < '{start}'))
-    )
-    AND
-    resource_id = {resource_id}
+    sql = '''
+        SELECT * FROM availability WHERE
+        (
+            NOT (start > %s AND end > %s)
+            AND
+            NOT (start < %s AND end < %s)
+        )
+        AND resource_id = %s
     '''
-    result = db.fetchSQL(sql)
+    parameters = (end, end, start, start, resource_id)
+    result = db.fetchSQL(sql, parameters)
 
     shifts_content = []
     for record in result:
@@ -4046,24 +4046,34 @@ def selectAllRecordsFromShift(start, end, resource_id, remove_booking_id=-1, rem
             shifts_content.append(shift)
 
 
-    sql = f'''
-    SELECT * FROM bookings WHERE
-
-    (
+    sql = '''
+        SELECT * FROM bookings WHERE
         (
-            (NOT(start > '{end}' AND end > '{end}'))
+            (
+                NOT (start > %s AND end > %s)
+                AND
+                NOT (start < %s AND end < %s)
+            )
             AND
-            (NOT(start < '{start}' AND end < '{start}'))
-        ) AND (
-            (status = 1 OR {1 if over_booking is True else 0} = 0) AND ({1 if auto_accept is True else 0} = 0)
-            OR 
-            ({1 if auto_accept is True else 0} = 1)
-        ) AND (status != 2)
-    )
-    AND
-    resource_id = {resource_id}
+            (
+                (status = 1 OR %s = 0) AND (%s = 0)
+                OR 
+                (%s = 1)
+            )
+            AND status != 2
+        )
+        AND resource_id = %s
     '''
-    result = db.fetchSQL(sql)
+
+    parameters = (
+        end, end, start, start,
+        1 if over_booking is True else 0,
+        1 if auto_accept is True else 0,
+        1 if auto_accept is True else 0,
+        resource_id
+    )
+
+    result = db.fetchSQL(sql, parameters)
 
     for record in result:
         if record[0] != remove_booking_id:
@@ -4079,8 +4089,8 @@ def getMaxAvailability(resource_id, start, end, remove_availability_id):
     if end < start:
         return -1
     
-    sql = f'SELECT quantity FROM resources WHERE id = {resource_id}'
-    result = db.fetchSQL(sql)
+    sql = 'SELECT quantity FROM resources WHERE id = %s'
+    result = db.fetchSQL(sql, (resource_id,))
     if len(result) == 0:
         return -1
 
@@ -4109,8 +4119,8 @@ def getMaxBookability(resource_id, start, end, remove_booking_id=-1, remove_avai
     if end < start:
         return -1
     
-    sql = f'SELECT * FROM resources WHERE id = {resource_id}'
-    result = db.fetchSQL(sql)
+    sql = 'SELECT * FROM resources WHERE id = %s'
+    result = db.fetchSQL(sql, (resource_id,))
     if len(result) == 0:
         return -1
     
@@ -4226,11 +4236,13 @@ def sendEmail(email, subject, body):
 
 def token_for(id):
     token = secrets.token_hex() 
-    result = db.fetchSQL("SELECT * FROM users WHERE token = '" + token + "'")
+    sql = "SELECT * FROM users WHERE token = %s"
+    result = db.fetchSQL(sql, (token,))
     if len(result) > 0:
         return token_for(id)
     
-    db.executeSQL("UPDATE users SET token = '" + token + "' WHERE id = " + str(id))
+    sql = "UPDATE users SET token = %s WHERE id = %s"
+    db.executeSQL(sql, (token, id))
     return token
 
 def generate_password(length=12):
@@ -4251,14 +4263,21 @@ def check_and_send_notifications():
         #print('\n'+str(notification_time_delta))
         #print(notification_time)
 
-        sql = f'''SELECT * FROM bookings
-        WHERE 
-        DATE(start) = '{notification_time.date()}'
-        AND HOUR(start) = {notification_time.hour} 
-        AND MINUTE(start) = {notification_time.minute} 
-        AND status = 1
+        sql = '''
+            SELECT * FROM bookings
+            WHERE 
+                DATE(start) = %s
+                AND HOUR(start) = %s 
+                AND MINUTE(start) = %s 
+                AND status = 1
         '''
-        result = db.fetchSQL(sql)
+        parameters = (
+            notification_time.date(),
+            notification_time.hour,
+            notification_time.minute
+        )
+
+        result = db.fetchSQL(sql, parameters)
         if len(result) == 0:
             continue
 
@@ -4272,31 +4291,31 @@ def check_and_send_notifications():
             user_id = record[4]
             user_email = getEmailFromId(user_id)
 
-            sql = "SELECT * FROM users WHERE id = " + str(user_id)
-            user_content = db.fetchSQL(sql)
+            sql = "SELECT * FROM users WHERE id = %s"
+            user_content = db.fetchSQL(sql, (user_id,))
             if len(user_content) == 0:
                 continue
             user_email = user_content[0][3]
             user_language = user_content[0][6]
 
-            sql = f'''
-                SELECT name FROM resources WHERE id = '{resource_id}'
-            '''    
-            resource_name = db.fetchSQL(sql)[0][0]
+            sql = '''
+                SELECT name FROM resources WHERE id = %s
+            '''
+            resource_name = db.fetchSQL(sql, (resource_id,))[0][0]
 
 
 
-            sql = f'''
-                SELECT * FROM referents WHERE resource_id = '{resource_id}'
-            '''    
-            referents_content = db.fetchSQL(sql)
+            sql = '''
+                SELECT * FROM referents WHERE resource_id = %s
+            '''
+            referents_content = db.fetchSQL(sql, (resource_id,))
 
 
             for referent in referents_content:
                 referent_id = referent[2]
 
-                sql = "SELECT * FROM users WHERE id = " + str(referent_id)
-                user_content = db.fetchSQL(sql)
+                sql = "SELECT * FROM users WHERE id = %s"
+                user_content = db.fetchSQL(sql, (referent_id,))
                 if len(user_content) == 0:
                     continue
                 referent_email = user_content[0][3]

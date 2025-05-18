@@ -102,7 +102,7 @@ class _ManageUsersAdminState extends State<ManageUsersAdmin> {
     var appProvider = context.watch<AppProvider>();
 
     return Scaffold(
-      floatingActionButton: appProvider.create_resources ?
+      floatingActionButton: appProvider.create_roles ?
       FloatingActionButton.extended(
         onPressed: () {
           context.push(Routes.manage_Roles_AddRole);

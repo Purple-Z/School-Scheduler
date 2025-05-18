@@ -278,7 +278,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => BookingDetailsPage(loadEvents: widget.loadEvents, booking: event,),
+                                      builder: (context) => BookingDetailsPage(loadEvents: widget.loadEvents, booking: event, candelete: widget.canDelete,),
                                     ),
                                   );
                                 },
@@ -1233,8 +1233,9 @@ class _FiltersPageState extends State<FiltersPage> {
 class BookingDetailsPage extends StatefulWidget {
   final Function loadEvents;
   final Booking booking;
+  final bool candelete;
 
-  const BookingDetailsPage({super.key, required this.loadEvents, required this.booking});
+  const BookingDetailsPage({super.key, required this.loadEvents, required this.booking, required this.candelete});
 
   @override
   State<BookingDetailsPage> createState() => _BookingDetailsPageState();
@@ -1247,7 +1248,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
     var appProvider = context.watch<AppProvider>();
 
     return appProvider.view_resources && appProvider.view_booking ?
-    BookingDetails(booking: widget.booking, loadEvents: widget.loadEvents,):
+    BookingDetails(booking: widget.booking, loadEvents: widget.loadEvents, canDelete: widget.candelete,):
     Text(AppLocalizations.of(context)!.access_denied);
   }
 }
@@ -1255,9 +1256,10 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 class BookingDetails extends StatefulWidget {
   final Booking booking;
   final Function loadEvents;
+  final bool canDelete;
   const BookingDetails({
     super.key,
-    required this.booking, required this.loadEvents
+    required this.booking, required this.loadEvents, required this.canDelete
   });
 
   @override
@@ -1572,17 +1574,17 @@ class _BookingDetailsState extends State<BookingDetails> {
             ),
           ),
 
-          if (widget.booking.status == 1)  SizedBox(height: 50,),
+          if ((widget.booking.status == 1) && widget.canDelete)  SizedBox(height: 50,),
 
-          if (widget.booking.status == 1)  Text(
+          if ((widget.booking.status == 1) && widget.canDelete)  Text(
             'Cancel this booking',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
           ),
 
-          if (widget.booking.status == 1)  SizedBox(height: 10,),
+          if ((widget.booking.status == 1) && widget.canDelete)  SizedBox(height: 10,),
 
-          if (widget.booking.status == 1)  Padding(
+          if ((widget.booking.status == 1) && widget.canDelete)  Padding(
             padding: const EdgeInsets.fromLTRB(22, 0, 22, 0),
             child: ElevatedButton(
               onPressed: () async {
