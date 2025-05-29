@@ -79,13 +79,6 @@ class _ManageAvailabilityState extends State<ManageAvailability> {
         continue;
       }
 
-
-      for (int i in [1, 2]){
-        DateTime dateTime = DateTime.tryParse(newItem[i]) ?? DateTime.now();
-        newItem[i] = getTimePrintable(dateTime)+'\n';
-        newItem[i] += getDatePrintable(dateTime, context);
-      }
-
       newItems.add(newItem);
     }
     return newItems;
@@ -104,8 +97,13 @@ class _ManageAvailabilityState extends State<ManageAvailability> {
         onPressed: () {
           context.push(Routes.manage_ManageResources_AddAvailability);
         },
-        label: Text(AppLocalizations.of(context)!.availability_new_availability),
-        icon: Icon(Icons.add),
+        label: Text(
+          AppLocalizations.of(context)!.availability_new_availability,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.surface
+          ),
+        ),
+        icon: Icon(Icons.add, color: Theme.of(context).colorScheme.surface,),
       ) : null,
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
@@ -155,9 +153,9 @@ class _ManageAvailabilityState extends State<ManageAvailability> {
                     ],
                     itemCategories: [
                       'other',
-                      'text',
-                      'text',
-                      'text',
+                      'time',
+                      'time',
+                      'number',
                       'other'
                     ],
                     refreshController: refreshController

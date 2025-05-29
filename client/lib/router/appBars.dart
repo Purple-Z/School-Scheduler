@@ -7,7 +7,7 @@ AppBar standardAppBar(BuildContext context) {
 
   return AppBar(
     backgroundColor: Theme.of(context).colorScheme.surface,
-    title: Text("School Scheduler", style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),),
+    title: Text("Guido Dorso", style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),),
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         bottom: Radius.circular(20), // Imposta il raggio di curvatura desiderato

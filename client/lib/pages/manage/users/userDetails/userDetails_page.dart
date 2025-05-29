@@ -114,7 +114,7 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                           backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),
                           textStyle: WidgetStatePropertyAll(
                               TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimary
+                                  color: Theme.of(context).colorScheme.surface
                               )
                           )
                       ),
@@ -144,7 +144,8 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                         child: Text(
                           AppLocalizations.of(context)!.user_update_user,
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: Theme.of(context).colorScheme.surface,
+                              fontWeight: FontWeight.bold,
                               fontSize: 20
                           ),
                         ),
@@ -161,7 +162,7 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                           backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),
                           textStyle: WidgetStatePropertyAll(
                               TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimary
+                                  color: Theme.of(context).colorScheme.surface
                               )
                           )
                       ),
@@ -179,7 +180,8 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                         child: Text(
                           AppLocalizations.of(context)!.user_restore_password,
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: Theme.of(context).colorScheme.surface,
+                              fontWeight: FontWeight.bold,
                               fontSize: 20
                           ),
                         ),
@@ -196,10 +198,10 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                 child: ElevatedButton(
                   style: ButtonStyle(
                       minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
-                      backgroundColor: WidgetStatePropertyAll(Color(0xFFB00020)),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.secondary),
                       textStyle: WidgetStatePropertyAll(
                           TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary
+                              color: Theme.of(context).colorScheme.surface
                           )
                       )
                   ),
@@ -218,7 +220,8 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                     child: Text(
                       AppLocalizations.of(context)!.user_delete_user,
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary,
+                          color: Theme.of(context).colorScheme.surface,
+                          fontWeight: FontWeight.bold,
                           fontSize: 20
                       ),
                     ),

@@ -74,8 +74,11 @@ class _ManageActivitiesAdminState extends State<ManageActivitiesAdmin> {
         onPressed: () {
           context.push(Routes.manage_Activities_addActivity);
         },
-        label: Text(AppLocalizations.of(context)!.activity_new_activity),
-        icon: Icon(Icons.add),
+        label: Text(
+          AppLocalizations.of(context)!.activity_new_activity,
+          style: TextStyle(color: Theme.of(context).colorScheme.surface),
+        ),
+        icon: Icon(Icons.add, color: Theme.of(context).colorScheme.surface),
       ) : null,
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),

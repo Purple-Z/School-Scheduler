@@ -123,7 +123,8 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                     child: Text(
                       AppLocalizations.of(context)!.place_update_place,
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary,
+                          color: Theme.of(context).colorScheme.surface,
+                          fontWeight: FontWeight.bold,
                           fontSize: 20
                       ),
                     ),
@@ -139,7 +140,7 @@ class _PlaceDetailsState extends State<PlaceDetails> {
             child: ElevatedButton(
               style: ButtonStyle(
                   minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
-                  backgroundColor: WidgetStatePropertyAll(Color(0xFFB00020)),
+                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.secondary),
                   textStyle: WidgetStatePropertyAll(
                       TextStyle(
                           color: Theme.of(context).colorScheme.onPrimary
@@ -161,7 +162,8 @@ class _PlaceDetailsState extends State<PlaceDetails> {
                 child: Text(
                   AppLocalizations.of(context)!.place_delete_place,
                   style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
+                      color: Theme.of(context).colorScheme.surface,
+                      fontWeight: FontWeight.bold,
                       fontSize: 20
                   ),
                 ),

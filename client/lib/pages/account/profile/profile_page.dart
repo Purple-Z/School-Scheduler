@@ -189,6 +189,34 @@ class ProfileButtonsWidget extends StatelessWidget {
                 ),
               )
           ),
+        ),
+
+        if (appProvider.view_own_user) SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.secondary)
+              ),
+              onPressed: () {
+                context.push(Routes.account_Profile_Permission);
+              },
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Check Permission',
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.surface,
+                          fontSize: 20
+                      ),
+                    ),
+                    SizedBox(width: 7,),
+                    Icon(Icons.open_in_new, color: Theme.of(context).colorScheme.surface,)
+                  ],
+                ),
+              )
+          ),
         )
       ],
     );

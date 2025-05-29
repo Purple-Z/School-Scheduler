@@ -10,6 +10,7 @@ import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:overflow_text_animated/overflow_text_animated.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -299,76 +300,79 @@ class _AddResourceState extends State<AddResource> {
               title: Text(AppLocalizations.of(context)!.resource_referents, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                Row(
-                  children: [
-                    Expanded(child: SizedBox()),
-                    Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            List<SelectedListItem<ListItem>> selections = [];
-                            for (List user in addResourceProvider.users){
-                              selections.add(SelectedListItem<ListItem>(
-                                  data: ListItem(
-                                    display: (user[1]+', '+user[2]+'\n'+user[3]),
-                                    value: user[3],
-                                  ),
-                                  isSelected: user.last
-                              ));
-                            }
-                            DropDownState<ListItem>(
-                              dropDown: DropDown<ListItem>(
-                                enableMultipleSelection: true,
-                                data: selections,
-                                onSelected: (selectedItems) {
-                                  List<String> list = [];
-                                  for (var item in selectedItems) {
-                                    list.add(item.data.value);
-                                  }
+                ElevatedButton(
+                  onPressed: () async {
+                    List<SelectedListItem<ListItem>> selections = [];
+                    for (List user in addResourceProvider.users){
+                      selections.add(SelectedListItem<ListItem>(
+                          data: ListItem(
+                            display: (user[1]+', '+user[2]+'\n'+user[3]),
+                            value: user[3],
+                          ),
+                          isSelected: user.last
+                      ));
+                    }
+                    DropDownState<ListItem>(
+                      dropDown: DropDown<ListItem>(
+                        enableMultipleSelection: true,
+                        data: selections,
+                        onSelected: (selectedItems) {
+                          List<String> list = [];
+                          for (var item in selectedItems) {
+                            list.add(item.data.value);
+                          }
 
-                                  addResourceProvider.changeUsersValue(list);
-                                },
-                              ),
-                            ).showModal(context);
-                          },
-                          style: const ButtonStyle(
-                              shadowColor: WidgetStatePropertyAll(Colors.transparent),
-                              overlayColor: WidgetStatePropertyAll(Colors.transparent)
-                          ),
-                          child: Column(
-                            children: [
-                              if(addResourceProvider.users.every((riga) => riga[riga.length-1] == false))
-                                Text(AppLocalizations.of(context)!.resource_referents_empty),
-                              for (var user in addResourceProvider.users)
-                                if (user.last == true)
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          user[1]+' '+user[2],
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Theme.of(context).colorScheme.primary
-                                          ),
-                                        ),
-                                        Text(
-                                          user[3],
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Theme.of(context).colorScheme.primary
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                          addResourceProvider.changeUsersValue(list);
+                        },
+                      ),
+                    ).showModal(context);
+                  },
+                  style: const ButtonStyle(
+                    shadowColor: WidgetStatePropertyAll(Colors.transparent),
+                    overlayColor: WidgetStatePropertyAll(Colors.transparent),
+                    padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                  ),
+                  child: Column(
+                    children: [
+                      if(addResourceProvider.users.every((riga) => riga[riga.length-1] == false))
+                        Text(AppLocalizations.of(context)!.resource_referents_empty),
+                      for (var user in addResourceProvider.users)
+                        if (user.last == true)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            child: Column(
+                              children: [
+                                OverflowTextAnimated(
+                                  key: UniqueKey(),
+                                  text: user[1]+' '+user[2],
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Theme.of(context).colorScheme.primary
                                   ),
-                            ],
+                                  curve: Curves.easeInOut,
+                                  animation: OverFlowTextAnimations.scrollOpposite,
+                                  animateDuration: const Duration(milliseconds: 2000),
+                                  delay: const Duration(milliseconds: 500),
+                                  loopSpace: 10,
+                                ),
+                                OverflowTextAnimated(
+                                  key: UniqueKey(),
+                                  text: user[3],
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      color: Theme.of(context).colorScheme.primary
+                                  ),
+                                  curve: Curves.easeInOut,
+                                  animation: OverFlowTextAnimations.scrollOpposite,
+                                  animateDuration: const Duration(milliseconds: 2000),
+                                  delay: const Duration(milliseconds: 500),
+                                  loopSpace: 10,
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Expanded(child: SizedBox())
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -459,7 +463,8 @@ class _AddResourceState extends State<AddResource> {
                   child: Text(
                     AppLocalizations.of(context)!.resource_add_resource,
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: Theme.of(context).colorScheme.surface,
+                        fontWeight: FontWeight.bold,
                         fontSize: 20
                     ),
                   ),

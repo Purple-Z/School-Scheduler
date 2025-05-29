@@ -109,7 +109,8 @@ class _AddActivityState extends State<AddActivity> {
                 child: Text(
                   AppLocalizations.of(context)!.activity_add_activity,
                   style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
+                      color: Theme.of(context).colorScheme.surface,
+                      fontWeight: FontWeight.bold,
                       fontSize: 20
                   ),
                 ),

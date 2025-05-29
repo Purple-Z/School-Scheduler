@@ -32,9 +32,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
     var resourcesProvider = context.watch<ResourcesProvider>();
     var appProvider = context.watch<AppProvider>();
 
-    return appProvider.view_resources ?
-    ResourceFeed():
-    Text(AppLocalizations.of(context)!.access_denied);
+    return ResourceFeed();
   }
 }
 
@@ -141,20 +139,20 @@ class _ResourceFeedState extends State<ResourceFeed> {
                         color: Theme.of(context).colorScheme.primary,
                         child: Padding(
                           padding: const EdgeInsets.all(15.0),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    entry.key,
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: Theme.of(context).colorScheme.surface
-                                    ),
-                                  ),
-                                  Expanded(child: SizedBox())
-                                ],
+                          child: ExpansionTile(
+                            title: Text(
+                              entry.key,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(context).colorScheme.surface,
+                                  fontWeight: FontWeight.bold
                               ),
+                            ),
+                            shape: Border(),
+                            iconColor: Theme.of(context).colorScheme.surface,
+                            collapsedIconColor: Theme.of(context).colorScheme.surface,
+                            initiallyExpanded: resourcesProvider.resources.entries.length==1,
+                            children: [
                               if (!oriz) SizedBox(height: 10,),
                               GridView.count(
                                 childAspectRatio: oriz ? 1 : 1,

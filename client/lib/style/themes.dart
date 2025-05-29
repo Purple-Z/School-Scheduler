@@ -10,7 +10,7 @@ ThemeData dayTheme = ThemeData(
     onPrimary: Color(0xFF0E121A),
     //primaryContainer: Color(0xFF4F378B),
     onPrimaryContainer: Color(0xFF0E121A),
-    secondary: Color(0xFFFC574F),//0xFFB00020
+    secondary: Color(0xFFB00020),//0xFFB00020
     onSecondary: Color(0xFF0E121A),
     //secondaryContainer: Color(0xFF4A4458),
     onSecondaryContainer: Color(0xFF0E121A),
@@ -43,7 +43,7 @@ ThemeData nigthTheme = ThemeData(
     onPrimary: Color(0xFFFFFFFF),
     //primaryContainer: Color(0xFF4F378B),
     onPrimaryContainer: Color(0xFFFFFFFF),
-    secondary: Color(0xFFFC574F),//0xFFB00020
+    secondary: Color(0xFFB00020),//0xFFB00020
     onSecondary: Color(0xFFFFFFFF),
     //secondaryContainer: Color(0xFF4A4458),
     onSecondaryContainer: Color(0xFFFFFFFF),

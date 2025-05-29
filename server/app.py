@@ -40,7 +40,7 @@ except Exception as e:
 def schedule_function():
     while True:
         now = datetime.now(rome_tz)
-        if now.second == 30:
+        if now.second == 30 or now.second == 0 or now.second == 15 or now.second == 45:
             send_notification_thread = threading.Thread(target=check_and_send_notifications, daemon=True)
             send_notification_thread.start()
             time.sleep(1.5)
@@ -1633,13 +1633,7 @@ def get_place_list():
                 'message': 'User disconnected'
             }
             ), 400
-    
-    if not checkUserPermission(email, 'view_resources'):
-        return jsonify(
-            {
-                'message': 'Access denied'
-            }
-            ), 401
+
 
     user_id = getIdFromEmail(email)
 
@@ -1883,12 +1877,6 @@ def get_activity_list():
             }
             ), 400
     
-    if not checkUserPermission(email, 'view_resources'):
-        return jsonify(
-            {
-                'message': 'Access denied'
-            }
-            ), 401
 
     user_id = getIdFromEmail(email)
 
@@ -2968,12 +2956,6 @@ def get_resources_feed():
             }
             ), 400
     
-    if not checkUserPermission(email, 'view_resources'):
-        return jsonify(
-            {
-                'message': 'Access denied'
-            }
-            ), 401
     
     user_id = getIdFromEmail(email)
 
@@ -3187,13 +3169,6 @@ def check_bookings_quantity():
             ), 401
 
     if not checkUserPermission(email, 'view_booking'):
-        return jsonify(
-            {
-                'message': 'Access denied'
-            }
-            ), 401
-
-    if not checkUserPermission(email, 'view_resources'):
         return jsonify(
             {
                 'message': 'Access denied'
@@ -4386,6 +4361,21 @@ def check_and_send_notifications():
 
 
             print(now.minute, record)
+
+    parameters = (
+        now,
+    )
+
+
+    sql = '''
+        UPDATE bookings
+        Set status = 4
+        WHERE 
+            end <= %s
+            AND status = 0
+    '''
+
+    db.executeSQL(sql, parameters)
 
     return
 

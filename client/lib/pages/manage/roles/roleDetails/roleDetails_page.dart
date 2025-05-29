@@ -411,7 +411,8 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                         child: Text(
                           AppLocalizations.of(context)!.role_update_role,
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: Theme.of(context).colorScheme.surface,
+                              fontWeight: FontWeight.bold,
                               fontSize: 20
                           ),
                         ),
@@ -428,7 +429,7 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
               child: ElevatedButton(
                 style: ButtonStyle(
                     minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
-                    backgroundColor: WidgetStatePropertyAll(Color(0xFFB00020)),
+                    backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.secondary),
                     textStyle: WidgetStatePropertyAll(
                         TextStyle(
                             color: Theme.of(context).colorScheme.onPrimary
@@ -451,7 +452,8 @@ class _UserDetailsAdminState extends State<UserDetailsAdmin> {
                   child: Text(
                     AppLocalizations.of(context)!.role_delete_role,
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: Theme.of(context).colorScheme.surface,
+                        fontWeight: FontWeight.bold,
                         fontSize: 20
                     ),
                   ),

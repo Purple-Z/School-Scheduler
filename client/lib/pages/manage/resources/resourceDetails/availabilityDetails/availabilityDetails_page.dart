@@ -250,7 +250,8 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                     child: Text(
                       AppLocalizations.of(context)!.availability_check_quantity,
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary,
+                          color: Theme.of(context).colorScheme.surface,
+                          fontWeight: FontWeight.bold,
                           fontSize: 20
                       ),
                     ),
@@ -300,7 +301,8 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                         child: Text(
                           AppLocalizations.of(context)!.availability_update_availability,
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: Theme.of(context).colorScheme.surface,
+                              fontWeight: FontWeight.bold,
                               fontSize: 20
                           ),
                         ),
@@ -350,7 +352,8 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                     child: Text(
                       AppLocalizations.of(context)!.availability_delete_availability,
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary,
+                          color: Theme.of(context).colorScheme.surface,
+                          fontWeight: FontWeight.bold,
                           fontSize: 20
                       ),
                     ),

@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
+import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
@@ -59,65 +61,77 @@ class LayoutScaffold extends StatelessWidget {
       ),
     );
 
+    List destinations = [
+      Destination(label: 'resources', icon: Icons.account_balance_rounded),
+      if (
+        appState.view_user ||
+        appState.edit_user ||
+        appState.create_user ||
+        appState.delete_user ||
+        appState.view_roles ||
+        appState.edit_roles ||
+        appState.create_roles ||
+        appState.delete_roles ||
+        appState.view_availability ||
+        appState.edit_availability ||
+        appState.create_availability ||
+        appState.delete_availability ||
+        appState.view_resources ||
+        appState.edit_resources ||
+        appState.create_resources ||
+        appState.delete_resources ||
+        appState.view_booking ||
+        appState.edit_booking ||
+        appState.create_booking ||
+        appState.delete_booking
+      ) Destination(label: 'manage', icon: Icons.account_tree_rounded),
+      Destination(label: 'account', icon: Icons.account_circle_outlined),
+    ];
+
     LayoutBuilder body = LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         if (constraints.maxWidth < appState.maxWidth) {
-          return Column(
-            children: [
-              Expanded(child: navigationShell),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  WaveWidget(
-                    config: CustomConfig(
-                      colors: [
-                        Theme.of(context).colorScheme.tertiary,
-                        Theme.of(context).colorScheme.secondary,
-                        Theme.of(context).colorScheme.primary,
-                      ],
-                      durations: [
-                        70000,
-                        50000,
-                        30000
-                      ],
-                      heightPercentages: [
-                        -0.5,
-                        -0.5,
-                        -0.5,
-                      ],
-                    ),
-                    backgroundColor: Colors.transparent,
-                    size: Size(double.infinity, 10),
-                    waveAmplitude: 0,
-                  ),
-                  NavigationBarTheme(
-                    data: NavigationBarThemeData(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      indicatorColor: Theme.of(context).colorScheme.secondary,
-
-                      labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
-                            (Set<WidgetState> states) => states.contains(WidgetState.selected)
-                            ? TextStyle(color: Theme.of(context).colorScheme.surface)
-                            : TextStyle(color: Theme.of(context).colorScheme.surface),
-                      ),
-                    ),
-
-                    child: NavigationBar(
-                      selectedIndex: navigationShell.currentIndex,
-                      onDestinationSelected: navigationShell.goBranch,
-                      destinations: destinations
-                          .map((destination) =>
-                          NavigationDestination(
-                            icon: Icon(destination.icon, color: Theme.of(context).colorScheme.surface,),
-                            label: destination.label,
-                            selectedIcon: Icon(destination.icon, color: Theme.of(context).colorScheme.surface),
-                          ))
-                          .toList(),
-                    ),
-                  ),
-                ],
+          final List<TabItem> items = destinations.map((destination) =>
+              TabItem(
+                icon: destination.icon, // destination.icon è già IconData
+                title: destination.label,
               ),
-            ],
+          ).toList();
+
+          int selectedIndex = navigationShell.currentIndex;
+          if (selectedIndex >= items.length) {
+            selectedIndex = items.length-1;
+          }
+
+
+          return Scaffold(
+            body: navigationShell,
+            bottomNavigationBar: BottomBarDefault(
+              items: items,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              color: Theme.of(context).colorScheme.surface,
+              colorSelected: Theme.of(context).colorScheme.secondary,
+              indexSelected: selectedIndex,
+              onTap: (index) {
+                if (destinations.length == 2) {
+                  if (index == 1){
+                    navigationShell.goBranch(2);
+                  } else {
+                    navigationShell.goBranch(0);
+
+                  }
+                } else {
+                  navigationShell.goBranch(index);
+                }
+              },
+              countStyle: CountStyle(
+                background: Theme.of(context).colorScheme.secondary,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+              titleStyle: TextStyle(
+                fontSize: 14,
+              ),
+            ),
           );
         } else {
           // Altrimenti, usa NavigationRail

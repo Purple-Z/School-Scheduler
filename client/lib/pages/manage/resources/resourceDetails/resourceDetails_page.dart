@@ -13,6 +13,7 @@ import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:overflow_text_animated/overflow_text_animated.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -328,77 +329,83 @@ class _ResourceDetailsState extends State<ResourceDetails> {
               title: Text(AppLocalizations.of(context)!.resource_referents, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                Row(
+                Column(
                   children: [
-                    Expanded(child: SizedBox()),
-                    Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: appProvider.edit_resources ? () async {
-                            List<SelectedListItem<ListItem>> selections = [];
-                            for (List user in resourceDetailsProvider.users){
-                              selections.add(SelectedListItem<ListItem>(
-                                  data: ListItem(
-                                    display: (user[1]+', '+user[2]+'\n'+user[3]),
-                                    value: user[3],
-                                  ),
-                                  isSelected: user.last
-                              ));
-                            }
-                            DropDownState<ListItem>(
-                              dropDown: DropDown<ListItem>(
-                                enableMultipleSelection: true,
-                                data: selections,
-                                onSelected: (selectedItems) {
-                                  List<String> list = [];
-                                  for (var item in selectedItems) {
-                                    list.add(item.data.value);
-                                  }
-
-                                  resourceDetailsProvider.changeUsersValue(list);
-                                },
+                    ElevatedButton(
+                      onPressed: appProvider.edit_resources ? () async {
+                        List<SelectedListItem<ListItem>> selections = [];
+                        for (List user in resourceDetailsProvider.users){
+                          selections.add(SelectedListItem<ListItem>(
+                              data: ListItem(
+                                display: (user[1]+', '+user[2]+'\n'+user[3]),
+                                value: user[3],
                               ),
-                            ).showModal(context);
-                          } : null,
-                          style: const ButtonStyle(
-                              shadowColor: WidgetStatePropertyAll(Colors.transparent),
-                              overlayColor: WidgetStatePropertyAll(Colors.transparent)
-                          ),
-                          child: Column(
-                            children: [
-                              if(resourceDetailsProvider.users.every((riga) => riga[riga.length-1] == false))
-                                Text('Empty List' + (appProvider.edit_resources ? ', Tap To Add' : '')),
-                              for (var user in resourceDetailsProvider.users)
-                                if (user.last == true)
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          user[1]+' '+user[2],
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Theme.of(context).colorScheme.primary
-                                          ),
-                                        ),
-                                        Text(
-                                          user[3],
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Theme.of(context).colorScheme.primary
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                              isSelected: user.last
+                          ));
+                        }
+                        DropDownState<ListItem>(
+                          dropDown: DropDown<ListItem>(
+                            enableMultipleSelection: true,
+                            data: selections,
+                            onSelected: (selectedItems) {
+                              List<String> list = [];
+                              for (var item in selectedItems) {
+                                list.add(item.data.value);
+                              }
 
-                            ],
+                              resourceDetailsProvider.changeUsersValue(list);
+                            },
                           ),
-                        ),
-                        const SizedBox(height: 15),
-                      ],
+                        ).showModal(context);
+                      } : null,
+                      style: const ButtonStyle(
+                        shadowColor: WidgetStatePropertyAll(Colors.transparent),
+                        overlayColor: WidgetStatePropertyAll(Colors.transparent),
+                        padding: WidgetStatePropertyAll(EdgeInsets.zero),
+                      ),
+                      child: Column(
+                        children: [
+                          if(resourceDetailsProvider.users.every((riga) => riga[riga.length-1] == false))
+                            Text(AppLocalizations.of(context)!.resource_referents_empty),
+                          for (var user in resourceDetailsProvider.users)
+                            if (user.last == true)
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                child: Column(
+                                  children: [
+                                    OverflowTextAnimated(
+                                      key: UniqueKey(),
+                                      text: user[1]+' '+user[2],
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Theme.of(context).colorScheme.primary
+                                      ),
+                                      curve: Curves.easeInOut,
+                                      animation: OverFlowTextAnimations.scrollOpposite,
+                                      animateDuration: const Duration(milliseconds: 2000),
+                                      delay: const Duration(milliseconds: 500),
+                                      loopSpace: 10,
+                                    ),
+                                    OverflowTextAnimated(
+                                      key: UniqueKey(),
+                                      text: user[3],
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          color: Theme.of(context).colorScheme.primary
+                                      ),
+                                      curve: Curves.easeInOut,
+                                      animation: OverFlowTextAnimations.scrollOpposite,
+                                      animateDuration: const Duration(milliseconds: 2000),
+                                      delay: const Duration(milliseconds: 500),
+                                      loopSpace: 10,
+                                    )
+                                  ],
+                                ),
+                              ),
+                        ],
+                      ),
                     ),
-                    Expanded(child: SizedBox())
+                    const SizedBox(height: 15),
                   ],
                 ),
               ],
@@ -473,7 +480,8 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                         child: Text(
                           AppLocalizations.of(context)!.resource_view_availability,
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: Theme.of(context).colorScheme.surface,
+                              fontWeight: FontWeight.bold,
                               fontSize: 20
                           ),
                         ),
@@ -538,7 +546,8 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                         child: Text(
                           AppLocalizations.of(context)!.resource_update_resource,
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: Theme.of(context).colorScheme.surface,
+                              fontWeight: FontWeight.bold,
                               fontSize: 20
                           ),
                         ),
@@ -578,7 +587,8 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                     child: Text(
                       AppLocalizations.of(context)!.resource_delete_resource,
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary,
+                          color: Theme.of(context).colorScheme.surface,
+                          fontWeight: FontWeight.bold,
                           fontSize: 20
                       ),
                     ),

@@ -3,6 +3,7 @@ import 'package:client/connection.dart';
 import 'package:client/pages/account/account_page.dart';
 import 'package:client/pages/account/login/login_page.dart';
 import 'package:client/pages/account/profile/chagePassword/changePassword_page.dart';
+import 'package:client/pages/account/profile/permissions/permission_page.dart';
 import 'package:client/pages/account/profile/profile_page.dart';
 import 'package:client/pages/account/settings/settings_page.dart';
 import 'package:client/pages/account/userBookings/userBookings_page.dart';
@@ -564,6 +565,10 @@ final router = GoRouter(
                     GoRoute(
                       path: Routes.changePassword,
                       builder: (context, state) => const ChangePasswordPage(),
+                    ),
+                    GoRoute(
+                      path: Routes.permission,
+                      builder: (context, state) => const PermissionPage(),
                     ),
                   ]
                 ),

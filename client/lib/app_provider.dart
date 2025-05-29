@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'connection.dart';
 import 'style/themes.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -62,6 +63,7 @@ class AppProvider extends ChangeNotifier {
 
     await loadPreferences();
     await loadLocale();
+    await Connection.reload(this);
 
     notifyListeners();
   }

@@ -117,7 +117,8 @@ class _AddTypeState extends State<AddType> {
                 child: Text(
                   AppLocalizations.of(context)!.type_add_type,
                   style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
+                      color: Theme.of(context).colorScheme.surface,
+                      fontWeight: FontWeight.bold,
                       fontSize: 20
                   ),
                 ),

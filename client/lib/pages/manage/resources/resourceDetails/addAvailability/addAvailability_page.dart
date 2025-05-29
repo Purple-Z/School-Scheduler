@@ -235,7 +235,8 @@ class _AddAvailabilityState extends State<AddAvailability> {
                   child: Text(
                     AppLocalizations.of(context)!.availability_check_quantity,
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: Theme.of(context).colorScheme.surface,
+                        fontWeight: FontWeight.bold,
                         fontSize: 20
                     ),
                   ),
@@ -275,7 +276,8 @@ class _AddAvailabilityState extends State<AddAvailability> {
                   child: Text(
                     AppLocalizations.of(context)!.availability_add_availability,
                     style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: Theme.of(context).colorScheme.surface,
+                        fontWeight: FontWeight.bold,
                         fontSize: 20
                     ),
                   ),

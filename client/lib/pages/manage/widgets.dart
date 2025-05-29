@@ -299,6 +299,10 @@ class _DataTableWidgetState extends State<DataTableWidget> {
         }
       }
       print([min, max]);
+      if (min == max) {
+        min = ((min-1)>=0) ? (min-1) : 0;
+        max = max + 1;
+      }
       return [min, max];
     } else {
       return [0, 0];
@@ -384,6 +388,11 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                   print(f);
                                   if (f.isEmpty){
                                     f = resetFilters(modalSheetWidgetProvider);
+                                  }
+
+                                  if (f[i][0] == f[i][1]) {
+                                    f[i][0] = ((f[i][0]-1)>=0) ? (f[i][0]-1) : 0;
+                                    f[i][1] = f[i][1] + 1;
                                   }
 
                                   return SizedBox(

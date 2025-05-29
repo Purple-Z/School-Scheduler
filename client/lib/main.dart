@@ -1,6 +1,7 @@
 import 'package:client/pages/account/account_provider.dart';
 import 'package:client/pages/account/login/login_provider.dart';
 import 'package:client/pages/account/profile/chagePassword/changePassword_provider.dart';
+import 'package:client/pages/account/profile/permissions/permission_provider.dart';
 import 'package:client/pages/account/profile/profile_provider.dart';
 import 'package:client/pages/account/settings/settings_provider.dart';
 import 'package:client/pages/account/userBookings/userBookings_provider.dart';
@@ -38,9 +39,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:client/router/router.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 import 'app_provider.dart';
+import 'connection.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,6 +54,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AppProvider()),
@@ -89,6 +93,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserBookingsProvider()),
         ChangeNotifierProvider(create: (_) => AddUsersCSVProvider()),
         ChangeNotifierProvider(create: (_) => WidgetStatesProvider()),
+        ChangeNotifierProvider(create: (_) => PermissionProvider()),
       ],
       child: Consumer<AppProvider>(
         builder: (context, dataProvider, child) {

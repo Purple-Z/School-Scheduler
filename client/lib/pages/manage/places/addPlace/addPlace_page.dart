@@ -109,7 +109,8 @@ class _AddPlaceState extends State<AddPlace> {
                 child: Text(
                   AppLocalizations.of(context)!.place_add_place,
                   style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
+                      color: Theme.of(context).colorScheme.surface,
+                      fontWeight: FontWeight.bold,
                       fontSize: 20
                   ),
                 ),

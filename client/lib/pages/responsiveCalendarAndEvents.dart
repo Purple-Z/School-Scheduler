@@ -87,6 +87,13 @@ class _EventListWidgetState extends State<EventListWidget> {
                                 color: Theme.of(context).colorScheme.secondary
                             ),
                           ),
+                          if (event.status == 4) Text(
+                            'Expired',
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: Theme.of(context).colorScheme.secondary
+                            ),
+                          ),
                           const Expanded(child: SizedBox()),
                         ],
                       ),
@@ -1356,6 +1363,13 @@ class _BookingDetailsState extends State<BookingDetails> {
                         ),
                         if (widget.booking.status == 3) Text(
                           'Cancelled',
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Theme.of(context).colorScheme.surface
+                          ),
+                        ),
+                        if (widget.booking.status == 4) Text(
+                          'Expired',
                           style: TextStyle(
                               fontSize: 17,
                               color: Theme.of(context).colorScheme.surface

@@ -72,8 +72,11 @@ class _ManagePlacesAdminState extends State<ManagePlacesAdmin> {
         onPressed: () {
           context.push(Routes.manage_Places_AddPlace);
         },
-        label: Text(AppLocalizations.of(context)!.place_new_place),
-        icon: Icon(Icons.add),
+        label: Text(
+          AppLocalizations.of(context)!.place_new_place,
+          style: TextStyle(color: Theme.of(context).colorScheme.surface),
+        ),
+        icon: Icon(Icons.add, color: Theme.of(context).colorScheme.surface),
       ) : null,
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),

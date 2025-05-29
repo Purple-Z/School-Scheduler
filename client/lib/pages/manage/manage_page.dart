@@ -44,7 +44,7 @@ class _ManagePageState extends State<ManagePage> {
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
         child: ListView(
           shrinkWrap: true,
             children: [
@@ -92,6 +92,23 @@ class _ManagePageState extends State<ManagePage> {
                                 ),
                                 childFocusNode: _buttonFocusNode,
                                 menuChildren: <Widget>[
+                                  if (appProvider.create_user) MenuItemButton(
+                                      onPressed: () {
+                                        context.push(Routes.manage_Users_AddUsers);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.add_circle, color: Theme.of(context).colorScheme.surface),
+                                          SizedBox(width: 7,),
+                                          Text(
+                                            'Add User',
+                                            style: TextStyle(
+                                                color: Theme.of(context).colorScheme.surface
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                  ),
                                   if (appProvider.create_user) MenuItemButton(
                                       onPressed: () {
                                         context.push(Routes.manage_Users_AddUsersCSV);
@@ -166,11 +183,13 @@ class _ManagePageState extends State<ManagePage> {
                               OptionButton(
                                 child: Column(
                                   children: [
-                                    Icon(Icons.more_vert, color: Theme.of(context).colorScheme.surface, size: 35,),
+                                    Icon(Icons.add, color: Theme.of(context).colorScheme.surface, size: 35,),
                                   ],
                                 ),
                                 color: Theme.of(context).colorScheme.onPrimary,
-                                onTap: () {},
+                                onTap: () {
+                                  context.push(Routes.manage_Roles_AddRole);
+                                },
                               ),
                               Expanded(
                                 child: OptionButton(
@@ -229,11 +248,13 @@ class _ManagePageState extends State<ManagePage> {
                               OptionButton(
                                 child: Column(
                                   children: [
-                                    Icon(Icons.more_vert, color: Theme.of(context).colorScheme.surface, size: 35,),
+                                    Icon(Icons.add, color: Theme.of(context).colorScheme.surface, size: 35,),
                                   ],
                                 ),
                                 color: Theme.of(context).colorScheme.onPrimary,
-                                onTap: () {},
+                                onTap: () {
+                                  context.push(Routes.manage_ManageResources_AddResource);
+                                },
                               ),
                             ],
                           ),
@@ -313,15 +334,6 @@ class _ManagePageState extends State<ManagePage> {
                                     context.push(Routes.manage_Bookings);
                                   },
                                 ),
-                              ),
-                              OptionButton(
-                                child: Column(
-                                  children: [
-                                    Icon(Icons.more_vert, color: Theme.of(context).colorScheme.surface, size: 35,),
-                                  ],
-                                ),
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                onTap: () {},
                               ),
                             ],
                           ),

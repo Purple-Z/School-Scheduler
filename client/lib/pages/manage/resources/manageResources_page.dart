@@ -73,8 +73,13 @@ class _ManageResourcesState extends State<ManageResources> {
         onPressed: () {
           context.push(Routes.manage_ManageResources_AddResource);
         },
-        label: Text(AppLocalizations.of(context)!.resource_new_resource),
-        icon: Icon(Icons.add),
+        label: Text(
+          AppLocalizations.of(context)!.resource_new_resource,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.surface
+          ),
+        ),
+        icon: Icon(Icons.add, color: Theme.of(context).colorScheme.surface),
       ) : null,
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),

@@ -72,8 +72,11 @@ class _ManageTypesAdminState extends State<ManageTypesAdmin> {
         onPressed: () {
           context.push(Routes.manage_Types_AddType);
         },
-        label: Text(AppLocalizations.of(context)!.type_new_type),
-        icon: Icon(Icons.add),
+        label: Text(
+          AppLocalizations.of(context)!.type_new_type,
+          style: TextStyle(color: Theme.of(context).colorScheme.surface),
+        ),
+        icon: Icon(Icons.add, color: Theme.of(context).colorScheme.surface),
       ) : null,
       body: Padding(
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),

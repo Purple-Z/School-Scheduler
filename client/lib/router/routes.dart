@@ -101,6 +101,9 @@ class Routes {
   static const String profile = 'profile';
   static const String account_Profile = '/account/profile';
 
+  static const String permission = 'permission';
+  static const String account_Profile_Permission = '/account/profile/permission';
+
   static const String userBookings = 'userBookings';
   static const String account_UserBookings = '/account/userBookings';
 
