@@ -75,7 +75,7 @@ class _SettingsState extends State<Settings> {
             shrinkWrap: true,
             children: [
               Text(
-                "Change Password",
+                AppLocalizations.of(context)!.change_password,
                 style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
               ),
               Text(
@@ -154,13 +154,13 @@ class ChangePasswordButtonWidget extends StatelessWidget {
           );
     
           if (r){
-            showTopMessage(context, 'Password Changed');
+            showTopMessage(context, AppLocalizations.of(context)!.password_changed);
           } else {
-            showTopMessage(context, 'Error Occurred');
+            showTopMessage(context, AppLocalizations.of(context)!.error_occurred);
           }
         },
         child: Text(
-          'Change Password',
+          AppLocalizations.of(context)!.change_password,
           style: TextStyle(
               color: Theme.of(context).colorScheme.surface,
               fontSize: 20
@@ -184,11 +184,11 @@ class ChangePasswordFieldsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        buildTextField(currentPassword, 'Current Password', Icons.abc, obscureText: true),
+        buildTextField(currentPassword, AppLocalizations.of(context)!.current_password, Icons.abc, obscureText: true),
     
         SizedBox(height: 20,),
     
-        buildTextField(newPassword, 'New Password', Icons.abc, obscureText: true),
+        buildTextField(newPassword, AppLocalizations.of(context)!.new_password, Icons.abc, obscureText: true),
     
         SizedBox(height: 20,),
       ],

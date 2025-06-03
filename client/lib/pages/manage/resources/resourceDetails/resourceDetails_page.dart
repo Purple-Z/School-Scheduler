@@ -76,7 +76,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
     double fieldsSpacing = 15;
 
     return Padding(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,7 +114,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                 ),
                 SizedBox(width: 20,),
                 Text(
-                    'Manage With Slots',
+                    AppLocalizations.of(context)!.manage_with_slots,
                     style: TextStyle(fontSize: 20)
                 )
               ],
@@ -138,8 +138,8 @@ class _ResourceDetailsState extends State<ResourceDetails> {
 
                     } : () {},
                     child: Text(
-                        resourceDetailsProvider.slot_duration.inHours.toString()+' hours '+
-                        (resourceDetailsProvider.slot_duration.inMinutes-resourceDetailsProvider.slot_duration.inHours*60).toString()+' minutes',
+                        resourceDetailsProvider.slot_duration.inHours.toString()+' '+AppLocalizations.of(context)!.hours+' '+
+                        (resourceDetailsProvider.slot_duration.inMinutes-resourceDetailsProvider.slot_duration.inHours*60).toString()+' '+AppLocalizations.of(context)!.minutes,
                       style: TextStyle(color: appProvider.edit_resources ? Theme.of(context).colorScheme.primary: Theme.of(context).colorScheme.onPrimary),
                     )
                 )
@@ -159,7 +159,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                 ),
                 SizedBox(width: 20,),
                 Text(
-                  'Auto Accept',
+                    AppLocalizations.of(context)!.auto_accept,
                   style: TextStyle(fontSize: 20)
                 )
               ],
@@ -178,7 +178,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                 ),
                 SizedBox(width: 20,),
                 Text(
-                  'Allow Over Booking',
+                  AppLocalizations.of(context)!.allow_over_booking,
                   style: TextStyle(fontSize: 20)
                 )
               ],
@@ -595,6 +595,7 @@ class _ResourceDetailsState extends State<ResourceDetails> {
                   ),
                 ),
               ),
+            SizedBox(height: 30,)
           ],
         ),
       ),

@@ -6,6 +6,9 @@ import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_loading_dialog/simple_loading_dialog.dart';
@@ -16,6 +19,7 @@ import 'package:overflow_text_animated/overflow_text_animated.dart';
 
 import '../connection.dart';
 import '../graphics/graphics_methods.dart';
+import '../style/svgMappers.dart';
 import 'functions.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'manage/classes.dart';
@@ -60,35 +64,35 @@ class _EventListWidgetState extends State<EventListWidget> {
                       Row(
                         children: [
                           if (event.status == 0) Text(
-                            'Pending',
+                            AppLocalizations.of(context)!.pending,
                             style: TextStyle(
                                 fontSize: 10,
                                 color: Theme.of(context).colorScheme.primary
                             ),
                           ),
                           if (event.status == 1) Text(
-                            'Accepted',
+                            AppLocalizations.of(context)!.accepted,
                             style: TextStyle(
                                 fontSize: 10,
                                 color: Theme.of(context).colorScheme.tertiary
                             ),
                           ),
                           if (event.status == 2) Text(
-                            'Refused',
+                            AppLocalizations.of(context)!.refused,
                             style: TextStyle(
                                 fontSize: 10,
                                 color: Theme.of(context).colorScheme.secondary
                             ),
                           ),
                           if (event.status == 3) Text(
-                            'Cancelled',
+                            AppLocalizations.of(context)!.cancelled,
                             style: TextStyle(
                                 fontSize: 10,
                                 color: Theme.of(context).colorScheme.secondary
                             ),
                           ),
                           if (event.status == 4) Text(
-                            'Expired',
+                            AppLocalizations.of(context)!.expired,
                             style: TextStyle(
                                 fontSize: 10,
                                 color: Theme.of(context).colorScheme.secondary
@@ -135,8 +139,8 @@ class _EventListWidgetState extends State<EventListWidget> {
                       const SizedBox(height: 15,),
                       Row(
                         children: [
-                          const Text(
-                            'From',
+                          Text(
+                            AppLocalizations.of(context)!.from_maiusc,
                             style: TextStyle(fontSize: 15,),
                           ),
                           const SizedBox(width: 5,),
@@ -164,8 +168,8 @@ class _EventListWidgetState extends State<EventListWidget> {
                       ),
                       Row(
                         children: [
-                          const Text(
-                            'To',
+                          Text(
+                            AppLocalizations.of(context)!.to_maiusc,
                             style: TextStyle(fontSize: 15),
                           ),
                           const SizedBox(width: 5,),
@@ -236,7 +240,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                           if (event.status == 1 && widget.canDelete) Center(
                             child: ElevatedButton(
                               onPressed: () async {
-                                if(await confirm(context, content: Text("Cancel?"))){
+                                if(await confirm(context, content: Text(AppLocalizations.of(context)!.ask_to_cancel))){
 
                                   if (await showSimpleLoadingDialog<bool>(
                                     context: context,
@@ -252,9 +256,9 @@ class _EventListWidgetState extends State<EventListWidget> {
                                         await widget.loadEvents(context);
                                       },
                                     );
-                                    showTopMessage(context, "Booking Cancelled");
+                                    showTopMessage(context, AppLocalizations.of(context)!.booking_cancelled);
                                   } else {
-                                    showTopMessage(context, "Error Occurred");
+                                    showTopMessage(context, AppLocalizations.of(context)!.error_occurred);
                                   }
                                 }
                               },
@@ -262,7 +266,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Cancel',
+                                    AppLocalizations.of(context)!.cancel,
                                     style: TextStyle(
                                       color: Theme.of(context).colorScheme.surface,
                                       fontWeight: FontWeight.bold
@@ -293,7 +297,7 @@ class _EventListWidgetState extends State<EventListWidget> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      'View',
+                                      AppLocalizations.of(context)!.view,
                                       style: TextStyle(
                                         color: Theme.of(context).colorScheme.surface,
                                         fontWeight: FontWeight.bold
@@ -494,6 +498,7 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
                 buildTableCalendar(widgetProvider),
                 SizedBox(height: 30),
                 EventListWidget(currentEvents: widget.currentEvents, canDelete: widget.canDelete, loadEvents: widget.loadEvents,),
+                if (widget.currentEvents.length == 0) buildSvgNoBookings(),
               ],
             ),
           );
@@ -503,7 +508,7 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
               Expanded(child: buildTableCalendar(widgetProvider)),
               SizedBox(width: 30),
               Expanded(
-                child: SingleChildScrollView(
+                child: (widget.currentEvents.length != 0) ? SingleChildScrollView(
                   child: Column(
                     children: [
                       SizedBox(height: 20,),
@@ -511,6 +516,14 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
                       EventListWidget(currentEvents: widget.currentEvents, canDelete: widget.canDelete, loadEvents: widget.loadEvents,),
                     ],
                   ),
+                ) : Column(
+                  children: [
+                    SizedBox(height: 20,),
+                    buildTopBar(widgetProvider),
+                    Expanded(
+                      child: buildSvgNoBookings(),
+                    )
+                  ],
                 ),
               ),
             ],
@@ -518,6 +531,18 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
         }
       },
     );
+  }
+
+
+
+
+  SvgPicture buildSvgNoBookings() {
+    return SvgPicture.asset(
+                      'assets/images/undraw_dreamer_gb41.svg',
+                      width: 150,
+                      height: 150,
+                      colorMapper: CustomColorMapper(context),
+                    );
   }
 
   Row buildTopBar(WidgetStatesProvider widgetProvider) {
@@ -534,7 +559,7 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
                       },
                       child: Row(
                         children: [
-                          Text('Reload'),
+                          Text(AppLocalizations.of(context)!.reload),
                           Icon(Icons.sync)
                         ],
                       )
@@ -689,6 +714,10 @@ class _ResponsiveCalendarAndEventsState extends State<ResponsiveCalendarAndEvent
       firstDay: DateTime(2010, 10, 16),
       lastDay: DateTime(2030, 3, 14),
       focusedDay: _focusedDay,
+      headerStyle: HeaderStyle(
+        formatButtonVisible: false,
+        titleCentered: true,
+      ),
       selectedDayPredicate: (day) {
         return isSameDay(_selectedDay, day);
       },
@@ -831,7 +860,7 @@ class _FiltersPageState extends State<FiltersPage> {
                     Row(
                       children: [
                         Text(
-                          'Filters',
+                          AppLocalizations.of(context)!.filters,
                           style: TextStyle(fontSize: 30),
                         ),
                         Expanded(child: SizedBox())
@@ -842,11 +871,11 @@ class _FiltersPageState extends State<FiltersPage> {
 
                     if (1 != 1) SegmentedButton<Filters>(
                       multiSelectionEnabled: true,
-                      segments: const <ButtonSegment<Filters>>[
+                      segments: <ButtonSegment<Filters>>[
                         ButtonSegment<Filters>(
                             value: Filters.Accepted,
                             label: Text(
-                              'Accepted',
+                              AppLocalizations.of(context)!.accepted,
                               style: TextStyle(
                                 fontSize: 10
                               ),
@@ -854,7 +883,7 @@ class _FiltersPageState extends State<FiltersPage> {
                         ButtonSegment<Filters>(
                             value: Filters.Pending,
                             label: Text(
-                              'Pending',
+                              AppLocalizations.of(context)!.pending,
                               style: TextStyle(
                                 fontSize: 10
                               ),
@@ -862,7 +891,7 @@ class _FiltersPageState extends State<FiltersPage> {
                         ButtonSegment<Filters>(
                             value: Filters.Refused,
                             label: Text(
-                              'Refused',
+                              AppLocalizations.of(context)!.refused,
                               style: TextStyle(
                                 fontSize: 10
                               ),
@@ -870,7 +899,7 @@ class _FiltersPageState extends State<FiltersPage> {
                         ButtonSegment<Filters>(
                             value: Filters.Cancelled,
                             label: Text(
-                              'Cancelled',
+                              AppLocalizations.of(context)!.cancel,
                               style: TextStyle(
                                 fontSize: 10
                               ),
@@ -887,7 +916,7 @@ class _FiltersPageState extends State<FiltersPage> {
 
 
                     Text(
-                      'Time Range',
+                      AppLocalizations.of(context)!.time_range,
                       style: TextStyle(fontSize: 20),
                     ),
                     SfRangeSlider(
@@ -911,7 +940,7 @@ class _FiltersPageState extends State<FiltersPage> {
                     SizedBox(height: 40,),
 
                     Text(
-                      'Quantity Range',
+                      AppLocalizations.of(context)!.quantity_range,
                       style: TextStyle(fontSize: 20),
                     ),
                     SfRangeSlider(
@@ -938,7 +967,7 @@ class _FiltersPageState extends State<FiltersPage> {
                       children: [
                         OptionButton(
                           child: Text(
-                            "Peaples",
+                            AppLocalizations.of(context)!.people,
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.surface,
                                 fontSize: 17,
@@ -986,7 +1015,7 @@ class _FiltersPageState extends State<FiltersPage> {
                         Expanded(
                           child: OptionButton(
                             child: Text(
-                              "Resources",
+                              AppLocalizations.of(context)!.resources,
                               style: TextStyle(
                                   color: Theme.of(context).colorScheme.surface,
                                   fontSize: 17,
@@ -1040,7 +1069,7 @@ class _FiltersPageState extends State<FiltersPage> {
                         Expanded(
                           child: OptionButton(
                             child: Text(
-                              "Activities",
+                              AppLocalizations.of(context)!.activities,
                               style: TextStyle(
                                   color: Theme.of(context).colorScheme.surface,
                                   fontSize: 17,
@@ -1088,7 +1117,7 @@ class _FiltersPageState extends State<FiltersPage> {
                         ),
                         OptionButton(
                           child: Text(
-                            "Places",
+                            AppLocalizations.of(context)!.places,
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.surface,
                                 fontSize: 17,
@@ -1146,9 +1175,10 @@ class _FiltersPageState extends State<FiltersPage> {
                                 _cancelFilters();
                               },
                               child: Text(
-                                'Cancel',
+                                AppLocalizations.of(context)!.cancel,
                                 style: TextStyle(
-                                  color: Theme.of(context).colorScheme.surface
+                                  color: Theme.of(context).colorScheme.surface,
+                                  fontWeight: FontWeight.bold
                                 ),
                               ),
                               style: ButtonStyle(
@@ -1165,9 +1195,10 @@ class _FiltersPageState extends State<FiltersPage> {
                               _applyFilters();
                             },
                             child: Text(
-                              'Apply',
+                              AppLocalizations.of(context)!.apply,
                               style: TextStyle(
-                                  color: Theme.of(context).colorScheme.surface
+                                  color: Theme.of(context).colorScheme.surface,
+                                  fontWeight: FontWeight.bold
                               ),
                             ),
                             style: ButtonStyle(
@@ -1306,7 +1337,7 @@ class _BookingDetailsState extends State<BookingDetails> {
           const SizedBox(height: 30),
 
           Text(
-            'User Email',
+            AppLocalizations.of(context)!.user,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
           ),
@@ -1336,40 +1367,40 @@ class _BookingDetailsState extends State<BookingDetails> {
                     child: Column(
                       children: [
                         Text(
-                          "Status",
+                          AppLocalizations.of(context)!.status,
                           style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
                         ),
 
                         if (widget.booking.status == 0) Text(
-                          'Pending',
+                          AppLocalizations.of(context)!.pending,
                           style: TextStyle(
                               fontSize: 17,
                               color: Theme.of(context).colorScheme.surface
                           ),
                         ),
                         if (widget.booking.status == 1) Text(
-                          'Accepted',
+                          AppLocalizations.of(context)!.accepted,
                           style: TextStyle(
                               fontSize: 17,
                               color: Theme.of(context).colorScheme.surface
                           ),
                         ),
                         if (widget.booking.status == 2) Text(
-                          'Refused',
+                          AppLocalizations.of(context)!.refused,
                           style: TextStyle(
                               fontSize: 17,
                               color: Theme.of(context).colorScheme.surface
                           ),
                         ),
                         if (widget.booking.status == 3) Text(
-                          'Cancelled',
+                          AppLocalizations.of(context)!.cancelled,
                           style: TextStyle(
                               fontSize: 17,
                               color: Theme.of(context).colorScheme.surface
                           ),
                         ),
                         if (widget.booking.status == 4) Text(
-                          'Expired',
+                          AppLocalizations.of(context)!.expired,
                           style: TextStyle(
                               fontSize: 17,
                               color: Theme.of(context).colorScheme.surface
@@ -1391,7 +1422,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                       child: Column(
                         children: [
                           Text(
-                            'Quantity',
+                            AppLocalizations.of(context)!.quantity,
                             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
                           ),
 
@@ -1425,7 +1456,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                       child: Column(
                         children: [
                           Text(
-                            'Validator Email',
+                            AppLocalizations.of(context)!.validator_email,
                             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
                           ),
 
@@ -1459,7 +1490,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                       child: Column(
                         children: [
                           Text(
-                            "From",
+                            AppLocalizations.of(context)!.from_maiusc,
                             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
                           ),
 
@@ -1484,7 +1515,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                     child: Column(
                       children: [
                         Text(
-                          "To",
+                          AppLocalizations.of(context)!.to_maiusc,
                           style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
                         ),
 
@@ -1517,12 +1548,12 @@ class _BookingDetailsState extends State<BookingDetails> {
                       child: Column(
                         children: [
                           if (widget.booking.is_resource_activity) Text(
-                            "*From Resource",
+                            "*" + AppLocalizations.of(context)!.from_resource,
                             style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
                           ),
 
                           Text(
-                            "Activity",
+                            AppLocalizations.of(context)!.activity,
                             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
                           ),
 
@@ -1561,12 +1592,12 @@ class _BookingDetailsState extends State<BookingDetails> {
                       child: Column(
                         children: [
                           if (widget.booking.is_resource_place) Text(
-                            "*From Resource",
+                            "*" + AppLocalizations.of(context)!.from_resource,
                             style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
                           ),
 
                           Text(
-                            "Place",
+                            AppLocalizations.of(context)!.place,
                             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface),
                           ),
 
@@ -1591,7 +1622,7 @@ class _BookingDetailsState extends State<BookingDetails> {
           if ((widget.booking.status == 1) && widget.canDelete)  SizedBox(height: 50,),
 
           if ((widget.booking.status == 1) && widget.canDelete)  Text(
-            'Cancel this booking',
+            AppLocalizations.of(context)!.cancel_this_booking,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
           ),
@@ -1602,7 +1633,7 @@ class _BookingDetailsState extends State<BookingDetails> {
             padding: const EdgeInsets.fromLTRB(22, 0, 22, 0),
             child: ElevatedButton(
               onPressed: () async {
-                if(await confirm(context, content: Text("Cancel?"))){
+                if(await confirm(context, content: Text(AppLocalizations.of(context)!.ask_to_cancel))){
 
                   if (await showSimpleLoadingDialog<bool>(
                     context: context,
@@ -1618,10 +1649,10 @@ class _BookingDetailsState extends State<BookingDetails> {
                         await widget.loadEvents(context);
                       },
                     );
-                    showTopMessage(context, "Booking Cancelled");
+                    showTopMessage(context, AppLocalizations.of(context)!.booking_cancelled);
                     context.pop();
                   } else {
-                    showTopMessage(context, "Error Occurred");
+                    showTopMessage(context, AppLocalizations.of(context)!.error_occurred);
                   }
                 }
               },
@@ -1629,7 +1660,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                 children: [
                   SizedBox(height: 20,),
                   Text(
-                    'Cancel',
+                    AppLocalizations.of(context)!.cancel,
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.surface,
                         fontWeight: FontWeight.bold,

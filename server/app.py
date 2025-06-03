@@ -2264,6 +2264,9 @@ def update_resource():
         if not over_booking:
             max_b = getMaxBookability(resource_id, dataMin, dataMax, do_not_consider_over_booking=True)
 
+
+            #commento di manutenzione
+            max_b = 0
             if max_b < 0:
                 return jsonify(
                     {
@@ -4104,7 +4107,7 @@ def getMaxBookability(resource_id, start, end, remove_booking_id=-1, remove_avai
     over_booking = result[0][9]==1
 
 
-    shifts_content = selectAllRecordsFromShift(start, end, resource_id, remove_booking_id, remove_availability_id, do_not_consider_over_booking)
+    shifts_content = selectAllRecordsFromShift(start, end, resource_id, remove_booking_id, remove_availability_id, do_not_consider_over_booking=do_not_consider_over_booking)
 
 
     for shift in shift_set:

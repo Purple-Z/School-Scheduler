@@ -103,11 +103,11 @@ class _ManagePendingRequestsAdminState extends State<ManagePendingRequestsAdmin>
               items: manageRequestsProvider.requests,
               itemsColumn: [
                 null,  //0
-                'Start', //1
-                'End',  //2
-                'Quantity',  //3
+                AppLocalizations.of(context)!.start, //1
+                AppLocalizations.of(context)!.end,  //2
+                AppLocalizations.of(context)!.quantity,  //3
                 null, //4
-                'Resource',  //5
+                AppLocalizations.of(context)!.resource,  //5
                 null,  //6
                 null,  //7
                 null,  //8

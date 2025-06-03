@@ -79,6 +79,42 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
+                path: Routes.account,
+                builder: (context, state) => const AccountPage(),
+                routes: [
+                  GoRoute(
+                    path: Routes.login,
+                    builder: (context, state) => const LoginPage(),
+                  ),
+                  GoRoute(
+                    path: Routes.settings,
+                    builder: (context, state) => const SettingsPage(),
+                  ),
+                  GoRoute(
+                      path: Routes.profile,
+                      builder: (context, state) => const ProfilePage(),
+                      routes: [
+                        GoRoute(
+                          path: Routes.changePassword,
+                          builder: (context, state) => const ChangePasswordPage(),
+                        ),
+                        GoRoute(
+                          path: Routes.permission,
+                          builder: (context, state) => const PermissionPage(),
+                        ),
+                      ]
+                  ),
+                  GoRoute(
+                    path: Routes.userBookings,
+                    builder: (context, state) => const UserBookingsPage(),
+                  ),
+                ]
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
               path: Routes.resources,
               builder: (context, state) => ResourcesPage(),
               routes: [
@@ -539,42 +575,6 @@ final router = GoRouter(
                 GoRoute(
                     path: Routes.bookings,
                     builder: (context, state) => ManageBookingsPage(),
-                ),
-              ]
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: Routes.account,
-              builder: (context, state) => const AccountPage(),
-              routes: [
-                GoRoute(
-                  path: Routes.login,
-                  builder: (context, state) => const LoginPage(),
-                ),
-                GoRoute(
-                  path: Routes.settings,
-                  builder: (context, state) => const SettingsPage(),
-                ),
-                GoRoute(
-                  path: Routes.profile,
-                  builder: (context, state) => const ProfilePage(),
-                  routes: [
-                    GoRoute(
-                      path: Routes.changePassword,
-                      builder: (context, state) => const ChangePasswordPage(),
-                    ),
-                    GoRoute(
-                      path: Routes.permission,
-                      builder: (context, state) => const PermissionPage(),
-                    ),
-                  ]
-                ),
-                GoRoute(
-                  path: Routes.userBookings,
-                  builder: (context, state) => const UserBookingsPage(),
                 ),
               ]
             ),

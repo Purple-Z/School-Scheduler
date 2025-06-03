@@ -65,6 +65,21 @@ class S {
     );
   }
 
+  /// `Error Occurred`
+  String get error_occurred {
+    return Intl.message(
+      'Error Occurred',
+      name: 'error_occurred',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logout`
+  String get logout {
+    return Intl.message('Logout', name: 'logout', desc: '', args: []);
+  }
+
   /// `Today`
   String get today {
     return Intl.message('Today', name: 'today', desc: '', args: []);
@@ -78,6 +93,536 @@ class S {
   /// `Tomorrow`
   String get tomorrow {
     return Intl.message('Tomorrow', name: 'tomorrow', desc: '', args: []);
+  }
+
+  /// `Your Account`
+  String get your_account {
+    return Intl.message(
+      'Your Account',
+      name: 'your_account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile`
+  String get profile {
+    return Intl.message('Profile', name: 'profile', desc: '', args: []);
+  }
+
+  /// `Name`
+  String get name {
+    return Intl.message('Name', name: 'name', desc: '', args: []);
+  }
+
+  /// `Surname`
+  String get surname {
+    return Intl.message('Surname', name: 'surname', desc: '', args: []);
+  }
+
+  /// `Update Profile`
+  String get update_profile {
+    return Intl.message(
+      'Update Profile',
+      name: 'update_profile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Password`
+  String get change_password {
+    return Intl.message(
+      'Change Password',
+      name: 'change_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check Permission`
+  String get check_permission {
+    return Intl.message(
+      'Check Permission',
+      name: 'check_permission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile Updated`
+  String get profile_updated {
+    return Intl.message(
+      'Profile Updated',
+      name: 'profile_updated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current Password`
+  String get current_password {
+    return Intl.message(
+      'Current Password',
+      name: 'current_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Password`
+  String get new_password {
+    return Intl.message(
+      'New Password',
+      name: 'new_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password Changed`
+  String get password_changed {
+    return Intl.message(
+      'Password Changed',
+      name: 'password_changed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permission`
+  String get permission {
+    return Intl.message('Permission', name: 'permission', desc: '', args: []);
+  }
+
+  /// `Reload`
+  String get reload {
+    return Intl.message('Reload', name: 'reload', desc: '', args: []);
+  }
+
+  /// `Pending`
+  String get pending {
+    return Intl.message('Pending', name: 'pending', desc: '', args: []);
+  }
+
+  /// `Accepted`
+  String get accepted {
+    return Intl.message('Accepted', name: 'accepted', desc: '', args: []);
+  }
+
+  /// `Refused`
+  String get refused {
+    return Intl.message('Refused', name: 'refused', desc: '', args: []);
+  }
+
+  /// `Cancelled`
+  String get cancelled {
+    return Intl.message('Cancelled', name: 'cancelled', desc: '', args: []);
+  }
+
+  /// `Expired`
+  String get expired {
+    return Intl.message('Expired', name: 'expired', desc: '', args: []);
+  }
+
+  /// `View`
+  String get view {
+    return Intl.message('View', name: 'view', desc: '', args: []);
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message('Cancel', name: 'cancel', desc: '', args: []);
+  }
+
+  /// `Cancel?`
+  String get ask_to_cancel {
+    return Intl.message('Cancel?', name: 'ask_to_cancel', desc: '', args: []);
+  }
+
+  /// `From`
+  String get from_maiusc {
+    return Intl.message('From', name: 'from_maiusc', desc: '', args: []);
+  }
+
+  /// `To`
+  String get to_maiusc {
+    return Intl.message('To', name: 'to_maiusc', desc: '', args: []);
+  }
+
+  /// `Booking Cancelled`
+  String get booking_cancelled {
+    return Intl.message(
+      'Booking Cancelled',
+      name: 'booking_cancelled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filters`
+  String get filters {
+    return Intl.message('Filters', name: 'filters', desc: '', args: []);
+  }
+
+  /// `Time Range`
+  String get time_range {
+    return Intl.message('Time Range', name: 'time_range', desc: '', args: []);
+  }
+
+  /// `Quantity Range`
+  String get quantity_range {
+    return Intl.message(
+      'Quantity Range',
+      name: 'quantity_range',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `People`
+  String get people {
+    return Intl.message('People', name: 'people', desc: '', args: []);
+  }
+
+  /// `Resources`
+  String get resources {
+    return Intl.message('Resources', name: 'resources', desc: '', args: []);
+  }
+
+  /// `Users`
+  String get users {
+    return Intl.message('Users', name: 'users', desc: '', args: []);
+  }
+
+  /// `Roles`
+  String get roles {
+    return Intl.message('Roles', name: 'roles', desc: '', args: []);
+  }
+
+  /// `Bookings`
+  String get bookings {
+    return Intl.message('Bookings', name: 'bookings', desc: '', args: []);
+  }
+
+  /// `Types`
+  String get types {
+    return Intl.message('Types', name: 'types', desc: '', args: []);
+  }
+
+  /// `Places`
+  String get places {
+    return Intl.message('Places', name: 'places', desc: '', args: []);
+  }
+
+  /// `Activities`
+  String get activities {
+    return Intl.message('Activities', name: 'activities', desc: '', args: []);
+  }
+
+  /// `Requests`
+  String get requests {
+    return Intl.message('Requests', name: 'requests', desc: '', args: []);
+  }
+
+  /// `Apply`
+  String get apply {
+    return Intl.message('Apply', name: 'apply', desc: '', args: []);
+  }
+
+  /// `User`
+  String get user {
+    return Intl.message('User', name: 'user', desc: '', args: []);
+  }
+
+  /// `Status`
+  String get status {
+    return Intl.message('Status', name: 'status', desc: '', args: []);
+  }
+
+  /// `Quantity`
+  String get quantity {
+    return Intl.message('Quantity', name: 'quantity', desc: '', args: []);
+  }
+
+  /// `Validator Email`
+  String get validator_email {
+    return Intl.message(
+      'Validator Email',
+      name: 'validator_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `From Resource`
+  String get from_resource {
+    return Intl.message(
+      'From Resource',
+      name: 'from_resource',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activity`
+  String get activity {
+    return Intl.message('Activity', name: 'activity', desc: '', args: []);
+  }
+
+  /// `Place`
+  String get place {
+    return Intl.message('Place', name: 'place', desc: '', args: []);
+  }
+
+  /// `Cancel This Booking`
+  String get cancel_this_booking {
+    return Intl.message(
+      'Cancel This Booking',
+      name: 'cancel_this_booking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add User`
+  String get add_user {
+    return Intl.message('Add User', name: 'add_user', desc: '', args: []);
+  }
+
+  /// `Load CSV`
+  String get load_CSV {
+    return Intl.message('Load CSV', name: 'load_CSV', desc: '', args: []);
+  }
+
+  /// `Load CSV File`
+  String get load_CSV_file {
+    return Intl.message(
+      'Load CSV File',
+      name: 'load_CSV_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `name,surname,email,role1,role2,...,role_n`
+  String get description_CSV {
+    return Intl.message(
+      'name,surname,email,role1,role2,...,role_n',
+      name: 'description_CSV',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose CSV File`
+  String get choose_CSV_file {
+    return Intl.message(
+      'Choose CSV File',
+      name: 'choose_CSV_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Users`
+  String get add_users {
+    return Intl.message('Add Users', name: 'add_users', desc: '', args: []);
+  }
+
+  /// `Preview`
+  String get preview {
+    return Intl.message('Preview', name: 'preview', desc: '', args: []);
+  }
+
+  /// `total`
+  String get total {
+    return Intl.message('total', name: 'total', desc: '', args: []);
+  }
+
+  /// `Add`
+  String get add {
+    return Intl.message('Add', name: 'add', desc: '', args: []);
+  }
+
+  /// `All Users Created`
+  String get all_users_created {
+    return Intl.message(
+      'All Users Created',
+      name: 'all_users_created',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Users Uncreated`
+  String get users_uncreated {
+    return Intl.message(
+      'Users Uncreated',
+      name: 'users_uncreated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disconnect All Users`
+  String get disconnect_all_users {
+    return Intl.message(
+      'Disconnect All Users',
+      name: 'disconnect_all_users',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disconnect All Users?`
+  String get ask_disconnect_all_users {
+    return Intl.message(
+      'Disconnect All Users?',
+      name: 'ask_disconnect_all_users',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All Users Disconnected`
+  String get all_users_disconnected {
+    return Intl.message(
+      'All Users Disconnected',
+      name: 'all_users_disconnected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage With Slots`
+  String get manage_with_slots {
+    return Intl.message(
+      'Manage With Slots',
+      name: 'manage_with_slots',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto Accept`
+  String get auto_accept {
+    return Intl.message('Auto Accept', name: 'auto_accept', desc: '', args: []);
+  }
+
+  /// `Allow Over Booking`
+  String get allow_over_booking {
+    return Intl.message(
+      'Allow Over Booking',
+      name: 'allow_over_booking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `hours`
+  String get hours {
+    return Intl.message('hours', name: 'hours', desc: '', args: []);
+  }
+
+  /// `minutes`
+  String get minutes {
+    return Intl.message('minutes', name: 'minutes', desc: '', args: []);
+  }
+
+  /// `Select Range`
+  String get select_range {
+    return Intl.message(
+      'Select Range',
+      name: 'select_range',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get close {
+    return Intl.message('Close', name: 'close', desc: '', args: []);
+  }
+
+  /// `Clear All Filters`
+  String get clear_all_filters {
+    return Intl.message(
+      'Clear All Filters',
+      name: 'clear_all_filters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Empty List`
+  String get empty_list {
+    return Intl.message('Empty List', name: 'empty_list', desc: '', args: []);
+  }
+
+  /// `Start`
+  String get start {
+    return Intl.message('Start', name: 'start', desc: '', args: []);
+  }
+
+  /// `End`
+  String get end {
+    return Intl.message('End', name: 'end', desc: '', args: []);
+  }
+
+  /// `Resource`
+  String get resource {
+    return Intl.message('Resource', name: 'resource', desc: '', args: []);
+  }
+
+  /// `Request Details From`
+  String get request_details_from {
+    return Intl.message(
+      'Request Details From',
+      name: 'request_details_from',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type`
+  String get type {
+    return Intl.message('Type', name: 'type', desc: '', args: []);
+  }
+
+  /// `Accept`
+  String get accept {
+    return Intl.message('Accept', name: 'accept', desc: '', args: []);
+  }
+
+  /// `Refuse`
+  String get refuse {
+    return Intl.message('Refuse', name: 'refuse', desc: '', args: []);
+  }
+
+  /// `Refuse?`
+  String get ask_for_refuse {
+    return Intl.message('Refuse?', name: 'ask_for_refuse', desc: '', args: []);
+  }
+
+  /// `Request Accepted`
+  String get request_accepted {
+    return Intl.message(
+      'Request Accepted',
+      name: 'request_accepted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Refused `
+  String get request_refused {
+    return Intl.message(
+      'Request Refused ',
+      name: 'request_refused',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Hello `

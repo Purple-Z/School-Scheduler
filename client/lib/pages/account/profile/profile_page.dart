@@ -73,9 +73,36 @@ class _SettingsState extends State<Settings> {
           ListView(
             shrinkWrap: true,
             children: [
-              Text(
-                "Profile",
-                style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.profile,
+                    style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(child: SizedBox()),
+                  ElevatedButton(
+                      onPressed: () {
+                        appProvider.logout();
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.account_logout,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Icon(
+                            Icons.logout,
+                            color: Theme.of(context).colorScheme.secondary,
+                          )
+                        ],
+                      )
+                  ),
+                ],
               ),
               Text(
                 appProvider.email,
@@ -157,13 +184,13 @@ class ProfileButtonsWidget extends StatelessWidget {
                 );
     
                 if (r){
-                  showTopMessage(context, 'Profile Updated');
+                  showTopMessage(context, AppLocalizations.of(context)!.profile_updated);
                 } else {
-                  showTopMessage(context, 'Error Occurred');
+                  showTopMessage(context, AppLocalizations.of(context)!.error_occurred);
                 }
               },
               child: Text(
-                'Update Profile',
+                AppLocalizations.of(context)!.update_profile,
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.surface,
                     fontSize: 20
@@ -182,7 +209,7 @@ class ProfileButtonsWidget extends StatelessWidget {
                 context.push(Routes.account_Profile_ChangePassword);
               },
               child: Text(
-                'Change Password',
+                AppLocalizations.of(context)!.change_password,
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.surface,
                     fontSize: 20
@@ -205,7 +232,7 @@ class ProfileButtonsWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Check Permission',
+                      AppLocalizations.of(context)!.check_permission,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.surface,
                           fontSize: 20
@@ -241,11 +268,11 @@ class ProfileFieldWidget extends StatelessWidget {
       children: [
         if (appProvider.view_own_user) SizedBox(height: 30,),
     
-        if (appProvider.view_own_user) buildTextField(nameController, 'Name', Icons.abc, editable: appProvider.edit_own_user),
+        if (appProvider.view_own_user) buildTextField(nameController, AppLocalizations.of(context)!.name, Icons.abc, editable: appProvider.edit_own_user),
     
         if (appProvider.view_own_user) SizedBox(height: 20,),
     
-        if (appProvider.view_own_user) buildTextField(surnameController, 'Surname', Icons.abc, editable: appProvider.edit_own_user),
+        if (appProvider.view_own_user) buildTextField(surnameController, AppLocalizations.of(context)!.surname, Icons.abc, editable: appProvider.edit_own_user),
       ],
     );
   }

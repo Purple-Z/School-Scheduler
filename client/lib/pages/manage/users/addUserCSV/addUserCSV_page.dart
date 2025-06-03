@@ -62,15 +62,15 @@ class _AddUserAdminState extends State<AddUserAdmin> {
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
               child: Text(
-                "Load CVS File",
+                AppLocalizations.of(context)!.load_CSV_file,
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
               child: Text(
-                "name,surmane,email,role1,role2,...,role_n",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
+                AppLocalizations.of(context)!.description_CSV,
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
               ),
             ),
             const SizedBox(height: 30),
@@ -106,7 +106,7 @@ class _AddUserAdminState extends State<AddUserAdmin> {
                     addUsersCSVProvider.setCanLoad(false);
                   }
                 },
-                child: Text('Choose CSV File')
+                child: Text(AppLocalizations.of(context)!.choose_CSV_file)
               ),
             ),
 
@@ -122,22 +122,22 @@ class _AddUserAdminState extends State<AddUserAdmin> {
                     )
                 ),
                 onPressed: () async {
-                  if (!await confirm(context, content: Text("Add " + addUsersCSVProvider.users.length.toString() + " Users?"))){
+                  if (!await confirm(context, content: Text(AppLocalizations.of(context)!.add+' '+addUsersCSVProvider.users.length.toString()+' '+AppLocalizations.of(context)!.users+'?'))){
                     return;
                   }
                   int result = await Connection.addUsers(users: addUsersCSVProvider.users, appProvider: appProvider);
                   if (result == 0){
-                    showTopMessage(context, "All User Created");
+                    showTopMessage(context, AppLocalizations.of(context)!.all_users_created);
                   } else if (result != -1) {
-                    showTopMessage(context, result.toString() + " Users Uncreated", isOK: false);
+                    showTopMessage(context, result.toString()+' '+AppLocalizations.of(context)!.users_uncreated, isOK: false);
                   } else {
-                    showTopMessage(context, "Error Occurred", isOK: false);
+                    showTopMessage(context, AppLocalizations.of(context)!.error_occurred, isOK: false);
                   }
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    "Add Users",
+                    AppLocalizations.of(context)!.add_users,
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.surface,
                         fontWeight: FontWeight.bold,
@@ -155,12 +155,12 @@ class _AddUserAdminState extends State<AddUserAdmin> {
               child: Row(
                 children: [
                   Text(
-                    "Preview",
+                    AppLocalizations.of(context)!.preview,
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(width: 10,),
                   Text(
-                    '('+addUsersCSVProvider.users.length.toString()+' total)',
+                    '('+addUsersCSVProvider.users.length.toString()+' '+AppLocalizations.of(context)!.total+')',
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.w300),
                   ),
                 ],

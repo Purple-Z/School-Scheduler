@@ -63,7 +63,11 @@ class AppProvider extends ChangeNotifier {
 
     await loadPreferences();
     await loadLocale();
-    await Connection.reload(this);
+    try {
+      if (logged) {
+        Connection.reload(this);
+      }
+    } catch (e) {}
 
     notifyListeners();
   }

@@ -11,6 +11,7 @@ class Connection {
   static Future<bool> login(String email, String password, AppProvider appProvider) async {
     final url = Uri.parse(serverAddr + '/login');
     try {
+      print('sto eseguendo il login');
       final response = await http.post(
         url,
         headers: {
@@ -21,6 +22,8 @@ class Connection {
       );
       print('Status code: ${response.statusCode}');
       print('Body: ${response.body}');
+      print('ecco la risposta');
+      print(response);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

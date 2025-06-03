@@ -5,13 +5,17 @@ import 'package:drop_down_list/drop_down_list.dart';
 import 'package:drop_down_list/model/selected_list_item.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:go_router/go_router.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 import '../../router/routes.dart';
+import '../../style/svgMappers.dart';
 import '../functions.dart';
 
 class DataTableWidget extends StatefulWidget {
@@ -402,7 +406,7 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
-                                          const Text('Select Range'),
+                                          Text(AppLocalizations.of(context)!.select_range),
                                           Padding(
                                             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                             child: SfRangeSlider(
@@ -427,7 +431,7 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                             ),
                                           ),
                                           ElevatedButton(
-                                            child: const Text('Close'),
+                                            child: Text(AppLocalizations.of(context)!.close),
                                             onPressed: () => Navigator.pop(context),
                                           ),
                                         ],
@@ -461,11 +465,11 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
                                           SizedBox(height: 20,),
-                                          const Text('Select Range'),
+                                          Text(AppLocalizations.of(context)!.select_range),
 
                                           Expanded(child: SizedBox()),
 
-                                          Text('From', style: TextStyle(fontSize: 20),),
+                                          Text(AppLocalizations.of(context)!.from_maiusc, style: TextStyle(fontSize: 20),),
                                           Center(
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
@@ -510,7 +514,7 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                               ],
                                             ),
                                           ),
-                                          Text('To', style: TextStyle(fontSize: 20),),
+                                          Text(AppLocalizations.of(context)!.to_maiusc, style: TextStyle(fontSize: 20),),
                                           Center(
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
@@ -557,7 +561,7 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                           ),
                                           Expanded(child: SizedBox()),
                                           ElevatedButton(
-                                            child: const Text('Close'),
+                                            child: Text(AppLocalizations.of(context)!.close),
                                             onPressed: () => Navigator.pop(context),
                                           ),
                                         ],
@@ -601,16 +605,17 @@ class _DataTableWidgetState extends State<DataTableWidget> {
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: Text(
-              'Clear All Filters',
+              AppLocalizations.of(context)!.clear_all_filters,
               style: TextStyle(color: Theme.of(context).colorScheme.secondary),
             )
         ),
+
         Expanded( 
           child: SmartRefresher(
             controller: widget.refreshController,
             onRefresh: widget.onRefresh,
             header: MaterialClassicHeader(),
-            child: ListView.builder(
+            child: (getItems(widgetProvider).length != 0) ? ListView.builder(
               itemCount: getItems(widgetProvider).length,
               itemBuilder: (context, index) {
                 List item = getItems(widgetProvider)[index] as List;
@@ -649,8 +654,27 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                   ],
                 );
               },
+            ) : Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    'assets/images/undraw_no-data_ig65.svg',
+                    width: 150,
+                    height: 150,
+                    colorMapper: CustomColorMapper(context),
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.empty_list,
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
+          )
         )
       ],
     );

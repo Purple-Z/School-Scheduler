@@ -68,7 +68,7 @@ class _AddResourceState extends State<AddResource> {
     var addResourceProvider = context.watch<AddResourceProvider>();
 
     return Padding(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +100,7 @@ class _AddResourceState extends State<AddResource> {
                 ),
                 SizedBox(width: 20,),
                 Text(
-                    'Manage With Slots',
+                    AppLocalizations.of(context)!.manage_with_slots,
                     style: TextStyle(fontSize: 20)
                 )
               ],
@@ -124,8 +124,8 @@ class _AddResourceState extends State<AddResource> {
 
                   },
                   child: Text(
-                    addResourceProvider.slot_duration.inHours.toString()+' hours '+
-                    (addResourceProvider.slot_duration.inMinutes-addResourceProvider.slot_duration.inHours*60).toString()+' minutes'
+                    addResourceProvider.slot_duration.inHours.toString()+' '+AppLocalizations.of(context)!.hours+' '+
+                    (addResourceProvider.slot_duration.inMinutes-addResourceProvider.slot_duration.inHours*60).toString()+' '+AppLocalizations.of(context)!.minutes
                   )
                 )
               ],
@@ -144,7 +144,7 @@ class _AddResourceState extends State<AddResource> {
                 ),
                 SizedBox(width: 20,),
                 Text(
-                  'Auto Accept',
+                  AppLocalizations.of(context)!.auto_accept,
                   style: TextStyle(fontSize: 20)
                 )
               ],
@@ -163,7 +163,7 @@ class _AddResourceState extends State<AddResource> {
                 ),
                 SizedBox(width: 20,),
                 Text(
-                  'Allow Over Booking',
+                  AppLocalizations.of(context)!.allow_over_booking,
                   style: TextStyle(fontSize: 20)
                 )
               ],
@@ -471,6 +471,7 @@ class _AddResourceState extends State<AddResource> {
                 ),
               ),
             ),
+            SizedBox(height: 30,)
           ],
         ),
       ),

@@ -63,7 +63,7 @@ class _ManagePageState extends State<ManagePage> {
                                 width: 5,
                               ),
                               Text(
-                                "Users",
+                                AppLocalizations.of(context)!.users,
                                 style: TextStyle(fontSize: 35,),
                               ),
                             ],
@@ -73,7 +73,7 @@ class _ManagePageState extends State<ManagePage> {
                               Expanded(
                                 child: OptionButton(
                                   child: Text(
-                                    "Users",
+                                    AppLocalizations.of(context)!.users,
                                     style: TextStyle(
                                         color: Theme.of(context).colorScheme.surface,
                                         fontSize: 25,
@@ -101,7 +101,7 @@ class _ManagePageState extends State<ManagePage> {
                                           Icon(Icons.add_circle, color: Theme.of(context).colorScheme.surface),
                                           SizedBox(width: 7,),
                                           Text(
-                                            'Add User',
+                                            AppLocalizations.of(context)!.add_user,
                                             style: TextStyle(
                                                 color: Theme.of(context).colorScheme.surface
                                             ),
@@ -114,7 +114,7 @@ class _ManagePageState extends State<ManagePage> {
                                         context.push(Routes.manage_Users_AddUsersCSV);
                                       },
                                       child: Text(
-                                        'Load CSV',
+                                        AppLocalizations.of(context)!.load_CSV,
                                         style: TextStyle(
                                           color: Theme.of(context).colorScheme.surface
                                         ),
@@ -122,17 +122,17 @@ class _ManagePageState extends State<ManagePage> {
                                   ),
                                   if (appProvider.edit_user) MenuItemButton(
                                       onPressed: () async {
-                                        if (!await confirm(context, content: Text("Disconnect All Users?"))){
+                                        if (!await confirm(context, content: Text(AppLocalizations.of(context)!.ask_disconnect_all_users))){
                                           return;
                                         }
                                         if (await Connection.disconnectUsers(appProvider)){
-                                          showTopMessage(context, "All User Disconnected");
+                                          showTopMessage(context, AppLocalizations.of(context)!.all_users_disconnected);
                                         }  else {
-                                          showTopMessage(context, "Error Occurred", isOK: false);
+                                          showTopMessage(context, AppLocalizations.of(context)!.error_occurred, isOK: false);
                                         }
                                       },
                                       child: Text(
-                                        'Disconnect all users',
+                                        AppLocalizations.of(context)!.disconnect_all_users,
                                         style: TextStyle(
                                             color: Theme.of(context).colorScheme.surface
                                         ),
@@ -173,7 +173,7 @@ class _ManagePageState extends State<ManagePage> {
                                 width: 5,
                               ),
                               Text(
-                                "Roles",
+                                AppLocalizations.of(context)!.roles,
                                 style: TextStyle(fontSize: 35,),
                               ),
                             ],
@@ -194,7 +194,7 @@ class _ManagePageState extends State<ManagePage> {
                               Expanded(
                                 child: OptionButton(
                                   child: Text(
-                                    "Roles",
+                                    AppLocalizations.of(context)!.roles,
                                     style: TextStyle(
                                         color: Theme.of(context).colorScheme.surface,
                                         fontSize: 25,
@@ -222,7 +222,7 @@ class _ManagePageState extends State<ManagePage> {
                                 width: 5,
                               ),
                               Text(
-                                "Resources",
+                                AppLocalizations.of(context)!.resources,
                                 style: TextStyle(fontSize: 35,),
                               ),
                             ],
@@ -232,7 +232,7 @@ class _ManagePageState extends State<ManagePage> {
                               Expanded(
                                 child: OptionButton(
                                   child: Text(
-                                    "Resources",
+                                    AppLocalizations.of(context)!.resources,
                                     style: TextStyle(
                                         color: Theme.of(context).colorScheme.surface,
                                         fontSize: 25,
@@ -260,7 +260,7 @@ class _ManagePageState extends State<ManagePage> {
                           ),
                           OptionButton(
                             child: Text(
-                              "Types",
+                              AppLocalizations.of(context)!.types,
                               style: TextStyle(
                                   color: Theme.of(context).colorScheme.surface,
                                   fontSize: 15,
@@ -274,7 +274,7 @@ class _ManagePageState extends State<ManagePage> {
                           ),
                           OptionButton(
                             child: Text(
-                              "Places",
+                              AppLocalizations.of(context)!.places,
                               style: TextStyle(
                                   color: Theme.of(context).colorScheme.surface,
                                   fontSize: 15,
@@ -288,7 +288,7 @@ class _ManagePageState extends State<ManagePage> {
                           ),
                           OptionButton(
                             child: Text(
-                              "Activities",
+                              AppLocalizations.of(context)!.activities,
                               style: TextStyle(
                                   color: Theme.of(context).colorScheme.surface,
                                   fontSize: 15,
@@ -312,7 +312,7 @@ class _ManagePageState extends State<ManagePage> {
                                 width: 5,
                               ),
                               Text(
-                                "Bookings",
+                                AppLocalizations.of(context)!.bookings,
                                 style: TextStyle(fontSize: 35,),
                               ),
                             ],
@@ -322,7 +322,7 @@ class _ManagePageState extends State<ManagePage> {
                               Expanded(
                                 child: OptionButton(
                                   child: Text(
-                                    "Bookings",
+                                    AppLocalizations.of(context)!.bookings,
                                     style: TextStyle(
                                         color: Theme.of(context).colorScheme.surface,
                                         fontSize: 25,
@@ -339,7 +339,7 @@ class _ManagePageState extends State<ManagePage> {
                           ),
                           OptionButton(
                             child: Text(
-                              "Requests",
+                              AppLocalizations.of(context)!.requests,
                               style: TextStyle(
                                   color: Theme.of(context).colorScheme.surface,
                                   fontSize: 15,

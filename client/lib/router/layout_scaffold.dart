@@ -62,6 +62,7 @@ class LayoutScaffold extends StatelessWidget {
     );
 
     List destinations = [
+      Destination(label: 'account', icon: Icons.account_circle_outlined),
       Destination(label: 'resources', icon: Icons.account_balance_rounded),
       if (
         appState.view_user ||
@@ -85,7 +86,6 @@ class LayoutScaffold extends StatelessWidget {
         appState.create_booking ||
         appState.delete_booking
       ) Destination(label: 'manage', icon: Icons.account_tree_rounded),
-      Destination(label: 'account', icon: Icons.account_circle_outlined),
     ];
 
     LayoutBuilder body = LayoutBuilder(
@@ -113,16 +113,7 @@ class LayoutScaffold extends StatelessWidget {
               colorSelected: Theme.of(context).colorScheme.secondary,
               indexSelected: selectedIndex,
               onTap: (index) {
-                if (destinations.length == 2) {
-                  if (index == 1){
-                    navigationShell.goBranch(2);
-                  } else {
-                    navigationShell.goBranch(0);
-
-                  }
-                } else {
-                  navigationShell.goBranch(index);
-                }
+                navigationShell.goBranch(index);
               },
               countStyle: CountStyle(
                 background: Theme.of(context).colorScheme.secondary,

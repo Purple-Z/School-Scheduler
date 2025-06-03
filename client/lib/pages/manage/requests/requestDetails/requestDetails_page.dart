@@ -79,7 +79,7 @@ class _RequestDetailsState extends State<RequestDetails> {
       child: ListView(
         children: [
           Text(
-            "Request Details From",
+            AppLocalizations.of(context)!.request_details_from,
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
           Text(
@@ -97,7 +97,7 @@ class _RequestDetailsState extends State<RequestDetails> {
               Column(
                 children: [
                   Text(
-                    "From",
+                    AppLocalizations.of(context)!.from_maiusc,
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
 
@@ -114,7 +114,7 @@ class _RequestDetailsState extends State<RequestDetails> {
               Column(
                 children: [
                   Text(
-                    "To",
+                    AppLocalizations.of(context)!.to_maiusc,
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
 
@@ -147,7 +147,7 @@ class _RequestDetailsState extends State<RequestDetails> {
               Column(
                 children: [
                   Text(
-                    "Quantity",
+                    AppLocalizations.of(context)!.quantity,
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
 
@@ -164,7 +164,7 @@ class _RequestDetailsState extends State<RequestDetails> {
               Column(
                 children: [
                   Text(
-                    "Type",
+                    AppLocalizations.of(context)!.type,
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
 
@@ -204,7 +204,7 @@ class _RequestDetailsState extends State<RequestDetails> {
                     if (
                     await Connection.acceptPendingBookings(appProvider, request_id: requestDetailsProvider.request[0])
                     ){
-                      showTopMessage(context, "Request Accepted");
+                      showTopMessage(context, AppLocalizations.of(context)!.request_accepted);
                       context.pop();
                     } else {
                       showTopMessage(context, AppLocalizations.of(context)!.type_error_occurred);
@@ -213,7 +213,7 @@ class _RequestDetailsState extends State<RequestDetails> {
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      "Accept",
+                      AppLocalizations.of(context)!.accept,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.surface,
                           fontWeight: FontWeight.bold,
@@ -240,9 +240,9 @@ class _RequestDetailsState extends State<RequestDetails> {
                   )
               ),
               onPressed: () async {
-                if(await confirm(context, content: Text("Refuse?"))){
+                if(await confirm(context, content: Text(AppLocalizations.of(context)!.ask_for_refuse))){
                   if (await Connection.refusePendingBookings(appProvider, request_id: requestDetailsProvider.request[0])){
-                    showTopMessage(context, "Request Refused");
+                    showTopMessage(context, AppLocalizations.of(context)!.request_refused);
                     context.pop();
                   } else {
                     showTopMessage(context, AppLocalizations.of(context)!.type_error_occurred);
@@ -252,7 +252,7 @@ class _RequestDetailsState extends State<RequestDetails> {
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  "Refuse",
+                  AppLocalizations.of(context)!.refuse,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.surface,
                       fontWeight: FontWeight.bold,

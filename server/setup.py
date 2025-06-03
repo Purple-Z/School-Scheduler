@@ -11,7 +11,7 @@ class setupDB():
         password = password,
         database = database
     )
-    mycursor = db.cursor()
+    mycursor = db.cursor(buffered=True)
 
     def __init__(self, isFirstTime = True):
         try:
@@ -244,18 +244,40 @@ class setupDB():
         self.mycursor.execute("DROP DATABASE school_scheduler")
         self.db.commit()
 
+
     def clear(self):
         sql = "DELETE FROM users"
         self.mycursor.execute(sql)
         self.db.commit()
 
     def fetchSQL(self, sql, args = None):
-        self.mycursor.execute(sql, args)
-        result = self.mycursor.fetchall()
-        self.db.commit()
+
+        db = mysql.connector.connect(
+                    host = self.host,
+                    user = self.user,
+                    password = self.password,
+                    database = self.database
+        )
+
+        mycursor = db.cursor()
+        mycursor.execute(sql, args)
+        result = mycursor.fetchall()
+        db.commit()
+        mycursor.close()
+        db.close()
 
         return result
 
     def executeSQL(self, sql, args = None):
-        self.mycursor.execute(sql, args)
-        self.db.commit()
+        db = mysql.connector.connect(
+                    host = self.host,
+                    user = self.user,
+                    password = self.password,
+                    database = self.database
+        )
+
+        mycursor = db.cursor()
+        mycursor.execute(sql, args)
+        db.commit()
+        mycursor.close()
+        db.close()

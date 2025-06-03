@@ -12,11 +12,6 @@ import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 
 import '../../../../graphics/graphics_methods.dart';
 
-
-
-
-
-
 class PermissionPage extends StatefulWidget {
   const PermissionPage({super.key});
 
@@ -62,7 +57,7 @@ class _PermissionState extends State<Permission> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Permission",
+              AppLocalizations.of(context)!.permission,
               style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
             ),
             Text(
@@ -78,10 +73,10 @@ class _PermissionState extends State<Permission> {
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                PermissionTile(allowed: appProvider.view_user, text: 'View Users',),
-                PermissionTile(allowed: appProvider.edit_user, text: 'Edit Users',),
-                PermissionTile(allowed: appProvider.create_user, text: 'Crete Users',),
-                PermissionTile(allowed: appProvider.delete_user, text: 'Delete Users',),
+                PermissionTile(allowed: appProvider.view_user, text: AppLocalizations.of(context)!.role_viewUsers,),
+                PermissionTile(allowed: appProvider.edit_user, text: AppLocalizations.of(context)!.role_editUsers,),
+                PermissionTile(allowed: appProvider.create_user, text: AppLocalizations.of(context)!.role_createUsers,),
+                PermissionTile(allowed: appProvider.delete_user, text: AppLocalizations.of(context)!.role_deleteUsers,),
 
               ],
             ),
@@ -91,10 +86,10 @@ class _PermissionState extends State<Permission> {
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                PermissionTile(allowed: appProvider.view_own_user, text: 'View Own Users',),
-                PermissionTile(allowed: appProvider.edit_own_user, text: 'Edit Own Users',),
-                PermissionTile(allowed: appProvider.create_own_user, text: 'Crete Own Users',),
-                PermissionTile(allowed: appProvider.delete_own_users, text: 'Delete Own Users',),
+                PermissionTile(allowed: appProvider.view_own_user, text: AppLocalizations.of(context)!.role_viewOwnUser,),
+                PermissionTile(allowed: appProvider.edit_own_user, text: AppLocalizations.of(context)!.role_editOwnUser,),
+                PermissionTile(allowed: appProvider.create_own_user, text: AppLocalizations.of(context)!.role_createOwnUser,),
+                PermissionTile(allowed: appProvider.delete_own_users, text: AppLocalizations.of(context)!.role_deleteOwnUser,),
                 SizedBox(height: 10,)
               ],
             ),
@@ -104,10 +99,10 @@ class _PermissionState extends State<Permission> {
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                PermissionTile(allowed: appProvider.view_roles, text: 'View Roles',),
-                PermissionTile(allowed: appProvider.edit_roles, text: 'Edit Roles',),
-                PermissionTile(allowed: appProvider.create_roles, text: 'Create Roles',),
-                PermissionTile(allowed: appProvider.delete_roles, text: 'Delete Roles',),
+                PermissionTile(allowed: appProvider.view_roles, text: AppLocalizations.of(context)!.role_viewRoles,),
+                PermissionTile(allowed: appProvider.edit_roles, text: AppLocalizations.of(context)!.role_editRoles,),
+                PermissionTile(allowed: appProvider.create_roles, text: AppLocalizations.of(context)!.role_createRoles,),
+                PermissionTile(allowed: appProvider.delete_roles, text: AppLocalizations.of(context)!.role_deleteRoles,),
                 SizedBox(height: 10,)
               ],
             ),
@@ -117,10 +112,10 @@ class _PermissionState extends State<Permission> {
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                PermissionTile(allowed: appProvider.view_availability, text: 'View Availability',),
-                PermissionTile(allowed: appProvider.edit_availability, text: 'Edit Availability',),
-                PermissionTile(allowed: appProvider.create_availability, text: 'Create Availability',),
-                PermissionTile(allowed: appProvider.delete_availability, text: 'Delete Availability',),
+                PermissionTile(allowed: appProvider.view_availability, text: AppLocalizations.of(context)!.role_viewAvailability,),
+                PermissionTile(allowed: appProvider.edit_availability, text: AppLocalizations.of(context)!.role_editAvailability,),
+                PermissionTile(allowed: appProvider.create_availability, text: AppLocalizations.of(context)!.role_createAvailability,),
+                PermissionTile(allowed: appProvider.delete_availability, text: AppLocalizations.of(context)!.role_deleteAvailability,),
                 SizedBox(height: 10,)
               ],
             ),
@@ -130,10 +125,10 @@ class _PermissionState extends State<Permission> {
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                PermissionTile(allowed: appProvider.view_resources, text: 'View Resources',),
-                PermissionTile(allowed: appProvider.edit_resources, text: 'Edit Resources',),
-                PermissionTile(allowed: appProvider.create_resources, text: 'Create Resources',),
-                PermissionTile(allowed: appProvider.delete_resources, text: 'Delete Resources',),
+                PermissionTile(allowed: appProvider.view_resources, text: AppLocalizations.of(context)!.role_viewResources,),
+                PermissionTile(allowed: appProvider.edit_resources, text: AppLocalizations.of(context)!.role_editResources,),
+                PermissionTile(allowed: appProvider.create_resources, text: AppLocalizations.of(context)!.role_createResources,),
+                PermissionTile(allowed: appProvider.delete_resources, text: AppLocalizations.of(context)!.role_deleteResources,),
                 SizedBox(height: 10,)
               ],
             ),
@@ -143,10 +138,10 @@ class _PermissionState extends State<Permission> {
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                PermissionTile(allowed: appProvider.view_booking, text: 'View Bookings',),
-                PermissionTile(allowed: appProvider.edit_booking, text: 'Edit Bookings',),
-                PermissionTile(allowed: appProvider.create_booking, text: 'Create Bookings',),
-                PermissionTile(allowed: appProvider.delete_booking, text: 'Delete Bookings',),
+                PermissionTile(allowed: appProvider.view_booking, text: AppLocalizations.of(context)!.role_viewBooking,),
+                PermissionTile(allowed: appProvider.edit_booking, text: AppLocalizations.of(context)!.role_editBooking,),
+                PermissionTile(allowed: appProvider.create_booking, text: AppLocalizations.of(context)!.role_createBooking,),
+                PermissionTile(allowed: appProvider.delete_booking, text: AppLocalizations.of(context)!.role_deleteBooking,),
                 SizedBox(height: 10,)
               ],
             ),
@@ -156,10 +151,10 @@ class _PermissionState extends State<Permission> {
               //subtitle: Text('Leading expansion arrow icon'),
               controlAffinity: ListTileControlAffinity.leading,
               children: <Widget>[
-                PermissionTile(allowed: appProvider.view_own_booking, text: 'View Own Bookings',),
-                PermissionTile(allowed: appProvider.edit_own_booking, text: 'Edit Own Bookings',),
-                PermissionTile(allowed: appProvider.create_own_booking, text: 'Create Own Bookings',),
-                PermissionTile(allowed: appProvider.delete_own_booking, text: 'Delete Own Bookings',),
+                PermissionTile(allowed: appProvider.view_own_booking, text: AppLocalizations.of(context)!.role_viewOwnBooking,),
+                PermissionTile(allowed: appProvider.edit_own_booking, text: AppLocalizations.of(context)!.role_editOwnBooking,),
+                PermissionTile(allowed: appProvider.create_own_booking, text: AppLocalizations.of(context)!.role_createOwnBooking,),
+                PermissionTile(allowed: appProvider.delete_own_booking, text: AppLocalizations.of(context)!.role_deleteOwnBooking,),
                 SizedBox(height: 10,)
               ],
             ),
@@ -199,83 +194,6 @@ class PermissionTile extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-
-
-class ChangePasswordButtonWidget extends StatelessWidget {
-  const ChangePasswordButtonWidget({
-    super.key,
-    required this.appProvider,
-    required this.currentPassword,
-    required this.newPassword,
-  });
-
-  final AppProvider appProvider;
-  final TextEditingController currentPassword;
-  final TextEditingController newPassword;
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-        style: ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.secondary)
-        ),
-        onPressed: () async {
-          bool r = await showSimpleLoadingDialog<bool>(
-            context: context,
-            future: () async {
-              bool r = await Connection.changePassword(
-                  appProvider,
-                  current_password: currentPassword.text,
-                  new_password: newPassword.text
-              );
-              await Connection.reload(appProvider);
-              return r;
-            },
-          );
-
-          if (r){
-            showTopMessage(context, 'Password Changed');
-          } else {
-            showTopMessage(context, 'Error Occurred');
-          }
-        },
-        child: Text(
-          'Change Password',
-          style: TextStyle(
-              color: Theme.of(context).colorScheme.surface,
-              fontSize: 20
-          ),
-        )
-    );
-  }
-}
-
-class ChangePasswordFieldsWidget extends StatelessWidget {
-  const ChangePasswordFieldsWidget({
-    super.key,
-    required this.currentPassword,
-    required this.newPassword,
-  });
-
-  final TextEditingController currentPassword;
-  final TextEditingController newPassword;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        buildTextField(currentPassword, 'Current Password', Icons.abc, obscureText: true),
-
-        SizedBox(height: 20,),
-
-        buildTextField(newPassword, 'New Password', Icons.abc, obscureText: true),
-
-        SizedBox(height: 20,),
-      ],
     );
   }
 }

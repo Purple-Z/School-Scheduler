@@ -86,33 +86,6 @@ class LoggedPage extends StatelessWidget {
         SizedBox(
           height: 10,
         ),
-        Row(
-          children: [
-            Expanded(child: SizedBox()),
-            ElevatedButton(
-              onPressed: () {
-                appProvider.logout();
-              },
-              child: Row(
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.account_logout,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Icon(
-                    Icons.logout,
-                    color: Theme.of(context).colorScheme.secondary,
-                  )
-                ],
-              )
-            ),
-          ],
-        ),
         LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints)
           {
@@ -157,7 +130,7 @@ class LoggedPage extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    "Your Account",
+                    AppLocalizations.of(context)!.your_account,
                     style: TextStyle(fontSize: 35,),
                   ),
                 ],

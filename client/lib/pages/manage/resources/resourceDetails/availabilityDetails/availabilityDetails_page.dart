@@ -319,7 +319,7 @@ class _AvailabilityDetailsState extends State<AvailabilityDetails> {
                 child: ElevatedButton(
                   style: ButtonStyle(
                       minimumSize: WidgetStatePropertyAll(Size(MediaQuery.of(context).size.width*0.9, 0)),
-                      backgroundColor: WidgetStatePropertyAll(Color(0xFFB00020)),
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.secondary),
                       textStyle: WidgetStatePropertyAll(
                           TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary
