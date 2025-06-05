@@ -625,6 +625,31 @@ class S {
     );
   }
 
+  /// `Search`
+  String get search {
+    return Intl.message('Search', name: 'search', desc: '', args: []);
+  }
+
+  /// `This Reservation Needs To Be Accepted`
+  String get this_reservation_needs_to_be_accepted {
+    return Intl.message(
+      'This Reservation Needs To Be Accepted',
+      name: 'this_reservation_needs_to_be_accepted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select`
+  String get select {
+    return Intl.message('Select', name: 'select', desc: '', args: []);
+  }
+
+  /// `Book`
+  String get book {
+    return Intl.message('Book', name: 'book', desc: '', args: []);
+  }
+
   /// `Hello `
   String get account_hello {
     return Intl.message('Hello ', name: 'account_hello', desc: '', args: []);

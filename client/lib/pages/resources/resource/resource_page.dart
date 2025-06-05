@@ -119,9 +119,9 @@ class _ResourceDetailsState extends State<ResourceDetails> with SingleTickerProv
         bottom: TabBar(
           controller: _tabController,
           tabs: [
-            Tab(icon: Icon(Icons.date_range), text: 'Select',),
-            Tab(icon: Icon(Icons.calendar_month_sharp), text: 'View',),
-            Tab(icon: Icon(Icons.edit_calendar), text: 'Book',),
+            Tab(icon: Icon(Icons.date_range), text: AppLocalizations.of(context)!.select,),
+            Tab(icon: Icon(Icons.calendar_month_sharp), text: AppLocalizations.of(context)!.view,),
+            Tab(icon: Icon(Icons.edit_calendar), text: AppLocalizations.of(context)!.book,),
 
           ],
         ),
@@ -271,14 +271,14 @@ class _ResourceDetailsState extends State<ResourceDetails> with SingleTickerProv
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Search',
+                          AppLocalizations.of(context)!.search,
                           style: TextStyle(
                             fontSize: 30,
                             color: Theme.of(context).colorScheme.surface
                           ),
                         ),
                         Icon(
-                          Icons.arrow_outward,
+                          Icons.search,
                           color: Theme.of(context).colorScheme.surface,
                           size: 35,
                           weight: 5000,
@@ -315,9 +315,9 @@ class _ResourceDetailsState extends State<ResourceDetails> with SingleTickerProv
                       children: [
                         Row(
                           children: [
-                            Expanded(child: Center(child: Text('Start'))),
-                            Expanded(child: Center(child: Text('End'))),
-                            Expanded(child: Center(child: Text('Quantity')))
+                            Expanded(child: Center(child: Text(AppLocalizations.of(context)!.start))),
+                            Expanded(child: Center(child: Text(AppLocalizations.of(context)!.end))),
+                            Expanded(child: Center(child: Text(AppLocalizations.of(context)!.quantity)))
                           ],
                         ),
                         SizedBox(
@@ -417,470 +417,517 @@ class _ResourceDetailsState extends State<ResourceDetails> with SingleTickerProv
             )
 
           ),
-          Center(
-            child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 1, 10, 0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 1, 10, 0),
+            child: ((listItems.length != 0)) ? SingleChildScrollView(
+              child: Column(
+                children: [
+                  if (!resourceProvider.resource[8]) Column(
                     children: [
-                  if ((listItems.length != 0))
-                    Container(
-                      constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height*0.8
+                      SizedBox(
+                        height: 20,
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (!resourceProvider.resource[8])
-                            Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Icon(
-                                      Icons.emergency,
-                                      size: 15,
-                                      color: Theme.of(context).colorScheme.secondary,
-                                    ),
-                                    Text(
-                                      "This Reservation Needs To Be Accepted",
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.secondary
-                                      ),
-                                    ),
-                                    Expanded(child: SizedBox())
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                              ],
-                            ),
-                          Row(
+                      Text(
+                        AppLocalizations.of(context)!.this_reservation_needs_to_be_accepted,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary
+                        ),
+                        maxLines: 5,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+
+
+                  SizedBox(
+                    height: 20,
+                  ),
+
+
+
+                  IntrinsicHeight(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
                             children: [
-                              SizedBox(
-                                width: rowSpacing2,
-                              ),
                               Text(
                                 AppLocalizations.of(context)!.book_from,
                                 style: TextStyle(fontSize: fontSize2),
                               ),
-                              Expanded(
-                                child: SizedBox(),
+                    
+                    
+                              Row(
+                                children: [
+                                  Expanded(child: SizedBox()),
+                    
+                    
+                                  resourceProvider.slot_logic ? Text(
+                                    getDatePrintable(resourceProvider.start_booking, context),
+                                    style: TextStyle(
+                                        fontSize: fontSize2,
+                                        color: Theme.of(context).colorScheme.onPrimary),
+                                  ) : ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      padding: EdgeInsets.zero,
+                                      minimumSize: Size(0, 0),
+                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      backgroundColor: Colors.transparent,
+                                      shadowColor: Colors.transparent,
+                                    ),
+                                    onPressed: () async {
+                                      DateTime? pickedDate = await selectDate(
+                                          context, resourceProvider.start_booking);
+                    
+                                      if (pickedDate != null) {
+                                        setState(() {
+                                          resourceProvider.start_booking = pickedDate;
+                                        });
+                                      }
+                    
+                                      resourceProvider.notify();
+                                    },
+                                    child: Text(
+                                      getDatePrintable(resourceProvider.start_booking, context),
+                                      style: TextStyle(
+                                          fontSize: fontSize2,
+                                          color: Theme.of(context).colorScheme.primary),
+                                    ),
+                                  ),
+                    
+                    
+                                  SizedBox(
+                                    width: rowSpacing2,
+                                  ),
+                    
+                    
+                                  resourceProvider.slot_logic ? Text(
+                                    getTimePrintable(resourceProvider.start_booking),
+                                    style: TextStyle(
+                                        fontSize: fontSize2,
+                                        color: Theme.of(context).colorScheme.onPrimary),
+                                  ) : ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                        minimumSize: Size(0, 0),
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        backgroundColor: Colors.transparent,
+                                        shadowColor: Colors.transparent),
+                                    onPressed: () async {
+                                      DateTime? pickedDate = await selectTime(
+                                          context, resourceProvider.start_booking);
+                    
+                                      if (pickedDate != null) {
+                                        setState(() {
+                                          resourceProvider.start_booking = pickedDate;
+                                        });
+                                      }
+                    
+                                      resourceProvider.notify();
+                                    },
+                                    child: Text(
+                                      getTimePrintable(resourceProvider.start_booking),
+                                      style: TextStyle(
+                                          fontSize: fontSize2,
+                                          color: Theme.of(context).colorScheme.primary),
+                                    ),
+                                  ),
+                    
+                                  Expanded(child: SizedBox()),
+                                ],
                               ),
-                              resourceProvider.slot_logic ? Text(
-                                getDatePrintable(resourceProvider.start_booking, context),
-                                style: TextStyle(
-                                    fontSize: fontSize2,
-                                    color: Theme.of(context).colorScheme.onPrimary),
-                              ) : ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                  minimumSize: Size(0, 0),
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  backgroundColor: Colors.transparent,
-                                  shadowColor: Colors.transparent,
-                                ),
-                                onPressed: () async {
-                                  DateTime? pickedDate = await selectDate(
-                                      context, resourceProvider.start_booking);
-
-                                  if (pickedDate != null) {
-                                    setState(() {
-                                      resourceProvider.start_booking = pickedDate;
-                                    });
-                                  }
-
-                                  resourceProvider.notify();
-                                },
-                                child: Text(
-                                  getDatePrintable(resourceProvider.start_booking, context),
-                                  style: TextStyle(
-                                      fontSize: fontSize2,
-                                      color: Theme.of(context).colorScheme.primary),
-                                ),
-                              ),
-                              SizedBox(
-                                width: rowSpacing2,
-                              ),
-                              resourceProvider.slot_logic ? Text(
-                                getTimePrintable(resourceProvider.start_booking),
-                                style: TextStyle(
-                                    fontSize: fontSize2,
-                                    color: Theme.of(context).colorScheme.onPrimary),
-                              ) : ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.zero,
-                                    minimumSize: Size(0, 0),
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    backgroundColor: Colors.transparent,
-                                    shadowColor: Colors.transparent),
-                                onPressed: () async {
-                                  DateTime? pickedDate = await selectTime(
-                                      context, resourceProvider.start_booking);
-
-                                  if (pickedDate != null) {
-                                    setState(() {
-                                      resourceProvider.start_booking = pickedDate;
-                                    });
-                                  }
-
-                                  resourceProvider.notify();
-                                },
-                                child: Text(
-                                  getTimePrintable(resourceProvider.start_booking),
-                                  style: TextStyle(
-                                      fontSize: fontSize2,
-                                      color: Theme.of(context).colorScheme.primary),
-                                ),
-                              ),
-                              SizedBox(
-                                width: rowSpacing2,
-                              )
                             ],
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
+                        ),
+                    
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                          child: VerticalDivider(),
+                        ),
+                    
+                        Expanded(
+                          child: Column(
                             children: [
-                              SizedBox(
-                                width: rowSpacing2,
-                              ),
                               Text(
                                 AppLocalizations.of(context)!.book_To,
                                 style: TextStyle(fontSize: fontSize2),
                               ),
-                              Expanded(
-                                child: SizedBox(),
-                              ),
-                              resourceProvider.slot_logic ? Text(
-                                getDatePrintable(resourceProvider.end_booking, context),
-                                style: TextStyle(
-                                    fontSize: fontSize2,
-                                    color: Theme.of(context).colorScheme.onPrimary),
-                              ) : ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.zero,
-                                    minimumSize: Size(0, 0),
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    backgroundColor: Colors.transparent,
-                                    shadowColor: Colors.transparent),
-                                onPressed: () async {
-                                  DateTime? pickedDate = await selectDate(
-                                      context, resourceProvider.end_booking);
-
-                                  if (pickedDate != null) {
-                                    setState(() {
-                                      resourceProvider.end_booking = pickedDate;
-                                    });
-                                  }
-
-                                  resourceProvider.notify();
-                                },
-                                child: Text(
-                                  getDatePrintable(resourceProvider.end_booking, context),
-                                  style: TextStyle(
-                                      fontSize: fontSize2,
-                                      color: Theme.of(context).colorScheme.primary),
-                                ),
-                              ),
-                              SizedBox(
-                                width: rowSpacing2,
-                              ),
-                              resourceProvider.slot_logic ?Text(
-                                getTimePrintable(resourceProvider.end_booking),
-                                style: TextStyle(
-                                    fontSize: fontSize2,
-                                    color: Theme.of(context).colorScheme.onPrimary),
-                              ) : ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.zero,
-                                    minimumSize: Size(0, 0),
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    backgroundColor: Colors.transparent,
-                                    shadowColor: Colors.transparent),
-                                onPressed: () async {
-                                  DateTime? pickedDate = await selectTime(
-                                      context, resourceProvider.end_booking);
-
-                                  if (pickedDate != null) {
-                                    setState(() {
-                                      resourceProvider.end_booking = pickedDate;
-                                    });
-                                  }
-
-                                  resourceProvider.notify();
-                                },
-                                child: Text(
-                                  getTimePrintable(resourceProvider.end_booking),
-                                  style: TextStyle(
-                                      fontSize: fontSize2,
-                                      color: Theme.of(context).colorScheme.primary),
-                                ),
-                              ),
-                              SizedBox(
-                                width: rowSpacing2,
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-
-                          Row(
-                            children: [
-                              Expanded(child: SizedBox()),
-                              Column(
+                    
+                              Row(
                                 children: [
-                                  Text(AppLocalizations.of(context)!.resource_place, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-
-
-                                  resourceProvider.can_edit_place ? ElevatedButton(
-                                    onPressed: () async {
-                                      List<SelectedListItem<String>> selections = [];
-                                      for (var data in resourceProvider.places){
-                                        selections.add(SelectedListItem<String>(data: data[0]));
-                                      }
-                                      DropDownState<String>(
-                                        dropDown: DropDown<String>(
-                                          data: selections,
-                                          onSelected: (selectedItems) {
-                                            List<String> list = [];
-                                            for (var item in selectedItems) {
-                                              list.add(item.data);
-                                            }
-
-                                            resourceProvider.changePlaceValue(list.first);
-                                          },
-                                        ),
-                                      ).showModal(context);
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        resourceProvider.place,
-                                        style: TextStyle(fontSize: 15),
-                                      ),
-                                    ),
+                                  Expanded(child: SizedBox()),
+                    
+                    
+                                  resourceProvider.slot_logic ? Text(
+                                    getDatePrintable(resourceProvider.end_booking, context),
+                                    style: TextStyle(
+                                        fontSize: fontSize2,
+                                        color: Theme.of(context).colorScheme.onPrimary),
+                                  ) : ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                         padding: EdgeInsets.zero,
                                         minimumSize: Size(0, 0),
                                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        backgroundColor: Colors.transparent,
                                         shadowColor: Colors.transparent),
-                                  ) : Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      resourceProvider.place,
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Expanded(child: SizedBox()),
-                              Column(
-                                children: [
-                                  Text(AppLocalizations.of(context)!.resource_activity, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-
-
-                                  resourceProvider.can_edit_activity ? ElevatedButton(
                                     onPressed: () async {
-                                      List<SelectedListItem<String>> selections = [];
-                                      for (var data in resourceProvider.activities){
-                                        selections.add(SelectedListItem<String>(data: data[0]));
+                                      DateTime? pickedDate = await selectDate(
+                                          context, resourceProvider.end_booking);
+                    
+                                      if (pickedDate != null) {
+                                        setState(() {
+                                          resourceProvider.end_booking = pickedDate;
+                                        });
                                       }
-                                      DropDownState<String>(
-                                        dropDown: DropDown<String>(
-                                          data: selections,
-                                          onSelected: (selectedItems) {
-                                            List<String> list = [];
-                                            for (var item in selectedItems) {
-                                              list.add(item.data);
-                                            }
-
-                                            resourceProvider.changeActivityValue(list.first);
-                                          },
-                                        ),
-                                      ).showModal(context);
+                    
+                                      resourceProvider.notify();
                                     },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        resourceProvider.activity,
-                                        style: TextStyle(fontSize: 15),
-                                      ),
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                        padding: EdgeInsets.zero,
-                                        minimumSize: Size(0, 0),
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                        shadowColor: Colors.transparent),
-                                  ) : Padding(
-                                    padding: const EdgeInsets.all(8.0),
                                     child: Text(
-                                      resourceProvider.activity,
-                                      style: TextStyle(fontSize: 15),
+                                      getDatePrintable(resourceProvider.end_booking, context),
+                                      style: TextStyle(
+                                          fontSize: fontSize2,
+                                          color: Theme.of(context).colorScheme.primary),
                                     ),
                                   ),
-                                ],
-                              ),
-                              Expanded(child: SizedBox())
-                            ],
-                          ),
-
-                          if (maxAvailabilityShow)
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 7),
-                              child: Row(
-                                children: [
+                    
+                    
+                    
                                   SizedBox(
                                     width: rowSpacing2,
                                   ),
-                                  Text(
-                                    AppLocalizations.of(context)!
-                                        .book_max_availability +
-                                        ', ' +
-                                        maxAvailabilityValue.toString(),
+                    
+                    
+                                  resourceProvider.slot_logic ?Text(
+                                    getTimePrintable(resourceProvider.end_booking),
                                     style: TextStyle(
+                                        fontSize: fontSize2,
                                         color: Theme.of(context).colorScheme.onPrimary),
+                                  ) : ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                        minimumSize: Size(0, 0),
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        backgroundColor: Colors.transparent,
+                                        shadowColor: Colors.transparent),
+                                    onPressed: () async {
+                                      DateTime? pickedDate = await selectTime(
+                                          context, resourceProvider.end_booking);
+                    
+                                      if (pickedDate != null) {
+                                        setState(() {
+                                          resourceProvider.end_booking = pickedDate;
+                                        });
+                                      }
+                    
+                                      resourceProvider.notify();
+                                    },
+                                    child: Text(
+                                      getTimePrintable(resourceProvider.end_booking),
+                                      style: TextStyle(
+                                          fontSize: fontSize2,
+                                          color: Theme.of(context).colorScheme.primary),
+                                    ),
                                   ),
-                                  Expanded(child: SizedBox())
+                    
+                    
+                                  Expanded(child: SizedBox()),
                                 ],
                               ),
-                            ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          TextField(
-                            controller: quantityController,
-                            obscureText: false,
-                            keyboardType: TextInputType.number,
-                            cursorColor: Theme.of(context).colorScheme.onPrimary,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                fontSize: fontSize1),
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).colorScheme.onPrimary,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).colorScheme.onPrimary,
-                                  ),
-                                ),
-                                label:
-                                Text(AppLocalizations.of(context)!.book_quantity),
-                                labelStyle: TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                )),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(child: SizedBox()),
-                              ElevatedButton(
-                                  onPressed: () async {
-                                    int quantity = await showSimpleLoadingDialog<int>(
-                                      context: context,
-                                      future: () async {
-                                        int quantity =
-                                        await Connection.checkBookingQuantity(
-                                            appProvider,
-                                            resource_id:
-                                            resourceProvider.resource[0],
-                                            start: resourceProvider.start_booking,
-                                            end: resourceProvider.end_booking);
-
-                                        return quantity;
-                                      },
-                                    );
-
-                                    setState(() {
-                                      maxAvailabilityValue = quantity;
-                                      maxAvailabilityShow = true;
-                                    });
-                                    print(quantity);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      padding: EdgeInsets.zero,
-                                      minimumSize: Size(0, 0),
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      backgroundColor:
-                                      Theme.of(context).colorScheme.primary,
-                                      shadowColor: Colors.transparent),
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                                    child: Text(
-                                      AppLocalizations.of(context)!
-                                          .book_check_availability,
-                                      style: TextStyle(
-                                          color: Theme.of(context).colorScheme.surface),
-                                    ),
-                                  )),
-                              Expanded(child: SizedBox()),
-                              ElevatedButton(
-                                  onPressed: () async {
-                                    await showSimpleLoadingDialog(
-                                      context: context,
-                                      future: () async {
-                                        if (
-                                        await Connection.addBooking(
-                                            start: resourceProvider.start_booking,
-                                            end: resourceProvider.end_booking,
-                                            quantity:
-                                            int.tryParse(quantityController.text) ?? 0,
-                                            resource_id: resourceProvider.resource[0],
-                                            appProvider: appProvider,
-                                            place: resourceProvider.place,
-                                            activity: resourceProvider.activity
-                                        )
-                                        ) {
-                                          showTopMessage(
-                                              context,
-                                              AppLocalizations.of(context)!
-                                                  .book_book_success);
-                                        } else {
-                                          showTopMessage(
-                                              context,
-                                              AppLocalizations.of(context)!
-                                                  .book_error_occurred);
-                                        }
-
-                                        refreshShifts();
-                                      },
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      padding: EdgeInsets.zero,
-                                      minimumSize: Size(0, 0),
-                                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      backgroundColor:
-                                      Theme.of(context).colorScheme.primary,
-                                      shadowColor: Colors.transparent),
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(17, 8, 17, 8),
-                                    child: Text(
-                                      AppLocalizations.of(context)!.book_book,
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.surface,
-                                      ),
-                                    ),
-                                  )
-                              ),
-                              Expanded(child: SizedBox())
                             ],
                           ),
-                          SizedBox(height: 15,)
+                        ),
+                      ],
+                    ),
+                  ),
+
+
+                  SizedBox(height: 50,),
+
+
+                  IntrinsicHeight(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Text(AppLocalizations.of(context)!.resource_place, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                              
+                                              
+                              resourceProvider.can_edit_place ? ElevatedButton(
+                                onPressed: () async {
+                                  List<SelectedListItem<String>> selections = [];
+                                  for (var data in resourceProvider.places){
+                                    selections.add(SelectedListItem<String>(data: data[0]));
+                                  }
+                                  DropDownState<String>(
+                                    dropDown: DropDown<String>(
+                                      data: selections,
+                                      onSelected: (selectedItems) {
+                                        List<String> list = [];
+                                        for (var item in selectedItems) {
+                                          list.add(item.data);
+                                        }
+                                              
+                                        resourceProvider.changePlaceValue(list.first);
+                                      },
+                                    ),
+                                  ).showModal(context);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    resourceProvider.place,
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    minimumSize: Size(0, 0),
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    shadowColor: Colors.transparent),
+                              ) : Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  resourceProvider.place,
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                          child: VerticalDivider(),
+                        ),
+                        
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Text(AppLocalizations.of(context)!.resource_activity, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                              
+                                              
+                              resourceProvider.can_edit_activity ? ElevatedButton(
+                                onPressed: () async {
+                                  List<SelectedListItem<String>> selections = [];
+                                  for (var data in resourceProvider.activities){
+                                    selections.add(SelectedListItem<String>(data: data[0]));
+                                  }
+                                  DropDownState<String>(
+                                    dropDown: DropDown<String>(
+                                      data: selections,
+                                      onSelected: (selectedItems) {
+                                        List<String> list = [];
+                                        for (var item in selectedItems) {
+                                          list.add(item.data);
+                                        }
+                                              
+                                        resourceProvider.changeActivityValue(list.first);
+                                      },
+                                    ),
+                                  ).showModal(context);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    resourceProvider.activity,
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    minimumSize: Size(0, 0),
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    shadowColor: Colors.transparent),
+                              ) : Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  resourceProvider.activity,
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 40,),
+
+
+                  if (maxAvailabilityShow)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 7),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: rowSpacing2,
+                          ),
+                          Text(
+                            AppLocalizations.of(context)!
+                                .book_max_availability +
+                                ', ' +
+                                maxAvailabilityValue.toString(),
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary),
+                          ),
+                          Expanded(child: SizedBox())
                         ],
                       ),
                     ),
-                ])),
+
+                  Container(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.9
+                    ),
+                    child: TextField(
+                      controller: quantityController,
+                      obscureText: false,
+                      keyboardType: TextInputType.number,
+                      cursorColor: Theme.of(context).colorScheme.onPrimary,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: fontSize1,
+                      ),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15.0),
+                            topRight: Radius.circular(15.0),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15.0),
+                            topRight: Radius.circular(15.0),
+                          ),
+                        ),
+                        label: Text(AppLocalizations.of(context)!.book_quantity),
+                        labelStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  ElevatedButton(
+                    onPressed: () async {
+                      int quantity = await showSimpleLoadingDialog<int>(
+                        context: context,
+                        future: () async {
+                          int quantity = await Connection.checkBookingQuantity(
+                            appProvider,
+                            resource_id: resourceProvider.resource[0],
+                            start: resourceProvider.start_booking,
+                            end: resourceProvider.end_booking,
+                          );
+                          return quantity;
+                        },
+                      );
+
+                      setState(() {
+                        maxAvailabilityValue = quantity;
+                        maxAvailabilityShow = true;
+                      });
+                      print(quantity);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 40),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      shadowColor: Colors.transparent,
+                      // Rimuovi l'area di "tocco" extra sopra il bottone
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          // Assicurati che gli angoli superiori siano squadrati per combaciare
+                          topLeft: Radius.zero,
+                          topRight: Radius.zero,
+                          bottomLeft: Radius.circular(15.0),
+                          bottomRight: Radius.circular(15.0),
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.book_check_availability,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.surface,
+                        fontSize: 17
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20,),
+
+                  ElevatedButton(
+                      onPressed: () async {
+                        await showSimpleLoadingDialog(
+                          context: context,
+                          future: () async {
+                            if (
+                            await Connection.addBooking(
+                                start: resourceProvider.start_booking,
+                                end: resourceProvider.end_booking,
+                                quantity:
+                                int.tryParse(quantityController.text) ?? 0,
+                                resource_id: resourceProvider.resource[0],
+                                appProvider: appProvider,
+                                place: resourceProvider.place,
+                                activity: resourceProvider.activity
+                            )
+                            ) {
+                              showTopMessage(
+                                  context,
+                                  AppLocalizations.of(context)!
+                                      .book_book_success);
+                            } else {
+                              showTopMessage(
+                                  context,
+                                  AppLocalizations.of(context)!
+                                      .book_error_occurred);
+                            }
+
+                            refreshShifts();
+                          },
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size(MediaQuery.of(context).size.width*0.9, 60),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        backgroundColor:
+                        Theme.of(context).colorScheme.primary,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(17, 8, 17, 8),
+                        child: Text(
+                          AppLocalizations.of(context)!.book_book,
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.surface,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      )
+                  )
+                ],
+              ),
+            ) : Center(
+                child: Text('no availability'),
+              )
           ),
         ],
       ),

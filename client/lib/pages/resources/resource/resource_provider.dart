@@ -36,6 +36,22 @@ class ResourceProvider extends ChangeNotifier {
     setStart(DateTime.tryParse(content['start']) ?? DateTime.now());
     setEnd(DateTime.tryParse(content['end']) ?? DateTime.now());
     setShifts(content['shifts']);
+    print('content shifts');
+    print(content['shifts']);
+    AvailabilitySlot slot1 = AvailabilitySlot(startTime: DateTime.now(), endTime: DateTime.now(), availability: 0);
+
+    for (List shift in content['shifts']){
+      if (shift[2] > 0) {
+        slot1 = AvailabilitySlot(
+            startTime: DateTime.tryParse(shift[0]) ?? DateTime.now(),
+            endTime: DateTime.tryParse(shift[1]) ?? DateTime.now(),
+            availability: shift[2]);
+        break;
+      }
+    }
+
+    setStartBooking(slot1.startTime);
+    setEndBooking(slot1.endTime);
   }
 
   notify(){

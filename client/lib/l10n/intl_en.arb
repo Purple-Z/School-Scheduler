@@ -87,6 +87,10 @@
   "ask_for_refuse": "Refuse?",
   "request_accepted": "Request Accepted",
   "request_refused": "Request Refused ",
+  "search": "Search",
+  "this_reservation_needs_to_be_accepted": "This Reservation Needs To Be Accepted",
+  "select": "Select",
+  "book": "Book",
 
 
 

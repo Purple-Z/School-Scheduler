@@ -688,7 +688,6 @@ class ListItem {
   ListItem({required this.display, required this.value});
   @override
   String toString() {
-    // TODO: implement toString
     return display;
   }
 }
@@ -703,6 +702,11 @@ class AvailabilitySlot {
     required this.endTime,
     required this.availability,
   });
+
+  @override
+  String toString() {
+    return 'slot: [' + startTime.toString() + ', ' + endTime.toString() + ']';
+  }
 }
 
 List<FlSpot> convertAvailabilityToSpots(List<AvailabilitySlot> data) {

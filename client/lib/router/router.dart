@@ -126,24 +126,43 @@ final router = GoRouter(
                     path: Routes.resource,
                     builder: (context, state) => ResourcePage(),
                     redirect: (context, state) async {
-                      final extraData = state.extra as Map<String, dynamic>?;
-                      final resource_Id = extraData?['resourceId'];
-                      final start = extraData?['start'];
-                      final end = extraData?['end'];
-                      print("resource id: " + resource_Id.toString());
-
                       var appProvider = Provider.of<AppProvider>(context, listen: false);
-                      var resourceProvider = Provider.of<ResourceProvider>(context, listen: false);
-                      List places = await Connection.getPlaceList(appProvider);
-                      List activities = await Connection.getActivityList(appProvider);
 
-                      resourceProvider.setResourceId(resource_Id);
-                      resourceProvider.setStart(start);
-                      resourceProvider.setEnd(end);
-                      resourceProvider.setPlaces(places, context);
-                      resourceProvider.setActivities(activities, context);
+                      appProvider.setLoading(true);
 
-                      await resourceProvider.loadResourcePage(context);
+                      try {
+                        appProvider.setLoadingText('');
+
+                        var resourceProvider = Provider.of<ResourceProvider>(context, listen: false);
+                        final extraData = state.extra as Map<String, dynamic>?;
+
+                        final resource_Id = extraData?['resourceId'];
+                        resourceProvider.setResourceId(resource_Id);
+
+                        final start = extraData?['start'];
+                        resourceProvider.setStart(start);
+
+                        final end = extraData?['end'];
+                        resourceProvider.setEnd(end);
+
+                        appProvider.setLoadingText('Getting Places List...');
+                        List places = await Connection.getPlaceList(appProvider);
+                        resourceProvider.setPlaces(places, context);
+
+                        appProvider.setLoadingText('Getting Activity List...');
+                        List activities = await Connection.getActivityList(appProvider);
+                        resourceProvider.setActivities(activities, context);
+
+                        appProvider.setLoadingText('');
+                        await resourceProvider.loadResourcePage(context);
+
+                      } catch (e, s) {
+                        appProvider.setLoading(false);
+                        return Routes.resource_NetworkError;
+                      }
+
+                      appProvider.setLoading(false);
+
                       return null;
                     },
                 ),
@@ -175,13 +194,28 @@ final router = GoRouter(
                       builder: (context, state) => RoleDetailsPage(),
                       redirect: (context, state) async {
                         final extraData = state.extra as Map<String, dynamic>?;
-                        final roleId = extraData?['roleId'];
-                        print("role id: " + roleId.toString());
-
                         var appProvider = Provider.of<AppProvider>(context, listen: false);
-                        List role = await Connection.getRole(roleId, appProvider);
-                        var userDetailsProvider = Provider.of<RoleDetailsProvider>(context, listen: false);
-                        userDetailsProvider.setRole(role);
+
+                        appProvider.setLoading(true);
+
+                        try {
+                          appProvider.setLoadingText('');
+
+                          final roleId = extraData?['roleId'];
+                          print("role id: " + roleId.toString());
+
+                          appProvider.setLoadingText('Getting Role Info...');
+                          List role = await Connection.getRole(roleId, appProvider);
+                          var userDetailsProvider = Provider.of<RoleDetailsProvider>(context, listen: false);
+                          userDetailsProvider.setRole(role);
+
+                        } catch (e, s) {
+                          appProvider.setLoading(false);
+                          return Routes.resource_NetworkError;
+                        }
+
+                        appProvider.setLoading(false);
+
                         return null;
                       },
                       onExit: (context) {
@@ -199,10 +233,24 @@ final router = GoRouter(
                     GoRoute(
                       path: Routes.addUsers,
                       redirect: (context, state) async {
+
                         var appProvider = Provider.of<AppProvider>(context, listen: false);
-                        List roles = await Connection.getRoleList(appProvider);
-                        var addUserProvider = Provider.of<AddUserProvider>(context, listen: false);
-                        addUserProvider.setRoles(roles);
+
+                        appProvider.setLoading(true);
+
+
+                        try {
+                          appProvider.setLoadingText('Getting Roles List...');
+                          List roles = await Connection.getRoleList(appProvider);
+                          var addUserProvider = Provider.of<AddUserProvider>(context, listen: false);
+                          addUserProvider.setRoles(roles);
+                        } catch (e, s) {
+                          appProvider.setLoading(false);
+                          return Routes.resource_NetworkError;
+                        }
+
+                        appProvider.setLoading(false);
+
                         return null;
                       },
                       builder: (context, state) => AddUserPage(),
@@ -219,17 +267,35 @@ final router = GoRouter(
                     GoRoute(
                       path: Routes.userDetails,
                       redirect: (context, state) async {
-                        final extraData = state.extra as Map<String, dynamic>?;
-                        final userId = extraData?['userId'];
-
                         var appProvider = Provider.of<AppProvider>(context, listen: false);
-                        var userDetailsProvider = Provider.of<UserDetailsProvider>(context, listen: false);
 
-                        List user = await Connection.getUser(userId, appProvider);
-                        userDetailsProvider.setUser(user);
+                        appProvider.setLoading(true);
 
-                        List roles = await Connection.getRoleList(appProvider);
-                        userDetailsProvider.setRoles(roles);
+                        try {
+
+                          appProvider.setLoadingText('');
+
+                          final extraData = state.extra as Map<String, dynamic>?;
+                          final userId = extraData?['userId'];
+
+                          var userDetailsProvider = Provider.of<UserDetailsProvider>(context, listen: false);
+
+                          appProvider.setLoadingText('Getting User Info...');
+                          List user = await Connection.getUser(userId, appProvider);
+                          userDetailsProvider.setUser(user);
+
+                          appProvider.setLoadingText('Getting Roles List...');
+                          List roles = await Connection.getRoleList(appProvider);
+                          userDetailsProvider.setRoles(roles);
+
+                        } catch (e, s) {
+                          appProvider.setLoading(false);
+                          return Routes.resource_NetworkError;
+                        }
+
+
+                        appProvider.setLoading(false);
+
                         return null;
                       },
                       builder: (context, state) => UserDetailsPage(),
@@ -257,14 +323,30 @@ final router = GoRouter(
                     GoRoute(
                       path: Routes.typeDetails,
                       redirect: (context, state) async {
-                        final extraData = state.extra as Map<String, dynamic>?;
-                        final userId = extraData?['typeId'];
-
                         var appProvider = Provider.of<AppProvider>(context, listen: false);
-                        var typeDetailsProvider = Provider.of<TypeDetailsProvider>(context, listen: false);
 
-                        List user = await Connection.getType(userId, appProvider);
-                        typeDetailsProvider.setType(user);
+                        appProvider.setLoading(true);
+
+                        try {
+
+                          appProvider.setLoadingText('');
+
+                          final extraData = state.extra as Map<String, dynamic>?;
+                          final userId = extraData?['typeId'];
+
+                          var typeDetailsProvider = Provider.of<TypeDetailsProvider>(context, listen: false);
+
+                          appProvider.setLoadingText('Getting Type Info...');
+                          List user = await Connection.getType(userId, appProvider);
+                          typeDetailsProvider.setType(user);
+
+                        } catch (e, s) {
+                          appProvider.setLoading(false);
+                          return Routes.resource_NetworkError;
+                        }
+
+                        appProvider.setLoading(false);
+
                         return null;
                       },
                       builder: (context, state) => TypeDetailsPage(),
@@ -292,18 +374,23 @@ final router = GoRouter(
                       GoRoute(
                         path: Routes.placeDetails,
                         redirect: (context, state) async {
-                          final extraData = state.extra as Map<String, dynamic>?;
-                          final placeId = extraData?['placeId'];
-
                           var appProvider = Provider.of<AppProvider>(context, listen: false);
-                          var placeDetailsProvider = Provider.of<PlaceDetailsProvider>(context, listen: false);
 
                           appProvider.setLoading(true);
-                          appProvider.setLoadingText('');
 
                           try {
+                            appProvider.setLoadingText('');
+
+                            final extraData = state.extra as Map<String, dynamic>?;
+                            final placeId = extraData?['placeId'];
+
+                            var placeDetailsProvider = Provider.of<PlaceDetailsProvider>(context, listen: false);
+
+                            appProvider.setLoadingText('Getting Place Info...');
+
                             List place = await Connection.getPlace(placeId, appProvider);
                             placeDetailsProvider.setPlace(place);
+
                           } catch (error) {}
 
                           appProvider.setLoading(false);
@@ -336,14 +423,29 @@ final router = GoRouter(
                       GoRoute(
                         path: Routes.activityDetails,
                         redirect: (context, state) async {
-                          final extraData = state.extra as Map<String, dynamic>?;
-                          final activityId = extraData?['activityId'];
-
                           var appProvider = Provider.of<AppProvider>(context, listen: false);
-                          var activityDetailsProvider = Provider.of<ActivityDetailsProvider>(context, listen: false);
 
-                          List activity = await Connection.getActivity(activityId, appProvider);
-                          activityDetailsProvider.setActivity(activity);
+                          appProvider.setLoading(true);
+
+                          try {
+                            appProvider.setLoadingText('');
+
+                            final extraData = state.extra as Map<String, dynamic>?;
+                            final activityId = extraData?['activityId'];
+
+                            var activityDetailsProvider = Provider.of<ActivityDetailsProvider>(context, listen: false);
+
+                            appProvider.setLoadingText('Getting Activity Info...');
+                            List activity = await Connection.getActivity(activityId, appProvider);
+                            activityDetailsProvider.setActivity(activity);
+
+                          } catch (e, s) {
+                            appProvider.setLoading(false);
+                            return Routes.resource_NetworkError;
+                          }
+
+                          appProvider.setLoading(false);
+
                           return null;
                         },
                         builder: (context, state) => ActivityDetailsPage(),
