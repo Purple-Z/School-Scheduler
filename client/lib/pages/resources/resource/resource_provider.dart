@@ -11,6 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ResourceProvider extends ChangeNotifier {
   List resource = [];
   List<AvailabilitySlot> shifts = [];
+  List<AvailabilitySlot> predict_shifts = [];
   int slot = 0;
   bool slot_logic = false;
   List places = [];
@@ -27,6 +28,7 @@ class ResourceProvider extends ChangeNotifier {
   DateTime end_booking = DateTime.now();
 
   int resource_Id = -1;
+  bool show_prediction_graph = false;
 
   loadResourcePage(BuildContext context) async {
     var appProvider = Provider.of<AppProvider>(context, listen: false);
@@ -36,8 +38,8 @@ class ResourceProvider extends ChangeNotifier {
     setStart(DateTime.tryParse(content['start']) ?? DateTime.now());
     setEnd(DateTime.tryParse(content['end']) ?? DateTime.now());
     setShifts(content['shifts']);
-    print('content shifts');
-    print(content['shifts']);
+    setPredictShifts(content['predict_shifts']);
+
     AvailabilitySlot slot1 = AvailabilitySlot(startTime: DateTime.now(), endTime: DateTime.now(), availability: 0);
 
     for (List shift in content['shifts']){
@@ -55,6 +57,11 @@ class ResourceProvider extends ChangeNotifier {
   }
 
   notify(){
+    notifyListeners();
+  }
+
+  setShowPredictionGraph(bool val){
+    show_prediction_graph = val;
     notifyListeners();
   }
 
@@ -129,6 +136,21 @@ class ResourceProvider extends ChangeNotifier {
     }
 
     shifts = s;
+    notifyListeners();
+  }
+
+  setPredictShifts(List c_shifts) {
+    List<AvailabilitySlot> s = [];
+
+    for (List shift in c_shifts){
+      s.add(AvailabilitySlot(
+          startTime: DateTime.tryParse(shift[0]) ?? DateTime.now(),
+          endTime: DateTime.tryParse(shift[1]) ?? DateTime.now(),
+          availability: shift[2]
+      ));
+    }
+
+    predict_shifts = s;
     notifyListeners();
   }
 

@@ -296,10 +296,36 @@ class _ResourceDetailsState extends State<ResourceDetails> with SingleTickerProv
                   height: 15,
                 ),
                 if ((listItems.length != 0))
+                  Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Switch(
+                          thumbIcon: WidgetStateProperty.resolveWith<Icon?>((Set<WidgetState> states) {
+                            if (states.contains(WidgetState.selected)) {
+                              return Icon(Icons.check, color: Theme.of(context).colorScheme.surface,);
+                            }
+                            return Icon(Icons.close, color: Theme.of(context).colorScheme.surface,);
+                          }),
+                          value: resourceProvider.show_prediction_graph,
+                          onChanged: (val) {
+                            resourceProvider.setShowPredictionGraph(val);
+                          },
+                        ),
+                        SizedBox(width: 7,),
+                        Text('Show Prediction Graph'),
+                      ],
+                    ),
+                  ),
+                if ((listItems.length != 0))
                   SizedBox(
                       height: MediaQuery.of(context).size.height * 0.1,
                       child: AvailabilityChart(
-                          availabilityData: resourceProvider.shifts)),
+                        availabilityData: resourceProvider.shifts,
+                        predictionData: resourceProvider.predict_shifts,
+                        show_prediction_graph: resourceProvider.show_prediction_graph,
+                      )
+                  ),
                 SizedBox(
                   height: 15,
                 ),

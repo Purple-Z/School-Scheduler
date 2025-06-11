@@ -732,8 +732,10 @@ List<FlSpot> convertAvailabilityToSpots(List<AvailabilitySlot> data) {
 
 class AvailabilityChart extends StatefulWidget {
   final List<AvailabilitySlot> availabilityData;
+  final List<AvailabilitySlot> predictionData;
+  final show_prediction_graph;
 
-  AvailabilityChart({required this.availabilityData});
+  AvailabilityChart({required this.availabilityData, required this.show_prediction_graph, required this.predictionData});
 
   @override
   _AvailabilityChartState createState() => _AvailabilityChartState();
@@ -744,7 +746,8 @@ class _AvailabilityChartState extends State<AvailabilityChart> {
 
   @override
   Widget build(BuildContext context) {
-    List<FlSpot> spots = convertAvailabilityToSpots(widget.availabilityData);
+    List<FlSpot> availabilitySpots = convertAvailabilityToSpots(widget.availabilityData);
+    List<FlSpot> predictionSpots = convertAvailabilityToSpots(widget.predictionData);
 
     return LineChart(
       LineChartData(
@@ -756,6 +759,10 @@ class _AvailabilityChartState extends State<AvailabilityChart> {
               final DateTime startOfDay = DateTime(widget.availabilityData.first.startTime.year, widget.availabilityData.first.startTime.month, widget.availabilityData.first.startTime.day);
 
               return touchedSpots.map((spot) {
+                if (spot.barIndex == 1) {
+                  return null;
+                }
+
                 final DateTime touchedTime = startOfDay.add(Duration(minutes: spot.x.toInt()));
                 final String formattedTime = "${touchedTime.hour.toString().padLeft(2, '0')}:${touchedTime.minute.toString().padLeft(2, '0')}";
 
@@ -770,7 +777,7 @@ class _AvailabilityChartState extends State<AvailabilityChart> {
         ),
         lineBarsData: [
           LineChartBarData(
-            spots: spots,
+            spots: availabilitySpots,
             isCurved: false,
             barWidth: 2,
             color: Theme.of(context).colorScheme.primary,
@@ -781,6 +788,24 @@ class _AvailabilityChartState extends State<AvailabilityChart> {
                 colors: [
                   Theme.of(context).colorScheme.primary.withOpacity(0.3),
                   Theme.of(context).colorScheme.primary.withOpacity(0.0),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+          if (widget.show_prediction_graph) LineChartBarData(
+            spots: predictionSpots,
+            isCurved: false,
+            barWidth: 0,
+            color: Color.lerp(Theme.of(context).colorScheme.primary, Colors.transparent, 0),
+            dotData: FlDotData(show: false),
+            belowBarData: BarAreaData(
+              show: true,
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                  Theme.of(context).colorScheme.tertiary.withOpacity(0.0),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
