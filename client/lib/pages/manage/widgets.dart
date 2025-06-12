@@ -695,7 +695,7 @@ class ListItem {
 class AvailabilitySlot {
   final DateTime startTime;
   final DateTime endTime;
-  final int availability;
+  final availability;
 
   AvailabilitySlot({
     required this.startTime,
@@ -798,14 +798,14 @@ class _AvailabilityChartState extends State<AvailabilityChart> {
             spots: predictionSpots,
             isCurved: false,
             barWidth: 0,
-            color: Color.lerp(Theme.of(context).colorScheme.primary, Colors.transparent, 0),
+            color: Color.lerp(Theme.of(context).colorScheme.primary, Colors.transparent, 1),
             dotData: FlDotData(show: false),
             belowBarData: BarAreaData(
               show: true,
               gradient: LinearGradient(
                 colors: [
-                  Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                  Theme.of(context).colorScheme.tertiary.withOpacity(0.0),
+                  Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
+                  Theme.of(context).colorScheme.primary.withOpacity(0.0),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,

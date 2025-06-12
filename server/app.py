@@ -4,8 +4,10 @@ import secrets, string, threading
 from datetime import datetime, timedelta
 from itertools import groupby
 from setup import setupDB
+from resource_prediction import ResourcePrediction
 from mail import sendMail
-import pytz, bcrypt
+import pytz, bcrypt, random
+import matplotlib.pyplot as plt
 
 import json
 
@@ -3125,10 +3127,17 @@ def get_resource_for_booking():
             shift[0] = shift[0].isoformat()
             shift[1] = shift[1].isoformat()
 
+
+        predict_shifts = getPredictionShifts(start, end, max_quantity=resource[3])
+        for f in predict_shifts:
+            print(f)
+
+
         content = {
             'start': start.isoformat(),
             'end': end.isoformat(),
             'shifts': shifts,
+            'predict_shifts': predict_shifts,
             'resource': resource
         }
 
@@ -4128,6 +4137,35 @@ def getMaxBookability(resource_id, start, end, remove_booking_id=-1, remove_avai
 
 
     return minVal
+
+def getPredictionShifts(start, end, max_quantity):
+    RP = ResourcePrediction()
+    RP.train()
+    predictions = []
+    for minute in range((start.hour*60 + start.minute), (end.hour*60 + end.minute)):
+        date = start + timedelta(minutes=minute)
+        predictions.append([date, minute, min(max(RP.predict([minute])[0], 0), 1)*max_quantity])
+
+    X_test = []
+    Y_pred = []
+    for p in predictions:
+        X_test.append([p[1]/1440])
+        Y_pred.append(p[2])
+
+
+    plt.plot(X_test, Y_pred, color="green", linewidth=2)
+
+    plt.savefig("scatter_plot1.png")
+
+    for i in range(len(predictions)):
+        
+        predictions[i] = [predictions[i][0].isoformat(), (predictions[i][0] + timedelta(minutes=1)).isoformat(), predictions[i][2]]
+
+    #print('predictions2\n\n', predictions)
+
+    return predictions
+
+
 
 def getShiftValue(shifts, start=False, end=False, slot=None):
     #finding mix and max for function
