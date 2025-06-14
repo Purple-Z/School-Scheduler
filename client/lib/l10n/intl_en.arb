@@ -121,6 +121,21 @@
   "howToBookText1": "Enter the desired quantity and verify it via the provided button",
   "howToBookText2": "Finally, tap the 'Book' button below to confirm",
   "finalNote": "You can always switch between tabs using the top bar",
+  "loading": "Loading...",
+  "getting_activities_list": "Getting Activities List...",
+  "getting_activity_info": "Getting Activity Info...",
+  "getting_activity_list": "Getting Activity List...",
+  "getting_permissions_list": "Getting Permissions List...",
+  "getting_place_info": "Getting Place Info...",
+  "getting_places_list": "Getting Places List...",
+  "getting_resource_content": "Getting Resource Content...",
+  "getting_role_info": "Getting Role Info...",
+  "getting_roles_list": "Getting Roles List...",
+  "getting_type_info": "Getting Type Info...",
+  "getting_types_list": "Getting Types List...",
+  "getting_user_info": "Getting User Info...",
+  "getting_users_list": "Getting Users List...",
+  "setting_the_parameters": "Setting the parameters...",
 
 
 

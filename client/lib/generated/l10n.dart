@@ -920,6 +920,151 @@ class S {
     );
   }
 
+  /// `Loading...`
+  String get loading {
+    return Intl.message('Loading...', name: 'loading', desc: '', args: []);
+  }
+
+  /// `Getting Activities List...`
+  String get getting_activities_list {
+    return Intl.message(
+      'Getting Activities List...',
+      name: 'getting_activities_list',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Getting Activity Info...`
+  String get getting_activity_info {
+    return Intl.message(
+      'Getting Activity Info...',
+      name: 'getting_activity_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Getting Activity List...`
+  String get getting_activity_list {
+    return Intl.message(
+      'Getting Activity List...',
+      name: 'getting_activity_list',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Getting Permissions List...`
+  String get getting_permissions_list {
+    return Intl.message(
+      'Getting Permissions List...',
+      name: 'getting_permissions_list',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Getting Place Info...`
+  String get getting_place_info {
+    return Intl.message(
+      'Getting Place Info...',
+      name: 'getting_place_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Getting Places List...`
+  String get getting_places_list {
+    return Intl.message(
+      'Getting Places List...',
+      name: 'getting_places_list',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Getting Resource Content...`
+  String get getting_resource_content {
+    return Intl.message(
+      'Getting Resource Content...',
+      name: 'getting_resource_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Getting Role Info...`
+  String get getting_role_info {
+    return Intl.message(
+      'Getting Role Info...',
+      name: 'getting_role_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Getting Roles List...`
+  String get getting_roles_list {
+    return Intl.message(
+      'Getting Roles List...',
+      name: 'getting_roles_list',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Getting Type Info...`
+  String get getting_type_info {
+    return Intl.message(
+      'Getting Type Info...',
+      name: 'getting_type_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Getting Types List...`
+  String get getting_types_list {
+    return Intl.message(
+      'Getting Types List...',
+      name: 'getting_types_list',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Getting User Info...`
+  String get getting_user_info {
+    return Intl.message(
+      'Getting User Info...',
+      name: 'getting_user_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Getting Users List...`
+  String get getting_users_list {
+    return Intl.message(
+      'Getting Users List...',
+      name: 'getting_users_list',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Setting the parameters...`
+  String get setting_the_parameters {
+    return Intl.message(
+      'Setting the parameters...',
+      name: 'setting_the_parameters',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Hello `
   String get account_hello {
     return Intl.message('Hello ', name: 'account_hello', desc: '', args: []);

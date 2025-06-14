@@ -122,6 +122,21 @@
   "howToBookText1": "Inserisci la quantità richiesta e verifica col pulsante apposito",
   "howToBookText2": "Premi il pulsante 'Prenota' in basso per completare",
   "finalNote": "In ogni caso possiamo muoverci liberamente fra queste schede premendo sulla barra in alto",
+  "loading": "Caricamento...",
+  "getting_activities_list": "Caricamento Lista Attività...",
+  "getting_activity_info": "Caricamento Contenuto Attività...",
+  "getting_activity_list": "Caricamento Lista Attività...",
+  "getting_permissions_list": "Caricamento Lista Permessi...",
+  "getting_place_info": "Caricamento Contenuto Luogo...",
+  "getting_places_list": "Caricamento Lista Luoghi...",
+  "getting_resource_content": "Caricamento Contenuto Risorsa...",
+  "getting_role_info": "Caricamento Contenuto Ruolo...",
+  "getting_roles_list": "Caricamento Lista Ruoli...",
+  "getting_type_info": "Caricamento Contenuto Tipo...",
+  "getting_types_list": "Caricamento Lista Tipi...",
+  "getting_user_info": "Caricamento Contenuto Utent...",
+  "getting_users_list": "Caricamento Lista Utenti...",
+  "setting_the_parameters": "Impostando I Parametri...",
 
 
 
