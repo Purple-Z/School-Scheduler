@@ -21,6 +21,10 @@ notification_times_delta = [1, 60, 60*24]
 
 mail_content = {}
 
+prediction_models = {}
+RP_global = ResourcePrediction()
+RP_global.train()
+
 nome_file_json = 'mail_content.json'
 rome_tz = pytz.timezone('Europe/Rome')
 
@@ -3127,10 +3131,7 @@ def get_resource_for_booking():
             shift[0] = shift[0].isoformat()
             shift[1] = shift[1].isoformat()
 
-
-        predict_shifts = getPredictionShifts(start, end, max_quantity=resource[3])
-        for f in predict_shifts:
-            print(f)
+        predict_shifts = getPredictionShifts(start, end, max_quantity=resource[3], resource_id=resource_id)
 
 
         content = {
@@ -3341,6 +3342,10 @@ def add_booking():
         )
 
         db.executeSQL(sql_insert, parameters)
+
+        RP = ResourcePrediction(resourceId=resource_id)
+        RP.train()
+        prediction_models[resource_id] = RP
 
         return jsonify(
             {
@@ -4138,13 +4143,21 @@ def getMaxBookability(resource_id, start, end, remove_booking_id=-1, remove_avai
 
     return minVal
 
-def getPredictionShifts(start, end, max_quantity):
-    RP = ResourcePrediction()
-    RP.train()
+def getPredictionShifts(start, end, max_quantity, resource_id):
+
+    RP = RP_global
+    if resource_id in prediction_models:
+        RP = prediction_models[resource_id]
+    else:
+        RP = ResourcePrediction(resourceId=resource_id)
+        RP.train()
+        prediction_models[resource_id] = RP
+
     predictions = []
-    for minute in range((start.hour*60 + start.minute), (end.hour*60 + end.minute)):
+    for minute in range((end.day*1440 + end.hour*60 + end.minute) - (start.day*1440 + start.hour*60 + start.minute)):
         date = start + timedelta(minutes=minute)
         predictions.append([date, minute, min(max(RP.predict([minute])[0], 0), 1)*max_quantity])
+    
 
     X_test = []
     Y_pred = []
@@ -4153,15 +4166,10 @@ def getPredictionShifts(start, end, max_quantity):
         Y_pred.append(p[2])
 
 
-    plt.plot(X_test, Y_pred, color="green", linewidth=2)
-
-    plt.savefig("scatter_plot1.png")
-
     for i in range(len(predictions)):
         
         predictions[i] = [predictions[i][0].isoformat(), (predictions[i][0] + timedelta(minutes=1)).isoformat(), predictions[i][2]]
 
-    #print('predictions2\n\n', predictions)
 
     return predictions
 

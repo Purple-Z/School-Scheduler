@@ -171,7 +171,7 @@ class _ResourceFeedState extends State<ResourceFeed> {
                                           context.push(Routes.resources_Resource, extra: {
                                             'resourceId': resource[0],
                                             'start': DateTime(now.year, now.month, now.day, 0, 0),
-                                            'end': DateTime(now.year, now.month, now.day, 23, 59)
+                                            'end': DateTime(now.year, now.month, now.day, 0, 0).add(Duration(days: 1))
                                           });
                                         },
                                         child: Center(

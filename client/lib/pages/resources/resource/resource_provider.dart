@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../app_provider.dart';
 import '../../../connection.dart';
+import '../../functions.dart';
 import '../../manage/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -29,6 +30,8 @@ class ResourceProvider extends ChangeNotifier {
 
   int resource_Id = -1;
   bool show_prediction_graph = false;
+
+  int numTab = 3;
 
   loadResourcePage(BuildContext context) async {
     var appProvider = Provider.of<AppProvider>(context, listen: false);
@@ -58,6 +61,31 @@ class ResourceProvider extends ChangeNotifier {
 
   notify(){
     notifyListeners();
+  }
+
+  changeNumTab(int num) {
+    numTab = num;
+    notifyListeners();
+  }
+
+  List getItem(BuildContext context) {
+    List newItems = [];
+    for (AvailabilitySlot item in shifts) {
+      if (item.availability == 0) {
+        continue;
+      }
+
+      List newItem = [item.startTime, item.endTime, item.availability, item.startTime, item.endTime];
+
+      for (int i in [0, 1]) {
+        DateTime dateTime = newItem[i];
+        newItem[i] = getDatePrintable(dateTime, context)+'\n';
+        newItem[i] += getTimePrintable(dateTime);
+      }
+
+      newItems.add(newItem);
+    }
+    return newItems;
   }
 
   setShowPredictionGraph(bool val){
@@ -136,6 +164,12 @@ class ResourceProvider extends ChangeNotifier {
     }
 
     shifts = s;
+
+    if (s.length != 0){
+      numTab = 3;
+    } else {
+      numTab = 2;
+    }
     notifyListeners();
   }
 

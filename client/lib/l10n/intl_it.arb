@@ -91,6 +91,37 @@
   "this_reservation_needs_to_be_accepted": "Questa Prenotazione Dovrà Essere Accettata",
   "select": "Seleziona",
   "book": "Prenota",
+  "prediction_graph": "Grafico Di Predizione",
+  "select_another_period": "Seleziona Un Altro Periodo",
+  "no_availability": "Nessuna Disponibilità",
+
+
+
+  "bookingInstructions": "Istruzioni della Pagina Prenotazioni",
+  "appSectionsInfo": "L'applicazione è divisa in 3 schede:",
+  "searchPageTitle": "Pagina Cerca",
+  "searchPageText1": "Nella pagina cerca si seleziona il periodo interessato per la prenotazione",
+  "searchPageText2": "Si sceglie il giorno di inizio ed il giorno di fine premendo sulla data visualizzata; stesso procedimento per l'orario",
+  "searchPageText3": "Si preme sul pulsante 'Cerca' che ci porterà alla pagina successiva",
+  "viewPageTitle": "Pagina Visualizza",
+  "viewPageText1": "Questa pagina è divisa in due parti: una destinata al grafico ed una per visualizzare i dati",
+  "readGraphTitle": "Leggere Il Grafico",
+  "readGraphText1": "Il grafico riporta la quantità della risorsa richiesta durante il periodo selezionato",
+  "readGraphText2": "Per vedere il valore del grafico in un punto basta toccarlo",
+  "readGraphText3": "Per controllare l'andamento, tieni premuto e scorri col dito",
+  "predictionGraphText": "Esiste un pulsante 'Grafico Di Predizione' che visualizza un secondo grafico stimato",
+  "predictionWarning": "Essendo una previsione fatta da un modello di machine learning addestrato sui dati dell'app, può avere incertezze ed errori",
+  "readIntervalsTitle": "Leggere Gli Intervalli",
+  "readIntervalsText1": "La seconda parte riporta i dati del grafico in formato tabellare",
+  "readIntervalsText2": "Se la risorsa è disponibile in slot, premere su uno per selezionarlo e accedere alla pagina prenotazioni",
+  "bookPageTitle": "Pagina Prenota",
+  "bookPageText1": "Questa pagina ci permette di effettuare una prenotazione",
+  "whatCanModifyTitle": "Quali Dati Possiamo Modificare?",
+  "whatCanModifyText": "Alcuni dati possono essere modificati (contrassegnati in giallo); si aprirà un'interfaccia dedicata",
+  "howToBookTitle": "Come Prenotare",
+  "howToBookText1": "Inserisci la quantità richiesta e verifica col pulsante apposito",
+  "howToBookText2": "Premi il pulsante 'Prenota' in basso per completare",
+  "finalNote": "In ogni caso possiamo muoverci liberamente fra queste schede premendo sulla barra in alto",
 
 
 

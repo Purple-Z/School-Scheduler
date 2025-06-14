@@ -650,6 +650,276 @@ class S {
     return Intl.message('Book', name: 'book', desc: '', args: []);
   }
 
+  /// `Prediction Graph`
+  String get prediction_graph {
+    return Intl.message(
+      'Prediction Graph',
+      name: 'prediction_graph',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Another Period`
+  String get select_another_period {
+    return Intl.message(
+      'Select Another Period',
+      name: 'select_another_period',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Availability`
+  String get no_availability {
+    return Intl.message(
+      'No Availability',
+      name: 'no_availability',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bookings Page Instructions`
+  String get bookingInstructions {
+    return Intl.message(
+      'Bookings Page Instructions',
+      name: 'bookingInstructions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The app is divided into 3 tabs:`
+  String get appSectionsInfo {
+    return Intl.message(
+      'The app is divided into 3 tabs:',
+      name: 'appSectionsInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search Page`
+  String get searchPageTitle {
+    return Intl.message(
+      'Search Page',
+      name: 'searchPageTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `On the search page you select the desired booking period`
+  String get searchPageText1 {
+    return Intl.message(
+      'On the search page you select the desired booking period',
+      name: 'searchPageText1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the start and end date by tapping on the displayed date; same for start and end time`
+  String get searchPageText2 {
+    return Intl.message(
+      'Choose the start and end date by tapping on the displayed date; same for start and end time',
+      name: 'searchPageText2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap the 'Search' button to go to the next page`
+  String get searchPageText3 {
+    return Intl.message(
+      'Tap the \'Search\' button to go to the next page',
+      name: 'searchPageText3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Page`
+  String get viewPageTitle {
+    return Intl.message('View Page', name: 'viewPageTitle', desc: '', args: []);
+  }
+
+  /// `This page is split into two parts: one for the graph and one for viewing graph data`
+  String get viewPageText1 {
+    return Intl.message(
+      'This page is split into two parts: one for the graph and one for viewing graph data',
+      name: 'viewPageText1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reading the Graph`
+  String get readGraphTitle {
+    return Intl.message(
+      'Reading the Graph',
+      name: 'readGraphTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The graph shows the requested resource quantity over the selected period`
+  String get readGraphText1 {
+    return Intl.message(
+      'The graph shows the requested resource quantity over the selected period',
+      name: 'readGraphText1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap a point on the graph to view its value`
+  String get readGraphText2 {
+    return Intl.message(
+      'Tap a point on the graph to view its value',
+      name: 'readGraphText2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Long press and slide your finger to explore graph values`
+  String get readGraphText3 {
+    return Intl.message(
+      'Long press and slide your finger to explore graph values',
+      name: 'readGraphText3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A 'Prediction Graph' button shows estimated future demand overlaid on the graph`
+  String get predictionGraphText {
+    return Intl.message(
+      'A \'Prediction Graph\' button shows estimated future demand overlaid on the graph',
+      name: 'predictionGraphText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Since this is a prediction by a machine learning model trained on app data, it may contain uncertainty and errors`
+  String get predictionWarning {
+    return Intl.message(
+      'Since this is a prediction by a machine learning model trained on app data, it may contain uncertainty and errors',
+      name: 'predictionWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reading Intervals`
+  String get readIntervalsTitle {
+    return Intl.message(
+      'Reading Intervals',
+      name: 'readIntervalsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The second section shows the same data as the graph in tabular form`
+  String get readIntervalsText1 {
+    return Intl.message(
+      'The second section shows the same data as the graph in tabular form',
+      name: 'readIntervalsText1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If the resource has slots, tap one to select the time period, and you'll go to the final booking page`
+  String get readIntervalsText2 {
+    return Intl.message(
+      'If the resource has slots, tap one to select the time period, and you\'ll go to the final booking page',
+      name: 'readIntervalsText2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Book Page`
+  String get bookPageTitle {
+    return Intl.message('Book Page', name: 'bookPageTitle', desc: '', args: []);
+  }
+
+  /// `This page allows you to make a reservation`
+  String get bookPageText1 {
+    return Intl.message(
+      'This page allows you to make a reservation',
+      name: 'bookPageText1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Which Data Can You Modify?`
+  String get whatCanModifyTitle {
+    return Intl.message(
+      'Which Data Can You Modify?',
+      name: 'whatCanModifyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Some displayed data is editable (marked in yellow); a suitable UI will appear`
+  String get whatCanModifyText {
+    return Intl.message(
+      'Some displayed data is editable (marked in yellow); a suitable UI will appear',
+      name: 'whatCanModifyText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `How to Book`
+  String get howToBookTitle {
+    return Intl.message(
+      'How to Book',
+      name: 'howToBookTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the desired quantity and verify it via the provided button`
+  String get howToBookText1 {
+    return Intl.message(
+      'Enter the desired quantity and verify it via the provided button',
+      name: 'howToBookText1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Finally, tap the 'Book' button below to confirm`
+  String get howToBookText2 {
+    return Intl.message(
+      'Finally, tap the \'Book\' button below to confirm',
+      name: 'howToBookText2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can always switch between tabs using the top bar`
+  String get finalNote {
+    return Intl.message(
+      'You can always switch between tabs using the top bar',
+      name: 'finalNote',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Hello `
   String get account_hello {
     return Intl.message('Hello ', name: 'account_hello', desc: '', args: []);
