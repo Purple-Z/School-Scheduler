@@ -397,7 +397,59 @@ class _ResourceDetailsState extends State<ResourceDetails> with TickerProviderSt
                   child: (listItems.length == 0)
                       ? Center(
                       child:
-                      Text(AppLocalizations.of(context)!.book_no_quantity))
+                      SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SvgPicture.asset(
+                              'assets/images/undraw_empty_4zx0.svg',
+                              width: 150,
+                              height: 150,
+                              colorMapper: CustomColorMapper(context),
+                            ),
+                            SizedBox(height: 25,),
+                            Center(
+                              child: Container(
+                                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.7),
+                                  child: Text(
+                                    AppLocalizations.of(context)!.book_no_quantity,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 20),
+                                  )
+                              ),
+                            ),
+                            SizedBox(height: 25,),
+                            ElevatedButton(
+                              onPressed: () {
+                                currTabController.animateTo(0);
+                              },
+                              style: ButtonStyle(
+                                backgroundColor: WidgetStatePropertyAll(
+                                    Theme.of(context).colorScheme.tertiary),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.arrow_back,
+                                    color: Theme.of(context).colorScheme.surface,
+                                    size: 23,
+                                    weight: 5000,
+                                  ),
+                                  Text(
+                                    AppLocalizations.of(context)!.select_another_period,
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Theme.of(context).colorScheme.surface
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 25,),
+                          ],
+                        ),
+                      ))
                       : ListView(
                     shrinkWrap: true,
                     children: [

@@ -680,6 +680,16 @@ class S {
     );
   }
 
+  /// `Account`
+  String get account {
+    return Intl.message('Account', name: 'account', desc: '', args: []);
+  }
+
+  /// `Manage`
+  String get manage {
+    return Intl.message('Manage', name: 'manage', desc: '', args: []);
+  }
+
   /// `Bookings Page Instructions`
   String get bookingInstructions {
     return Intl.message(

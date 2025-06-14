@@ -94,6 +94,8 @@
   "prediction_graph": "Prediction Graph",
   "select_another_period": "Select Another Period",
   "no_availability": "No Availability",
+  "account": "Account",
+  "manage": "Manage",
 
 
   "bookingInstructions": "Bookings Page Instructions",

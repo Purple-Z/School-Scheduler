@@ -3,14 +3,20 @@ import 'dart:ui';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:client/app_provider.dart';
 import 'package:client/router/destination.dart';
 import 'package:go_router/go_router.dart';
+import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+
+import '../connection.dart';
+import '../style/svgMappers.dart';
 import 'appBars.dart';
 
 class LayoutScaffold extends StatelessWidget {
@@ -61,9 +67,118 @@ class LayoutScaffold extends StatelessWidget {
       ),
     );
 
+    Widget noConnectionWidget = Center(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          color: Theme.of(context).colorScheme.surface,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'No Connection',
+                style: TextStyle(
+                  fontSize: 25
+                ),
+              ),
+              SizedBox(height: 35,),
+              SvgPicture.asset(
+                'assets/images/undraw_server-down_lxs9.svg',
+                width: 150,
+                height: 150,
+                colorMapper: CustomColorMapper(context),
+              ),
+              SizedBox(height: 30,),
+              Text('Please Estabilish a Connection'),
+              SizedBox(height: 25,),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                      onPressed: () async {
+                        try{
+                          await showSimpleLoadingDialog(
+                            context: context,
+                            future: () async {
+                              await Connection.reload(appState);
+                              return;
+                            },
+                          );
+                          showDialog<String>(
+                            context: context,
+                            builder:
+                                (BuildContext context) => AlertDialog(
+                              icon: Icon(Icons.check_circle, size: 50, color: Theme.of(context).colorScheme.tertiary,),
+                              title: const Text('Back Online'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'Close'),
+                                  child: const Text('Close'),
+                                ),
+                              ],
+                            ),
+                          );
+                          appState.setNoConnection(false);
+                        } catch (e) {
+                          showDialog<String>(
+                            context: context,
+                            builder:
+                                (BuildContext context) => AlertDialog(
+                              icon: Icon(Icons.warning, size: 50,),
+                              title: const Text('Connection Refused'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'Close'),
+                                  child: const Text('Close'),
+                                ),
+                              ],
+                            ),
+                          );
+                          appState.setNoConnection(true);
+                        }
+
+                      },
+                      child: Text(
+                        'Retry',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.surface,
+                          fontSize: 18
+                        ),
+                      ),
+                      style: ButtonStyle(
+                          backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary)
+                      ),
+                  ),
+                  SizedBox(width: 20,),
+                  ElevatedButton(
+                    onPressed: () {
+                      appState.setNoConnection(false);
+                    },
+                    child: Text(
+                      'Ok',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.surface,
+                        fontSize: 18
+                      ),
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary)
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      )
+    );
+
     List destinations = [
-      Destination(label: 'account', icon: Icons.account_circle_outlined),
-      Destination(label: 'resources', icon: Icons.account_balance_rounded),
+      Destination(label: AppLocalizations.of(context)!.account, icon: Icons.account_circle_outlined),
+      Destination(label: AppLocalizations.of(context)!.resources, icon: Icons.account_balance_rounded),
       if (
         appState.view_user ||
         appState.edit_user ||
@@ -85,7 +200,7 @@ class LayoutScaffold extends StatelessWidget {
         appState.edit_booking ||
         appState.create_booking ||
         appState.delete_booking
-      ) Destination(label: 'manage', icon: Icons.account_tree_rounded),
+      ) Destination(label: AppLocalizations.of(context)!.manage, icon: Icons.account_tree_rounded),
     ];
 
     LayoutBuilder body = LayoutBuilder(
@@ -170,8 +285,18 @@ class LayoutScaffold extends StatelessWidget {
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
                     child: Container(
-                      color: Colors.black.withOpacity(0.3), // Sfondo semi-trasparente
+                      color: Colors.black.withOpacity(0.3),
                       child: loadingWidget,
+                    ),
+                  ),
+                ),
+              if (appState.showNoConnection)
+                Positioned.fill(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+                    child: Container(
+                      color: Colors.black.withOpacity(0.3),
+                      child: noConnectionWidget,
                     ),
                   ),
                 ),

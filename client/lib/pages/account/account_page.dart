@@ -2,11 +2,14 @@ import 'package:client/app_provider.dart';
 import 'package:client/connection.dart';
 import 'package:client/router/layout_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_loading_dialog/simple_loading_dialog.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
+import '../../graphics/graphics_methods.dart';
 import '../../router/routes.dart';
+import '../../style/svgMappers.dart';
 import '../manage/manage_page.dart';
 import 'account_provider.dart';
 import 'package:go_router/go_router.dart';
@@ -105,6 +108,8 @@ class LoggedPage extends StatelessWidget {
       ],
     );
   }
+
+
 
   Column AccountButtonsWidget(BuildContext context, AppProvider appProvider) {
     return Column(

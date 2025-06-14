@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+
+import '../style/svgMappers.dart';
 
 
 Widget buildSwitch(BuildContext context, String label, bool value, Function(bool) onChanged, {bool isEditable=true}) {
@@ -70,5 +73,39 @@ showTopMessage(BuildContext context, String text, {bool isOK = true}){
     animationDuration: const Duration(milliseconds: 100),
     displayDuration: const Duration(milliseconds: 1000),
     curve: Curves.easeInOut,
+  );
+}
+
+Future<String?> buildNoConnectionDialog(BuildContext context) {
+  return showDialog<String>(
+    context: context,
+    builder:
+        (BuildContext context) => AlertDialog(
+      icon: Icon(Icons.warning, size: 50,),
+      title: const Text('No Connection'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SvgPicture.asset(
+            'assets/images/undraw_server-down_lxs9.svg',
+            width: 150,
+            height: 150,
+            colorMapper: CustomColorMapper(context),
+          ),
+          SizedBox(height: 30,),
+          Text('Please Estabilish A Connection')
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'Cancel'),
+          child: const Text('Retry'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'OK'),
+          child: const Text('OK'),
+        ),
+      ],
+    ),
   );
 }

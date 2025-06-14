@@ -65,9 +65,11 @@ class AppProvider extends ChangeNotifier {
     await loadLocale();
     try {
       if (logged) {
-        Connection.reload(this);
+        await Connection.reload(this);
       }
-    } catch (e) {}
+    } catch (e) {
+      setNoConnection(true);
+    }
 
     notifyListeners();
   }
@@ -88,10 +90,17 @@ class AppProvider extends ChangeNotifier {
   bool get isDarkTheme => _isDarkTheme;
 
   bool isLoading = false;
+  bool showNoConnection = false;
+
   String loadingText = '';
 
   setLoading(bool value) {
     isLoading = value;
+    notifyListeners();
+  }
+
+  setNoConnection(bool value) {
+    showNoConnection = value;
     notifyListeners();
   }
 
