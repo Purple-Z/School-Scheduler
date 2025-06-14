@@ -96,6 +96,11 @@
   "no_availability": "No Availability",
   "account": "Account",
   "manage": "Manage",
+  "retry": "Retry",
+  "connection_refused": "Connection Refused",
+  "back_online": "Back Online",
+  "please_establish_a_connection": "Please Establish a Connection",
+  "no_connection": "No Connection",
 
 
   "bookingInstructions": "Bookings Page Instructions",

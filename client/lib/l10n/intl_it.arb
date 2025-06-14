@@ -96,6 +96,11 @@
   "no_availability": "Nessuna Disponibilità",
   "account": "Account",
   "manage": "Gestisci",
+  "retry": "Riprova",
+  "connection_refused": "Connessione Rifiutata",
+  "back_online": "Di Nuovo Connesso",
+  "please_establish_a_connection": "Per Favore Stabilisci Una Connessione",
+  "no_connection": "Nessuna Connessione",
 
 
 

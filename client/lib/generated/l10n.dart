@@ -690,6 +690,46 @@ class S {
     return Intl.message('Manage', name: 'manage', desc: '', args: []);
   }
 
+  /// `Retry`
+  String get retry {
+    return Intl.message('Retry', name: 'retry', desc: '', args: []);
+  }
+
+  /// `Connection Refused`
+  String get connection_refused {
+    return Intl.message(
+      'Connection Refused',
+      name: 'connection_refused',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back Online`
+  String get back_online {
+    return Intl.message('Back Online', name: 'back_online', desc: '', args: []);
+  }
+
+  /// `Please Establish a Connection`
+  String get please_establish_a_connection {
+    return Intl.message(
+      'Please Establish a Connection',
+      name: 'please_establish_a_connection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Connection`
+  String get no_connection {
+    return Intl.message(
+      'No Connection',
+      name: 'no_connection',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Bookings Page Instructions`
   String get bookingInstructions {
     return Intl.message(

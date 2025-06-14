@@ -180,7 +180,11 @@ class LoggedPage extends StatelessWidget {
                       await showSimpleLoadingDialog(
                       context: context,
                       future: () async {
-                        await Connection.reload(appProvider);
+                        try {
+                          await Connection.reload(appProvider);
+                        } catch (e) {
+                          appProvider.setNoConnection(true);
+                        }
                         return;
                       },
                       );

@@ -79,7 +79,7 @@ class LayoutScaffold extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'No Connection',
+                AppLocalizations.of(context)!.no_connection,
                 style: TextStyle(
                   fontSize: 25
                 ),
@@ -92,7 +92,7 @@ class LayoutScaffold extends StatelessWidget {
                 colorMapper: CustomColorMapper(context),
               ),
               SizedBox(height: 30,),
-              Text('Please Estabilish a Connection'),
+              Text(AppLocalizations.of(context)!.please_establish_a_connection),
               SizedBox(height: 25,),
               Row(
                 mainAxisSize: MainAxisSize.min,
@@ -107,32 +107,32 @@ class LayoutScaffold extends StatelessWidget {
                               return;
                             },
                           );
-                          showDialog<String>(
+                          showDialog(
                             context: context,
                             builder:
                                 (BuildContext context) => AlertDialog(
                               icon: Icon(Icons.check_circle, size: 50, color: Theme.of(context).colorScheme.tertiary,),
-                              title: const Text('Back Online'),
+                              title: Text(AppLocalizations.of(context)!.back_online),
                               actions: <Widget>[
                                 TextButton(
-                                  onPressed: () => Navigator.pop(context, 'Close'),
-                                  child: const Text('Close'),
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text(AppLocalizations.of(context)!.close),
                                 ),
                               ],
                             ),
                           );
                           appState.setNoConnection(false);
                         } catch (e) {
-                          showDialog<String>(
+                          showDialog(
                             context: context,
                             builder:
                                 (BuildContext context) => AlertDialog(
                               icon: Icon(Icons.warning, size: 50,),
-                              title: const Text('Connection Refused'),
+                              title: Text(AppLocalizations.of(context)!.connection_refused),
                               actions: <Widget>[
                                 TextButton(
-                                  onPressed: () => Navigator.pop(context, 'Close'),
-                                  child: const Text('Close'),
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text(AppLocalizations.of(context)!.close),
                                 ),
                               ],
                             ),
@@ -142,7 +142,7 @@ class LayoutScaffold extends StatelessWidget {
 
                       },
                       child: Text(
-                        'Retry',
+                        AppLocalizations.of(context)!.retry,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.surface,
                           fontSize: 18
