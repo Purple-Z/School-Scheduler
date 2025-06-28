@@ -8,7 +8,7 @@
 ## Caratteristiche principali
 
 - **Gestione di utenti, ruoli e risorse scolastiche**<br>
-Ogni utente può avere più ruoli. Ogni ruolo ha 28 permessi. Ogni permesso abilita ad un servizio dell'applicazione. Posso creare dinamicamente i ruoli all'interno della mia applicazione. Se ha i permessi un utente può creare una risorsa definendone il tipo, il luogo, l'attività ed eventuali referenti. Per ogni risorsa posso anche impostare dei parametri: auto-accept delle prenotazioni, over-booking e gestione in slot. Questi parametri servono per una gestione ottimale delle risorse.<br>
+Ogni utente può avere più ruoli. Ogni ruolo ha 28 permessi. Ogni permesso abilita ad un servizio dell'applicazione. Posso creare dinamicamente i ruoli all'interno della mia applicazione. Se un utente ha i permessi può creare una risorsa definendone il tipo, il luogo, l'attività ed eventuali referenti. Per ogni risorsa posso anche impostare dei parametri: auto-accept delle prenotazioni, over-booking e gestione in slot. Questi parametri servono per una gestione ottimale delle risorse.<br>
 
 - **Prenotazione e pianificazione con promemoria via email**<br>
 È possibile penotare una determinata risorsa per un certo periodo e si verrà notificati tramite mail della prenotazione effettuata.<br>
