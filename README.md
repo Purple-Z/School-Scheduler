@@ -7,21 +7,28 @@
 
 ## Caratteristiche principali
 
-- Gestione di utenti, ruoli e risorse scolastiche.
-- Prenotazione e pianificazione con promemoria via email.
-- Previsioni sull'utilizzo delle risorse.
-- Supporto multilingua (italiano e inglese).
+- **Gestione di utenti, ruoli e risorse scolastiche**<br>
+Ogni utente può avere più ruoli. Ogni ruolo ha 28 permessi. Ogni permesso abilita ad un servizio dell'applicazione. Posso creare dinamicamente i ruoli all'interno della mia applicazione. Se ha i permessi un utente può creare una risorsa definendone il tipo, il luogo, l'attività ed eventuali referenti. Per ogni risorsa posso anche impostare dei parametri: auto-accept delle prenotazioni, over-booking e gestione in slot. Questi parametri servono per una gestione ottimale delle risorse.<br>
+
+- **Prenotazione e pianificazione con promemoria via email**<br>
+È possibile penotare una determinata risorsa per un certo periodo e si verrà notificati tramite mail della prenotazione effettuata.<br>
+
+- **Previsioni sull'utilizzo delle risorse**<br>
+Si una un algoritmo di regressione polinomiale (Machine Learning) per predirre quante risorse saranno prenotare ad una certa ora.<br>
+
+- **Supporto multilingua (italiano e inglese)**<br>
+L'intera applicazione è tradotta in italiano ed inglese. È anche disponibile la modalità scura/chiara.
 
 ## Pagine principali
 
-| Screenshot | Descrizione |
-|------------|-------------|
+| | |
+|---|---|
 | <img src="images/Screenshot_20250628_105059.jpg" width="250"/> | <img src="images/Screenshot_20250628_105110.jpg" width="250"/> |
-| Pagina account.                            | Visualizzazione risorse prenotabili.       |
+| Pagina account.| Visualizzazione risorse prenotabili.|
 | <img src="images/Screenshot_20250628_105123.jpg" width="250"/> | <img src="images/Screenshot_20250628_105151.jpg" width="250"/> |
-| Pagina di gestione.                        | Calendario interattivo<br>delle prenotazioni. |
+| Pagina di gestione.| Calendario interattivo<br>delle prenotazioni.|
 | <img src="images/Screenshot_20250628_105416.jpg" width="250"/> | <img src="images/Screenshot_20250628_105433.jpg" width="250"/> |
-| Pagine per le prenotazioni 1.              | Pagina per le prenotazioni 2.              |
+| Pagine per le prenotazioni 1.| Pagina per le prenotazioni 2.|
 
 ## Requisiti
 
@@ -60,8 +67,6 @@ School-Scheduler/
 |       └─ pages/ # codice delle pagine dell'applicazione
 └─ server/  # backend Flask
 ```
-
-Il client contiene un README aggiuntivo con maggiori dettagli sull'applicazione Flutter.
 
 ## Come contribuire
 
