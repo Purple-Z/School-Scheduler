@@ -19,8 +19,7 @@
 | <img src="images/Screenshot_20250628_105059.jpg" width="250"/> | <img src="images/Screenshot_20250628_105110.jpg" width="250"/> |
 | Pagina account.                            | Visualizzazione risorse prenotabili.       |
 | <img src="images/Screenshot_20250628_105123.jpg" width="250"/> | <img src="images/Screenshot_20250628_105151.jpg" width="250"/> |
-| Pagina di gestione.                        | Calendario interattivo
-delle prenotazioni. |
+| Pagina di gestione.                        | Calendario interattivo\ndelle prenotazioni. |
 | <img src="images/Screenshot_20250628_105416.jpg" width="250"/> | <img src="images/Screenshot_20250628_105433.jpg" width="250"/> |
 | Pagine per le prenotazioni 1.              | Pagina per le prenotazioni 2.              |
 
