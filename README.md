@@ -45,8 +45,8 @@
 ```
 School-Scheduler/
 ├─ client/  # applicazione Flutter
-|   ├─ lib # contenuto applicazione
-|       ├─ pages # codice delle pagine dell'applicazione
+|   └─ lib # contenuto applicazione
+|       └─ pages # codice delle pagine dell'applicazione
 └─ server/  # backend Flask
 ```
 
