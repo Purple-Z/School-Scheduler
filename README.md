@@ -21,14 +21,13 @@ L'intera applicazione è tradotta in italiano ed inglese. È anche disponibile l
 
 ## Pagine principali
 
-| | |
-|---|---|
-| <img src="images/Screenshot_20250628_105059.jpg" width="250"/> | <img src="images/Screenshot_20250628_105110.jpg" width="250"/> |
-| Pagina account.| Visualizzazione risorse prenotabili.|
-| <img src="images/Screenshot_20250628_105123.jpg" width="250"/> | <img src="images/Screenshot_20250628_105151.jpg" width="250"/> |
-| Pagina di gestione.| Calendario interattivo<br>delle prenotazioni.|
-| <img src="images/Screenshot_20250628_105416.jpg" width="250"/> | <img src="images/Screenshot_20250628_105433.jpg" width="250"/> |
-| Pagine per le prenotazioni 1.| Pagina per le prenotazioni 2.|
+| | | |
+|---|---|---|
+| <img src="images/Screenshot_20250628_105059.jpg" width="250"/> | <img src="images/Screenshot_20250628_105110.jpg" width="250"/> | <img src="images/Screenshot_20250628_105123.jpg" width="250"/> |
+| Pagina account. | Visualizzazione risorse prenotabili. | Pagina di gestione. |
+| <img src="images/Screenshot_20250628_105151.jpg" width="250"/> | <img src="images/Screenshot_20250628_105416.jpg" width="250"/> | <img src="images/Screenshot_20250628_105433.jpg" width="250"/> |
+| Calendario interattivo<br>delle prenotazioni. | Pagine per le prenotazioni 1. | Pagina per le prenotazioni 2. |
+
 
 ## Requisiti
 
